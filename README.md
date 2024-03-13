@@ -1,9 +1,18 @@
-# Project-III
+# Molecular Dynamics Simulation of a Van der Waals Gas
 
-Manel Serrano         Visualització i estadística
+authors: Manel Serrano, Albert Plazas, Anna Monclús, Aina Gaya 
 
-Albert Plazas            Forces
+Eines Informàtiques Avançades 2024
 
-**Anna Monclús**          Cond. inicials i de contorn (Coordinació e integració de tot el codi)
+---
 
-Aina Gaya                 Integració
+### Aim:
+
+To learn how to work in a group around a computational science project by using all the tools
+learned during the course.
+
+### Scientific goal:
+
+Build a simple molecular dynamics program to deal with a Van der Waals gas of particles. All
+students must perform collaborative work to get a working program code. Thus, all the tasks
+involved in the implementation of this program must be decided accordingly.
