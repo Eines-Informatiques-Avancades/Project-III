@@ -1,4 +1,4 @@
-.PHONY: formatpyt
+.PHONY: formatpy
 format-py:
 	isort src
 	black src
