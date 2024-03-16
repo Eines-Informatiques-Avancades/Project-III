@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.10.28)  10 MAR 2024 10:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.15)  16 MAR 2024 11:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -845,6 +845,8 @@ LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 (Font)              scaled to size 8.99994pt on input line 204.
+LaTeX Font Info:    Font shape `T1/phv/b/n' will be
+(Font)              scaled to size 6.29996pt on input line 204.
 LaTeX Font Info:    Trying to load font information for U+msa on input line 204
 .
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
@@ -864,8 +866,6 @@ File: uwasy.fd 2020/01/19 v2.4 Wasy-2 symbol font definitions
 )
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 (Font)              scaled to size 6.29996pt on input line 204.
-LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 6.29996pt on input line 204.
  [1] [2
 
 ]
@@ -879,42 +879,88 @@ LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 (Font)              scaled to size 18.66588pt on input line 1.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 (Font)              scaled to size 22.39185pt on input line 1.
-LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 10.79993pt on input line 10.
-
-Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 10.
-
 ) [1
 
 ] [2
 
+]
+Chapter 2.
+(./namespaces.tex
+LaTeX Font Info:    Font shape `T1/phv/b/n' will be
+(Font)              scaled to size 12.9599pt on input line 1.
+) [3] [4
+
+]
+Chapter 3.
+(./namespaceintegrators.tex
+LaTeX Font Info:    Trying to load font information for TS1+phv on input line 1
+1.
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1phv.fd
+File: ts1phv.fd 2020/03/25 scalable font definitions for TS1/phv.
+)
+LaTeX Font Info:    Font shape `TS1/phv/m/n' will be
+(Font)              scaled to size 8.99994pt on input line 11.
+LaTeX Font Info:    Font shape `T1/phv/m/n' will be
+(Font)              scaled to size 8.09995pt on input line 12.
+LaTeX Font Info:    Font shape `T1/phv/m/it' in size <9> not available
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 12.
+LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
+(Font)              scaled to size 8.09995pt on input line 12.
+LaTeX Font Info:    Font shape `T1/phv/m/it' in size <7> not available
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 16.
+LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
+(Font)              scaled to size 6.29996pt on input line 16.
+LaTeX Font Info:    Font shape `T1/phv/b/n' will be
+(Font)              scaled to size 10.79993pt on input line 21.
+LaTeX Font Info:    Font shape `T1/phv/m/n' will be
+(Font)              scaled to size 7.19995pt on input line 29.
+LaTeX Font Info:    Trying to load font information for T1+pcr on input line 29
+.
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1pcr.fd
+File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
+)
+LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <8> not available
+(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 29.
+ [5]
+LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <7> not available
+(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 54.
+ [6]
+Overfull \vbox (29.61322pt too high) has occurred while \output is active []
+
+
+[7]) [8
+
 ] (./refman.ind
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 (Font)              scaled to size 22.39185pt on input line 1.
- [3
+ [9
 
 
 
 ]) (./refman.aux)
 Package rerunfilecheck Info: File `refman.out' has not changed.
-(rerunfilecheck)             Checksum: 109707F0ACE30F92CB82A32A99EB9D60;703.
+(rerunfilecheck)             Checksum: F50409A99B4712EDB74B822D3F6EFEE0;2099.
  ) 
 Here is how much of TeX's memory you used:
- 17704 strings out of 478287
- 285078 string characters out of 5849288
- 590908 words of memory out of 5000000
- 35591 multiletter control sequences out of 15000+600000
- 500013 words of font info for 60 fonts, out of 8000000 for 9000
+ 17885 strings out of 478287
+ 287735 string characters out of 5849289
+ 619232 words of memory out of 5000000
+ 35727 multiletter control sequences out of 15000+600000
+ 519766 words of font info for 80 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 99i,11n,117p,377b,377s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 99i,15n,117p,540b,640s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
-e/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on refman.pdf (7 pages, 26410 bytes).
+e/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/urw/courier/ucrro8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic
+/uhvb8ac.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb>
+Output written on refman.pdf (13 pages, 70899 bytes).
 PDF statistics:
- 76 PDF objects out of 1000 (max. 8388607)
- 62 compressed objects within 1 object stream
- 13 named destinations out of 1000 (max. 500000)
- 33 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 188 PDF objects out of 1000 (max. 8388607)
+ 159 compressed objects within 2 object streams
+ 35 named destinations out of 1000 (max. 500000)
+ 97 words of extra memory for PDF output out of 10000 (max. 10000000)
 

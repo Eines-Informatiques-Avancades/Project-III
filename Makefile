@@ -14,4 +14,4 @@ format-f90:
 	
 .PHONY: docs
 docs:
-	doxygen
+	doxygen Doxyfile
