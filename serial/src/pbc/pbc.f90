@@ -1,4 +1,4 @@
-module pbc
+module pbc_module
 
     implicit none
 
@@ -71,4 +71,4 @@ module pbc
         
         !########################################################################################################
      
- 
+end module pbc_module

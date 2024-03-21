@@ -1,7 +1,10 @@
+Program main
 
-Program P_final_a
+   use :: integrators
+   use :: forces_module
+   use :: initialization
+   use :: pbc_module
 
-   use subroutines_md
    Implicit none
    real(8), parameter :: mass = 1, rho = 0.7, epsilon = 1, sigma = 1
 !        real(8), parameter :: k_b = 1.380649e-23
@@ -13,7 +16,7 @@ Program P_final_a
    integer, allocatable :: seed(:)
    integer :: nn
 
-   dt_list = (/1e-3, 1e-4, 1e-5/)
+   dt_list = 1e-4
 
    call random_seed(size=nn)
    allocate (seed(nn))
@@ -60,47 +63,45 @@ Program P_final_a
    tfin = 1
 
    ! Apply Verlet algorithm
-   do dt_index = 1, 3
-      dt = dt_list(dt_index)
-      write (44, *) ""
-      write (44, *) ""
-      write (44, *) "dt = ", dt
-      print *, "dt = ", dt
+   dt = dt_list(dt_index)
+   write (44, *) ""
+   write (44, *) ""
+   write (44, *) "dt = ", dt
+   print *, "dt = ", dt
 
-      Nsteps = int((tfin - tini)/dt)
+   Nsteps = int((tfin - tini)/dt)
 
-      ! We roll back to the initial positions and velocities to initialize
-      r = r_ini
-      vel = vel_ini
+   ! We roll back to the initial positions and velocities to initialize
+   r = r_ini
+   vel = vel_ini
 
-      do step = 1, Nsteps
+   do step = 1, Nsteps
 
-         call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt)
-         call kinetic_energy(vel, K_energy, N)
-         call momentum(vel, p, N)
-         write (44, *) step*dt, pot, K_energy, pot + K_energy, p
-         !        print*, K_energy
-         if (mod(step, 1000) .eq. 0) then
-            print *, real(step)/Nsteps
-         end if
+      call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt)
+      call kinetic_energy(vel, K_energy, N)
+      call momentum(vel, p, N)
+      write (44, *) step*dt, pot, K_energy, pot + K_energy, p
+      !        print*, K_energy
+      if (mod(step, 1000) .eq. 0) then
+         print *, real(step)/Nsteps
+      end if
 
-         if (real(step)/Nsteps .gt. 0.9) then
-            v_fin = v_fin + vel
-         end if
-
-      end do
-
-      Temp = inst_temp(N, K_energy)
-      write (77, *) "Verlet", dt, Temp
-
-      do i = 1, N
-         write (23, *) v_fin(i, :)/(Nsteps*0.1), (v_fin(i, 1)**2 + v_fin(i, 2)**2 + v_fin(i, 3)**2)**(1./2.)/(Nsteps*0.1)
-      end do
-
-      write (23, *) ""
-      write (23, *) ""
+      if (real(step)/Nsteps .gt. 0.9) then
+         v_fin = v_fin + vel
+      end if
 
    end do
+
+   Temp = inst_temp(N, K_energy)
+   write (77, *) "Verlet", dt, Temp
+
+   do i = 1, N
+      write (23, *) v_fin(i, :)/(Nsteps*0.1), (v_fin(i, 1)**2 + v_fin(i, 2)**2 + v_fin(i, 3)**2)**(1./2.)/(Nsteps*0.1)
+   end do
+
+   write (23, *) ""
+   write (23, *) ""
+
 
    close (44)
    close (23)

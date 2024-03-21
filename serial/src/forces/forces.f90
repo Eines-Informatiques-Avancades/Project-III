@@ -8,6 +8,9 @@
 !! The module also contains a private section for internal use.
 !! @endmodule
 Module Forces_Module
+
+    use pbc_module
+
     Implicit none
     
     Private
