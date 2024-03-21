@@ -199,25 +199,28 @@ contains
       Return
    End Function
 
-end module
+
+end module integrators
+
 
 !#############################################################
 
-Subroutine momentum(vel, p, N)
-   Implicit none
-   real(8), dimension(N, 3) :: vel
-   real(8), dimension(3) :: total_p
-   integer :: N, i
-   real(8), intent(out) :: p
+   Subroutine momentum(vel, p, N)
+      Implicit none
+      integer, intent(in) :: N
+      real(8), dimension(N, 3) :: vel
+      real(8), dimension(3) :: total_p
+      integer :: i
+      real(8), intent(out) :: p
 
-   total_p(:) = 0
+      total_p(:) = 0
 
-   ! Accumulate p
-   do i = 1, N
-      total_p(:) = total_p(:) + vel(i, :)
-   end do
+      ! Accumulate p
+      do i = 1, N
+         total_p(:) = total_p(:) + vel(i, :)
+      end do
 
-   ! Produce the module
-   p = (total_p(1)**2 + total_p(2)**2 + total_p(3)**2)**(1./2.)
+      ! Produce the module
+      p = (total_p(1)**2 + total_p(2)**2 + total_p(3)**2)**(1./2.)
 
-End Subroutine
+   End Subroutine

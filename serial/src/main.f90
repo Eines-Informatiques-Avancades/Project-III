@@ -16,7 +16,7 @@ Program main
    integer, allocatable :: seed(:)
    integer :: nn
 
-   dt_list = 1e-4
+   dt = 1e-4
 
    call random_seed(size=nn)
    allocate (seed(nn))
@@ -63,7 +63,6 @@ Program main
    tfin = 1
 
    ! Apply Verlet algorithm
-   dt = dt_list(dt_index)
    write (44, *) ""
    write (44, *) ""
    write (44, *) "dt = ", dt
