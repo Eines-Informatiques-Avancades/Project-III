@@ -44,5 +44,23 @@ module initialization
       end do
    End Subroutine
 
+   Subroutine initialize_velocities(N, v_ini,v)
+   ! """"
+   ! Initializes the velocities v of N particles, all with v_ini velocity
+   ! INPUTS: N. v_ini
+   ! OUTPUT: v(N,3)
+   ! """"
+      Implicit none
+      integer, intent(in) :: N
+      real(8), dimension(N, 3), intent(out) :: v
+      real(8) :: v_ini
+      integer :: particle
+
+      ! Set the velocity of every particle
+      do particle = 1, N
+         v(particle, :) = (/v_ini, v_ini, v_ini/)
+      end do
+   End Subroutine
+
    !########################################################################################################
 
