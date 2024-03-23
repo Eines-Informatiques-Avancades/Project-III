@@ -37,7 +37,7 @@ module initialization
                y = ini + j*a
                z = ini + k*a
                r(particle, :) = (/x, y, z/)
-               print *, particle, r(particle, :)
+               !print *, particle, r(particle, :)
                particle = particle + 1
             end do
          end do
@@ -53,12 +53,13 @@ module initialization
       Implicit none
       integer, intent(in) :: N
       real(8), dimension(N, 3), intent(out) :: v
-      real(8) :: v_ini
+      real(8) :: v_ini,v_i
       integer :: particle
 
       ! Set the velocity of every particle
       do particle = 1, N
-         v(particle, :) = (/v_ini, v_ini, v_ini/)
+         v_i = v_ini/sqrt(3.d0)
+         v(particle, :) = (/v_i, v_i, v_i/)
       end do
    End Subroutine
 
