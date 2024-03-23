@@ -1,6 +1,9 @@
 !> Module containing various integrators for molecular dynamics simulations.
 module integrators
 
+   use Forces_Module
+   use pbc_module
+
    implicit none
 
 contains
@@ -151,7 +154,7 @@ contains
 
             ! Apply periodic boundary conditions
             raux(i, j) = r(i, j) - rold(i, j)
-            call pbc1(raux(i, j), L)
+            call pbc(raux(i, j), L, size(raux))
 
             ! Update velocities
             vel(i, j) = raux(i, j)/(2*dt)
@@ -163,4 +166,61 @@ contains
 
    end subroutine time_step_Verlet
 
-end module
+!########################################################################################################
+
+   Subroutine kinetic_energy(vel, K_energy, N)
+      Implicit none
+      integer, intent(in) :: N
+      real(8), dimension(N, 3) :: vel
+      integer :: i, k
+      real(8) :: K_energy
+
+      K_energy = 0
+      ! for each particle
+      do i = 1, N
+         ! loop over coordinates
+         do k = 1, 3
+            K_energy = K_energy + 0.5*vel(i, k)*vel(i, k)
+         end do
+      end do
+   End Subroutine
+
+! #########################################################################################################
+
+   Function inst_temp(N, K_energy)
+      Implicit none
+      integer :: N, N_f
+!        real(8), parameter :: k_b = 1.380649e-23
+      real(8) :: K_energy, inst_temp
+
+      N_f = 3*N - 3
+      ! inst_temp = 2.d0/(N_f * k_b)*K_energy
+      inst_temp = 2.d0/(N_f)*K_energy
+      Return
+   End Function
+
+
+end module integrators
+
+
+!#############################################################
+
+   Subroutine momentum(vel, p, N)
+      Implicit none
+      integer, intent(in) :: N
+      real(8), dimension(N, 3) :: vel
+      real(8), dimension(3) :: total_p
+      integer :: i
+      real(8), intent(out) :: p
+
+      total_p(:) = 0
+
+      ! Accumulate p
+      do i = 1, N
+         total_p(:) = total_p(:) + vel(i, :)
+      end do
+
+      ! Produce the module
+      p = (total_p(1)**2 + total_p(2)**2 + total_p(3)**2)**(1./2.)
+
+   End Subroutine
