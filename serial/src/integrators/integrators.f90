@@ -1,7 +1,7 @@
 !> Module containing various integrators for molecular dynamics simulations.
 module integrators
 
-   use Forces_Module
+   use forces
    use pbc_module
 
    implicit none

@@ -1,7 +1,7 @@
 Program main
 
    use :: integrators
-   use :: forces_module
+   use :: forces
    use :: initialization
    use :: pbc_module
 

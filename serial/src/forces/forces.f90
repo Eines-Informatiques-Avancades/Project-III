@@ -7,7 +7,7 @@
 !! The forces are calculated using periodic boundary conditions (PBC).
 !! The module also contains a private section for internal use.
 !! @endmodule
-Module Forces_Module
+Module forces
 
     use pbc_module
 
@@ -87,4 +87,4 @@ Module Forces_Module
 
     End Subroutine find_force_LJ
     
-End Module Forces_Module
+End Module forces
