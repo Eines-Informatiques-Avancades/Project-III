@@ -79,7 +79,7 @@ And files will appear in your main directory!
 ## Contributors
 |  Anna Monclús  |  Aina Gaya  |  Albert Plazas   |  Manel Serrano  |
 | -------------- | ----------------- | ------------------ | ------------- |
-| ![anna-mr98](https://github.com/Eines-Informatiques-Avancades/Project-III/tree/master/docs/anna-mr98.png "anna-mr98") | ![ainagaya](https://github.com/Eines-Informatiques-Avancades/Project-III/tree/master/docs/ainagaya.png "ainagaya") | ![Alplalo](https://github.com/Eines-Informatiques-Avancades/Project-III/tree/master/docs/Alplalo.png "Alplalo") | ![gluoon8](https://github.com/Eines-Informatiques-Avancades/Project-III/tree/master/docs/gluoon8.png "gluoon8") |
+| ![anna-mr98](./docs/anna-mr98.png "anna-mr98") | ![ainagaya](./docs/ainagaya.png "ainagaya") | ![Alplalo](./docs/Alplalo.png "Alplalo") | ![gluoon8](./docs/gluoon8.png "gluoon8") |
 | [anna-mr98](https://github.com/anna-mr98)                                 | [ainagaya](https://github.com/ainagaya)| [Alplalo](https://github.com/Alplalo)                                  | [gluoon8](https://github.com/gluoon8)                                  |
 
 Work developed in the Advanced Informatic Tools subject from [Master of Atomistic and Multiscale Computational Modelling in Physics, Chemistry and Biochemistry](http://www.ub.edu/computational_modelling/).
