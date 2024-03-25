@@ -49,7 +49,7 @@ Contains
       real(8), dimension(N, 3), intent(in) :: r
       real(8), intent(in) :: L, cutoff
       real(8) :: d, f_ij
-      real(8), dimension(3) :: d_r
+      real(8), dimension(3) :: rij
       integer :: i, j
       integer, intent(in) :: N
       real(8), dimension(N, 3), intent(out) :: F
@@ -61,17 +61,19 @@ Contains
 
       do i = 1, N
          do j = i + 1, N
-            d_r(:) = r(i, :)
+            rij(1) = r(i, 1) - r(j, 1)
+            rij(2) = r(i, 2) - r(j, 2)
+            rij(3) = r(i, 3) - r(j, 3)
 
-            do while (any(d_r(:) .gt. L/2.) .or. (any(d_r(:) .lt. (-L/2.))))
-               call pbc_mic(d_r, L, size(d_r))
+            do while (any(rij(:) .gt. L/2.) .or. (any(rij(:) .lt. (-L/2.))))
+               call pbc_mic(rij, L, size(rij))
             end do
 
-            d = (d_r(1)**2 + d_r(2)**2 + d_r(3)**2)**(1.d0/2.d0)
+            d = (rij(1)**2 + rij(2)**2 + rij(3)**2)**(1.d0/2.d0)
             if (d .le. cutoff) then
                f_ij = 48.d0/d**14 - 24.d0/d**8
-               F(i, :) = F(i, :) + f_ij*d_r(:)
-               F(j, :) = F(j, :) - f_ij*d_r(:)
+               F(i, :) = F(i, :) + f_ij*rij(:)
+               F(j, :) = F(j, :) - f_ij*rij(:)
 
                if (isnan(F(i, 1))) then
                   print *, i, j
