@@ -11,7 +11,7 @@ Program main
    integer, parameter :: N = 125
    real(8), dimension(N, 3) :: r, r_ini, vel, vel_ini, r_out, v_fin
    integer :: step, i, dt_index, Nsteps
-   real(8) :: pot, K_energy, L, cutoff, M, a, Temp, dt, absV, p, tini, tfin
+   real(8) :: pot, K_energy, L, cutoff, M, a, Temp, dt, absV, p, tini, tfin, Ppot, Pressure
    real(8), dimension(3) :: dt_list
    integer, allocatable :: seed(:)
    integer :: nn
@@ -68,7 +68,7 @@ Program main
    open (44, file="energy_verlet.dat")
    open (77, file="Temperatures_verlet.dat")
    open (23, file="vel_fin_Verlet.dat")
-
+   open (96, file="pressure_verlet.dat")
    ! Time parameters, initial and final time (input.txt)
    tini = 0
    tfin = 10
@@ -79,6 +79,7 @@ Program main
    write (44, *) "dt = ", dt
    write (44, *) "#  time , pot, kin , total , momentum"
    write (77, *) "#  time , Temp"
+   write (96, *) "#  time , pressure"
    print *, "dt = ", dt
    print*,  "# time , pot, kin , total , momentum"
 
@@ -92,11 +93,14 @@ Program main
    do step = 1, Nsteps
    
       print*, "step = ", step
-      call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt)
+      call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot)
       call kinetic_energy(vel, K_energy, N)
       call momentum(vel, p, N)
       ! Calculate temperature
       Temp = inst_temp(N, K_energy)
+      ! Calculate pressure
+      Pressure = (2*K_energy + Ppot)/(3*L**3)
+      write (96, *) step*dt, Pressure
       write (77, *) step*dt, Temp
       write (44, *) step*dt, pot, K_energy, pot + K_energy, p
       !        print*, K_energy
@@ -134,5 +138,5 @@ Program main
    close (44)
    close (23)
    close (77)
-
+   close (96)
 End Program

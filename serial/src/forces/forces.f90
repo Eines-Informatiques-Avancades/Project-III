@@ -44,7 +44,7 @@ Module forces
     !!   - The subroutine assumes that the `pbc` subroutine is defined elsewhere in the code, which handles the periodic boundary conditions.
     !!   - The subroutine assumes that the `isnan` function is available to check for NaN values.
     !!
-    Subroutine find_force_LJ(r, N, L, cutoff, F, pot)
+    Subroutine find_force_LJ(r, N, L, cutoff, F, pot, Ppot)
         Implicit none
         real(8), dimension(N, 3), intent(in) :: r
         real(8), intent(in) :: L, cutoff
@@ -53,10 +53,10 @@ Module forces
         integer :: i, j
         integer, intent(in) :: N
         real(8), dimension(N, 3), intent(out) :: F
-        real(8), intent(out) :: pot
+        real(8), intent(out) :: pot, Ppot
 
         pot = 0.d0
-
+        Ppot = 0.d0
         F = 0.d0
 
         do i = 1, N
@@ -79,7 +79,7 @@ Module forces
                     end if
 
                     pot = pot + 4.d0*(1.d0/d**12 - 1.d0/d**6) - 4.d0*(1/cutoff**12 - 1.d0/cutoff**6)
-
+                    Ppot = Ppot + f_ij * d**2
                 end if
 
             end do

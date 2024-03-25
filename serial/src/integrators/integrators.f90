@@ -17,18 +17,17 @@ contains
 !! @param L Box size.
 !! @param cutoff Cutoff distance for LJ potential.
 !! @param dt Time step size.
-   subroutine time_step_vVerlet(r, vel, pot, N, L, cutoff, dt)
+   subroutine time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot)
       implicit none
       integer, intent(in) :: N                      !< Number of particles
       real(8), dimension(N, 3), intent(inout) :: r  !< Particle positions
       real(8), dimension(N, 3), intent(inout) :: vel  !< Particle velocities
-      real(8), intent(out) :: pot                  !< Potential energy
+      real(8), intent(out) :: pot, Ppot                 !< Potential energy
       real(8), intent(in) :: dt, L, cutoff          !< Time step size, box size, cutoff distance
       real(8), dimension(N, 3) :: F                 !< Forces
       integer :: i                                  !< Loop variable
-
       ! Calculate forces and potential energy using LJ potential
-      call find_force_LJ(r, N, L, cutoff, F, pot)
+      call find_force_LJ(r, N, L, cutoff, F, pot, Ppot)
 
       ! Update positions and velocities using velocity Verlet integration
       do i = 1, N
@@ -43,7 +42,7 @@ contains
       end do
 
       ! Recalculate forces after updating positions
-      call find_force_LJ(r, N, L, cutoff, F, pot)
+      call find_force_LJ(r, N, L, cutoff, F, pot, Ppot)
 
       ! Update velocities using the updated forces
       do i = 1, N
@@ -71,10 +70,10 @@ contains
       real(8), dimension(N, 3) :: F                     !< Forces
       real(8), intent(in) :: L, dt, cutoff              !< Box size, time step size, cutoff distance
       integer :: i, counter                             !< Loop variables
-      real(8) :: pot                                    !< Potential energy
+      real(8) :: pot, Ppot                                    !< Potential energy
 
       ! Calculate forces and potential energy using LJ potential
-      call find_force_LJ(r_in, N, L, cutoff, F, pot)
+      call find_force_LJ(r_in, N, L, cutoff, F, pot, Ppot)
 
       ! Update positions and velocities using Euler integration and apply periodic boundary conditions
       do i = 1, N
@@ -137,12 +136,12 @@ contains
       real(8), dimension(N, 3) :: F                       !< Forces
       real(8), dimension(N, 3), intent(inout) :: vel     !< Particle velocities
       real(8), intent(in) :: dt, cutoff, L               !< Time step size, cutoff distance, box size
-      real(8) :: pot                                      !< Potential energy
+      real(8) :: pot,Ppot                                      !< Potential energy
       integer :: i, j                                     !< Loop variables
       real(8), dimension(N, 3) :: raux, roldaux           !< Temporary variable for position update
 
       ! Calculate forces and potential energy using LJ potential
-      call find_force_LJ(r, N, L, cutoff, F, pot)
+      call find_force_LJ(r, N, L, cutoff, F, pot, Ppot)
 
       ! Save current positions to temporary array
       roldaux = r
