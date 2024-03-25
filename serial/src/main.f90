@@ -22,7 +22,7 @@ Program main
 
    inquire (file='namMD.nml', iostat=rc)
 
-   print *, "rc = ", rc
+   !print *, "rc = ", rc
 
    open(unit=99, file='namMD.nml', status='old')
    read(99, nml=md_params)
@@ -78,7 +78,7 @@ Program main
 
    open (44, file="energy_verlet.dat")
    open (77, file="Temperatures_verlet.dat")
-   open (23, file="vel_fin_Verlet.dat")
+   open (23, file="vel_fin_verlet.dat")
    open (96, file="pressure_verlet.dat")
    ! Time parameters, initial and final time (input.txt)
    tini = 0
@@ -114,7 +114,7 @@ Program main
       write (44, *) step*dt, pot, K_energy, pot + K_energy, p
       !        print*, K_energy
       if (mod(step, 1000) .eq. 0) then
-         print *, real(step)/Nsteps
+         print *, int(real(step)/Nsteps*100), "%"
       end if
 
       ! We save the last 10% positions and velocity components of the simulation
