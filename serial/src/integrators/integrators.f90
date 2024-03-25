@@ -165,45 +165,60 @@ contains
 
    end subroutine time_step_Verlet
 
-!########################################################################################################
 
-   Subroutine kinetic_energy(vel, K_energy, N)
-      Implicit none
-      integer, intent(in) :: N
-      real(8), dimension(N, 3) :: vel
-      integer :: i, k
-      real(8) :: K_energy
+!! Calculate the kinetic energy of particles.
+!! @param vel Array containing particle velocities.
+!! @param K_energy Output variable for the kinetic energy.
+!! @param N Number of particles.
+   subroutine kinetic_energy(vel, K_energy, N)
+      implicit none
+      integer, intent(in) :: N                           !< Number of particles
+      real(8), dimension(N, 3), intent(in) :: vel        !< Array containing particle velocities
+      real(8), intent(out) :: K_energy                   !< Output variable for the kinetic energy
+      integer :: i, k                                    !< Loop variables
 
       K_energy = 0
-      ! for each particle
+
+      ! Calculate kinetic energy for each particle
       do i = 1, N
-         ! loop over coordinates
+         ! Loop over coordinates
          do k = 1, 3
             K_energy = K_energy + 0.5*vel(i, k)*vel(i, k)
          end do
       end do
-   End Subroutine
 
-! #########################################################################################################
+   end subroutine kinetic_energy
+
+
+   !> Calculates the instantaneous temperature based on the given number of particles and total kinetic energy.
+   !! Parameters:
+   !!   N: Integer, the number of particles.
+   !!   K_energy: Real(8), the total kinetic energy.
+   !! Returns:
+   !!   inst_temp: Real(8), the calculated instantaneous temperature.
 
    Function inst_temp(N, K_energy)
       Implicit none
       integer :: N, N_f
-!        real(8), parameter :: k_b = 1.380649e-23
       real(8) :: K_energy, inst_temp
 
       N_f = 3*N - 3
-      ! inst_temp = 2.d0/(N_f * k_b)*K_energy
       inst_temp = 2.d0/(N_f)*K_energy
       Return
    End Function
 
+   end module integrators
 
-end module integrators
-
-
-!#############################################################
-
+   !> Calculates the momentum of a system of particles.
+   !! Inputs:
+   !!   - vel: 2D array of size (N, 3) containing the velocities of N particles in 3D space.
+   !!   - N: Number of particles.
+   !! Outputs:
+   !!   - p: Total momentum of the system.
+   !! Details:
+   !!   This subroutine calculates the total momentum of a system of particles by summing up the velocities of all particles.
+   !!   The momentum is calculated as the magnitude of the vector sum of all velocities.
+   !!   The result is stored in the variable p.
    Subroutine momentum(vel, p, N)
       Implicit none
       integer, intent(in) :: N
