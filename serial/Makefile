@@ -10,6 +10,10 @@ VPATH=src/
 ##                             HELP                                 ##
 ######################################################################
 ##                                                                   #
+##    !IMPORTANT: Remember   to   choose    your                     #
+##                parameters in namMD.nml file!!                     #
+##                                                                   #
+##                                                                   #
 ## - Commands:                                                       #
 ##                                                                   #
 .PHONY. : help
