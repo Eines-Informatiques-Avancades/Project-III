@@ -6,39 +6,47 @@ FC=gfortran
 VPATH=src/
 
 
-###################################################################
-##                             HELP                              ##
-###################################################################
-##                                                                #
-## - Commands:                                                                #
+######################################################################
+##                             HELP                                 ##
+######################################################################
+##                                                                   #
+## - Commands:                                                       #
+##                                                                   #
 .PHONY. : help
 help:
+	@echo " "
 	@grep "^##" Makefile
 
 
 # ~ LINKING ~
-##  · make: Compiles the program and creates executable MD.exe    #
-##                                                                #
+##  · make all: Compiles the program and creates executable MD.exe   #
+##                                                                   #
 all: MD.exe
 MD.exe:  pbc.o forces.o integrators.o  initialize.o  main.o
 	$(FC) $(F_FLAGS) $(COMP_D_FLAGS) $(COMP_R_FLAGS) $^ -o $@
 
 # ~ RUNNING THE PROGRAM ~
-##  · make run: Runs the program. If the program is not compiled, # 
-##            it compiles it first.                               #
-##                                                                #
+##  · make run: Compiles needed files and also runs the program.     #
+##                                                                   #
+.PHONY.: run
+run: MD.exe
+	@./MD.exe
 
 # ~ CLEANING ~
-##  · make clean: Removes the object files and the executable.    #
-##                                                                #
-
-.PHONY.: cleanall
-cleanall:
-	rm -f *.o *.mod MD.exe 
+##  · make clean: Removes the modules, objects and executable        #
+##                                                                   #
+##  · make cleandata: Removes data files                             #
+##                                                                   #
 
 .PHONY.: clean
 clean:
-	rm -f *.dat
+	@rm -f *.o *.mod MD.exe
+	@echo "Modules, objects and executable removed!" 
+
+.PHONY.: cleandata
+cleandata:
+	@rm -f *.dat
+	@echo "Data files removed!"
 
 # ~ COMPILING ~
 
@@ -59,21 +67,22 @@ main.o: main.f90
 
 
 # ~ PLOTS ~
-##  · make plot: Plots the output data:                           #
-##                                                                #
-##      - Epot, Ekin, Etot vs time                                #
-##      - Momentum vs time                                        #
-##      - T ,  vs time                                            #
-##      - Pressure vs time                                        #
-##                                                                #
+##  · make plot: Plots the output data:                              #
+##                                                                   #
+##      - Epot, Ekin, Etot vs time                                   #
+##      - Momentum vs time                                           #
+##      - T vs time                                                  #
+##      - Pressure vs time                                           #
+##                                                                   #
 
 .PHONY.: plot
 plot:
 	@echo "Plotting files..."
 	@python3 ./src/plots/plots.py
-	@echo "Done! Check the plots in the 'plots' folder."
+	@echo "Done! Check the plots in the main directory."
+	cp ./src/plots/*.png ./
 
 
-##                                                                #
-##                                                                #
-###################################################################
+##                                                                   #
+##                                                                   #
+######################################################################
