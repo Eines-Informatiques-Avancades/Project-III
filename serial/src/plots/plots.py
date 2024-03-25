@@ -13,7 +13,6 @@ temperature = np.loadtxt('../../Temperatures_verlet.dat', skiprows=1, dtype=floa
 pressure = np.loadtxt('../../pressure_verlet.dat', skiprows=1, dtype=float)
 pos_fin = np.loadtxt('../../pos_out.dat', skiprows=1, dtype=float)
 
-print(np.shape(pos_fin)) # (N, 3)
 
 # Compute the radial distribution function
 def rdf(pos, L, N, dr):
