@@ -64,7 +64,7 @@ Module Forces_Module
                 d_r(:) = r(i, :)
 
                 do while (any(d_r(:) .gt. L/2.) .or. (any(d_r(:) .lt. (-L/2.))))
-                    call pbc(d_r, L, size(d_r))
+                    call pbc_mic(d_r, L, size(d_r))
                 end do
 
                 d = (d_r(1)**2 + d_r(2)**2 + d_r(3)**2)**(1.d0/2.d0)
