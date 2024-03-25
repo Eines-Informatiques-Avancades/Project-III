@@ -41,7 +41,9 @@ def rdf(pos, L, N, dr):
         hist[i] /= 4 * np.pi * r**2 * dr * rho * N
     return hist
 
-#plot the radial distribution function
+#
+#       PLOT RDF 
+#
 L = 10.77
 N = 125
 dr = 0.1
