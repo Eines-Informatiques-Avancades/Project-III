@@ -26,7 +26,7 @@ plt.ylabel('Energy')
 plt.legend()
 plt.title('Energy vs Step')
 plt.savefig('Energies.png')
-plt.show()
+#plt.show()
 
 
 #
@@ -41,7 +41,7 @@ plt.ylabel('Momentum')
 plt.legend()
 plt.title('Momentum vs Time')
 plt.savefig('Momentum.png')
-plt.show()
+#plt.show()
 
 
 #
@@ -55,7 +55,7 @@ plt.ylabel('Temperature')
 plt.legend()
 plt.title('Temperature vs Time')
 plt.savefig('Temperature.png')
-plt.show()
+#plt.show()
 
 
 #
@@ -69,4 +69,4 @@ plt.ylabel('Pressure')
 plt.legend()
 plt.title('Pressure vs Time')
 plt.savefig('Pressure.png')
-plt.show()
+#plt.show()
