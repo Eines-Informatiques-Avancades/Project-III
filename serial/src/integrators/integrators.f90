@@ -36,7 +36,7 @@ contains
 
          ! Apply periodic boundary conditions
          do while (any(r(i, :) > L/2.) .or. any(r(i, :) < -L/2.))
-            call pbc(r(i, :), L, size(r(i, :)))   !< Apply periodic boundary conditions using the pbc subroutine
+            call pbc_mic(r(i, :), L, size(r(i, :))) !< Apply periodic boundary conditions using the pbc subroutine
          end do
 
          vel(i, :) = vel(i, :) + F(i, :)*0.5*dt

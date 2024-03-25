@@ -90,8 +90,7 @@ Program main
    
 
    do step = 1, Nsteps
-   
-      print*, "step = ", step
+
       call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt)
       call kinetic_energy(vel, K_energy, N)
       call momentum(vel, p, N)
