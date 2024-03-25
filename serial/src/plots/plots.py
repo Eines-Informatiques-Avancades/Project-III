@@ -100,9 +100,9 @@ plt.savefig('Radial_Distribution_function.png')
 #
 
 plt.figure(figsize=(10, 5))
-plt.plot(energy[:, 0], energy[:, 1], label='Potential Energy', color='coral')
-plt.plot(energy[:, 0], energy[:, 2], label='Kinetic Energy', color='darkorange')
-plt.plot(energy[:, 0], energy[:, 3], label='Total Energy', color='crimson')
+plt.plot(energy[:, 0], energy[:, 1], label='Potential Energy', color='#C75146')
+plt.plot(energy[:, 0], energy[:, 2], label='Kinetic Energy', color='#AD2E24')
+plt.plot(energy[:, 0], energy[:, 3], label='Total Energy', color='#EA8C55')
 plt.xlabel('Timestep')
 plt.ylabel('Energy (kJ/mol)')
 plt.legend()
@@ -116,7 +116,7 @@ plt.savefig('Energies.png')
 #
 
 plt.figure()
-plt.plot(energy[:, 0], momentum, label='Momentum', color='mediumaquamarine')
+plt.plot(energy[:, 0], momentum, label='Momentum', color='mediumaquamarine', linewidth=2)
 plt.ylim(np.mean(momentum)-1, np.mean(momentum)+1)
 plt.xlabel('Timestep')
 plt.ylabel('Momentum\'')
