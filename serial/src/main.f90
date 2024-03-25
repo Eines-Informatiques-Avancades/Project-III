@@ -6,7 +6,7 @@ Program main
    use :: pbc_module
 
    Implicit none
-   real(8), parameter :: mass = 1, rho = 0.7, epsilon = 1, sigma = 1 ! (LJ units, input file)
+   real(8), parameter :: mass = 1, rho = 0.1, epsilon = 1, sigma = 1 ! (LJ units, input file)
 !        real(8), parameter :: k_b = 1.380649e-23
    integer, parameter :: N = 125
    real(8), dimension(N, 3) :: r, r_ini, vel, vel_ini, r_out, v_fin
@@ -25,7 +25,7 @@ Program main
    deallocate (seed)
 
    L = (N/rho)**(1./3.)
-   Temp = 100.d0
+   Temp = 1.85d0
 
    M = N**(1./3.)
    a = L/(M)
