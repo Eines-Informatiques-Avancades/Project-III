@@ -136,7 +136,7 @@ contains
       real(8), dimension(N, 3) :: F                       !< Forces
       real(8), dimension(N, 3), intent(inout) :: vel     !< Particle velocities
       real(8), intent(in) :: dt, cutoff, L               !< Time step size, cutoff distance, box size
-      real(8) :: pot,Ppot                                      !< Potential energy
+      real(8) :: pot, Ppot                                      !< Potential energy
       integer :: i, j                                     !< Loop variables
       real(8), dimension(N, 3) :: raux, roldaux           !< Temporary variable for position update
 
@@ -165,7 +165,6 @@ contains
 
    end subroutine time_step_Verlet
 
-
 !! Calculate the kinetic energy of particles.
 !! @param vel Array containing particle velocities.
 !! @param K_energy Output variable for the kinetic energy.
@@ -189,52 +188,42 @@ contains
 
    end subroutine kinetic_energy
 
+   !> Calculate the instantaneous temperature of the system.
+      !! @param N Number of particles.
+      !! @param K_energy Kinetic energy of the particles.
+      !! @return Instantaneous temperature of the system.
+   function inst_temp(N, K_energy) result(temp)
+      implicit none
+      integer, intent(in) :: N                           !< Number of particles
+      real(8), intent(in) :: K_energy                    !< Kinetic energy of the particles
+      real(8) :: temp                                    !< Instantaneous temperature of the system
 
-   !> Calculates the instantaneous temperature based on the given number of particles and total kinetic energy.
-   !! Parameters:
-   !!   N: Integer, the number of particles.
-   !!   K_energy: Real(8), the total kinetic energy.
-   !! Returns:
-   !!   inst_temp: Real(8), the calculated instantaneous temperature.
+      temp = 2.0d0*K_energy/(3*N - 3)
 
-   Function inst_temp(N, K_energy)
-      Implicit none
-      integer :: N, N_f
-      real(8) :: K_energy, inst_temp
+   end function inst_temp
 
-      N_f = 3*N - 3
-      inst_temp = 2.d0/(N_f)*K_energy
-      Return
-   End Function
+end module integrators
 
-   end module integrators
+!> Calculate the total momentum of particles.
+   !! @param vel Array containing particle velocities.
+   !! @param p Output variable for the total momentum.
+   !! @param N Number of particles.
+subroutine momentum(vel, p, N)
+   implicit none
+   integer, intent(in) :: N                           !< Number of particles
+   real(8), dimension(N, 3), intent(in) :: vel        !< Array containing particle velocities
+   real(8), dimension(3) :: total_p                    !< Total momentum
+   integer :: i                                        !< Loop variable
+   real(8), intent(out) :: p                           !< Output variable for the total momentum
 
-   !> Calculates the momentum of a system of particles.
-   !! Inputs:
-   !!   - vel: 2D array of size (N, 3) containing the velocities of N particles in 3D space.
-   !!   - N: Number of particles.
-   !! Outputs:
-   !!   - p: Total momentum of the system.
-   !! Details:
-   !!   This subroutine calculates the total momentum of a system of particles by summing up the velocities of all particles.
-   !!   The momentum is calculated as the magnitude of the vector sum of all velocities.
-   !!   The result is stored in the variable p.
-   Subroutine momentum(vel, p, N)
-      Implicit none
-      integer, intent(in) :: N
-      real(8), dimension(N, 3) :: vel
-      real(8), dimension(3) :: total_p
-      integer :: i
-      real(8), intent(out) :: p
+   total_p(:) = 0
 
-      total_p(:) = 0
+   ! Accumulate momentum
+   do i = 1, N
+      total_p(:) = total_p(:) + vel(i, :)
+   end do
 
-      ! Accumulate p
-      do i = 1, N
-         total_p(:) = total_p(:) + vel(i, :)
-      end do
+   ! Calculate the magnitude of the total momentum
+   p = sqrt(total_p(1)**2 + total_p(2)**2 + total_p(3)**2)
 
-      ! Produce the module
-      p = (total_p(1)**2 + total_p(2)**2 + total_p(3)**2)**(1./2.)
-
-   End Subroutine
+end subroutine momentum
