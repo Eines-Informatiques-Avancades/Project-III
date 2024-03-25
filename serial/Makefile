@@ -17,6 +17,13 @@ help:
 	@echo " "
 	@grep "^##" Makefile
 
+# ~ RUNNING THE PROGRAM ~
+##  · make run: Compiles needed files and also runs the program.     #
+##                                                                   #
+.PHONY.: run
+run: MD.exe
+	@./MD.exe
+
 
 # ~ LINKING ~
 ##  · make all: Compiles the program and creates executable MD.exe   #
@@ -25,17 +32,13 @@ all: MD.exe
 MD.exe:  pbc.o forces.o integrators.o  initialize.o  main.o
 	$(FC) $(F_FLAGS) $(COMP_D_FLAGS) $(COMP_R_FLAGS) $^ -o $@
 
-# ~ RUNNING THE PROGRAM ~
-##  · make run: Compiles needed files and also runs the program.     #
-##                                                                   #
-.PHONY.: run
-run: MD.exe
-	@./MD.exe
 
 # ~ CLEANING ~
 ##  · make clean: Removes the modules, objects and executable        #
 ##                                                                   #
 ##  · make cleandata: Removes data files                             #
+##                                                                   #
+##  · make cleanplot: Removes plot files                             #
 ##                                                                   #
 
 .PHONY.: clean
@@ -47,6 +50,11 @@ clean:
 cleandata:
 	@rm -f *.dat
 	@echo "Data files removed!"
+
+.PHONY.: cleanplot
+cleanplot:
+	@rm -f *.png
+	@echo "Plot files removed!"
 
 # ~ COMPILING ~
 
@@ -79,8 +87,8 @@ main.o: main.f90
 plot:
 	@echo "Plotting files..."
 	@python3 ./src/plots/plots.py
+	@cp ./src/plots/*.png ./
 	@echo "Done! Check the plots in the main directory."
-	cp ./src/plots/*.png ./
 
 
 ##                                                                   #
