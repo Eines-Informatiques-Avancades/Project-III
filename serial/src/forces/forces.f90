@@ -79,7 +79,7 @@ Module forces
                     end if
 
                     pot = pot + 4.d0*(1.d0/d**12 - 1.d0/d**6) - 4.d0*(1/cutoff**12 - 1.d0/cutoff**6)
-                    Ppot = Ppot + f_ij * d**2
+                    Ppot = Ppot + f_ij * d
                 end if
 
             end do
