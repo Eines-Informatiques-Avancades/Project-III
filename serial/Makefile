@@ -7,8 +7,15 @@ VPATH=src/
 
 
 ######################################################################
-##                             HELP                                 ##
+##               MOLECULAR DYNAMICS /    HELP                       ##
 ######################################################################
+##                                                                   #
+## - Contributors:                                                   #
+##   - @anna-mr98 (Anna Monclús)                                     #
+##   - @ainagaya (Aina Gaya)                                         #
+##   - @Alplalo (Albert Plazas)                                      #
+##   - @gluoon8 (Manel Serrano)                                      #
+##                                                                   #
 ##                                                                   #
 ##    !IMPORTANT: Remember   to   choose    your                     #
 ##                parameters in namMD.nml file!!                     #
@@ -59,7 +66,6 @@ MD.exe:  pbc.o forces.o integrators.o  initialize.o  main.o
 ##                                                                   #
 ##  · make cleanplot: Removes plot files                             #
 ##                                                                   #
-
 .PHONY.: clean
 clean:
 	@rm -f *.o *.mod MD.exe
