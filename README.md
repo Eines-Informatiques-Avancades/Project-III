@@ -31,11 +31,16 @@ To execute the program, there are some pre-requisites:
 
 ## How to
 
+> [!IMPORTANT]
+> Current features are only available for serial code, parallel code is WIP!
+
 1. Clone repository to your local host
-2. Use `make` or `make help` to see the available commands.
-3. Before starting a simulation, change your parameters in *namMD.nml* file  
-4. To carry out the simulation, use `make run` and the program will be compiled and run. 
-5. Data is generated in *.dat* files. If you want to generate figures, use `make plot`
+2. Choose *serial* or *parallel (WIP)* folder with `cd serial` or `cd parallel` 
+3. Use `make` or `make help` to see the available commands.
+4. Before starting a simulation, change your parameters in *namMD.nml* file  
+5. To carry out the simulation, use `make run` and the program will be compiled and run. 
+6. Data is generated in *.dat* files. If you want to generate figures, use `make plot`
+
 
 ### Quick guide
 
@@ -45,9 +50,6 @@ make run
 make plot
 ```
 And files will appear in your main directory!
-
-> [!IMPORTANT]
-> Current features are only available for serial code, parallel code is WIP!
 
 > [!TIP]
 > There are some ways to clean generated files, have a look at `make clean`, `make cleandata` and `make cleanplot`.
@@ -81,6 +83,8 @@ And files will appear in your main directory!
 | -------------- | ----------------- | ------------------ | ------------- |
 | ![anna-mr98](./docs/anna-mr98.png "anna-mr98") | ![ainagaya](./docs/ainagaya.png "ainagaya") | ![Alplalo](./docs/Alplalo.png "Alplalo") | ![gluoon8](./docs/gluoon8.png "gluoon8") |
 | [anna-mr98](https://github.com/anna-mr98)                                 | [ainagaya](https://github.com/ainagaya)| [Alplalo](https://github.com/Alplalo)                                  | [gluoon8](https://github.com/gluoon8)                                  |
+
+
 
 Work developed in the Advanced Informatic Tools subject from [Master of Atomistic and Multiscale Computational Modelling in Physics, Chemistry and Biochemistry](http://www.ub.edu/computational_modelling/).
 
