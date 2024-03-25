@@ -10,5 +10,11 @@ This project involves the development of a simple molecular dynamics program to 
 3. **Manel Serrano**:  Post-processing of data, statistics, and visualization.
 4. **Anna Monclús**:  Initialize the configuration and define boundary conditions. Also coordinates the GitHub repository.
 
-   
+
+## Contributors
+|  Anna Monclús  |  Aina Gaya  |  Albert Plazas   |  Manel Serrano  |
+| -------------- | ----------------- | ------------------ | ------------- |
+| ![anna-mr98](https://github.com/Eines-Informatiques-Avancades/Project-III/tree/master/docs/anna-mr98.png "anna-mr98") | ![ainagaya](https://github.com/Eines-Informatiques-Avancades/Project-III/tree/master/docs/ainagaya.png "ainagaya") | ![Alplalo](https://github.com/Eines-Informatiques-Avancades/Project-III/tree/master/docs/Alplalo.png "Alplalo") | ![gluoon8](https://github.com/Eines-Informatiques-Avancades/Project-III/tree/master/docs/gluoon8.png "gluoon8") |
+| [anna-mr98](https://github.com/anna-mr98)                                 | [ainagaya](https://github.com/ainagaya)| [Alplalo](https://github.com/Alplalo)                                  | [gluoon8](https://github.com/gluoon8)                                  |
+
 
