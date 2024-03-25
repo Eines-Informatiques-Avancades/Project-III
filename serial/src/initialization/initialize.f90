@@ -2,16 +2,16 @@ module initialization
 
    implicit none
 
-   contains
+contains
 
    !########################################################################################################
 
    Subroutine initialize_positions(N, rho, r)
-   ! """"
-   ! Calculates the positions r of N particles in a SC structure
-   ! INPUTS: N, rho
-   ! OUTPUT: r(N, 3)
-   ! """"
+      ! """"
+      ! Calculates the positions r of N particles in a SC structure
+      ! INPUTS: N, rho
+      ! OUTPUT: r(N, 3)
+      ! """"
       Implicit none
       integer, intent(in) :: N
       real(8), intent(in) :: rho
@@ -21,7 +21,7 @@ module initialization
 
       ! Length of the box
       L = (N/rho)**(1./3.)
-      
+
       M = N**(1./3.)
 
       a = L/(M)
@@ -44,22 +44,30 @@ module initialization
       end do
    End Subroutine
 
-   Subroutine initialize_velocities(N, v_ini,v)
-   ! """"
-   ! Initializes the velocities v of N particles, all with v_ini velocity
-   ! INPUTS: N. v_ini
-   ! OUTPUT: v(N,3)
-   ! """"
+   Subroutine initialize_velocities(N, v_ini, v)
+      ! """"
+      ! Initializes the velocities v of N particles, all with v_ini velocity
+      ! INPUTS: N. v_ini
+      ! OUTPUT: v(N,3)
+      ! """"
       Implicit none
       integer, intent(in) :: N
       real(8), dimension(N, 3), intent(out) :: v
-      real(8) :: v_ini,v_i
-      integer :: particle
+      real(8) :: v_ini, v_i,rand
+      integer :: particle,i
 
-      ! Set the velocity of every particle
+      
+      ! Set the velocity of every particle using a bimodal distribution
       do particle = 1, N
-         v_i = v_ini/sqrt(3.d0)
-         v(particle, :) = (/v_i, v_i, v_i/)
+         do i = 1, 3
+            call random_number(rand)
+            if (rand < 0.5d0) then
+               v(particle, i)  = + v_ini
+            else
+               v(particle, i)  = - v_ini
+            end if
+
+         end do
       end do
    End Subroutine
 
