@@ -6,15 +6,27 @@ Program main
    use :: pbc_module
 
    Implicit none
-   real(8), parameter :: mass = 1, rho = 0.1, epsilon = 1, sigma = 1 ! (LJ units, input file)
+   real(8) :: mass, rho, epsilon, sigma, Temp ! (LJ units, input file)
 !        real(8), parameter :: k_b = 1.380649e-23
    integer, parameter :: N = 125
    real(8), dimension(N, 3) :: r, r_ini, vel, vel_ini, r_out, v_fin
    integer :: step, i, dt_index, Nsteps
-   real(8) :: pot, K_energy, L, cutoff, M, a, Temp, dt, absV, p, tini, tfin, Ppot, Pressure
+   real(8) :: pot, K_energy, L, cutoff, M, a, dt, absV, p, tini, tfin, Ppot, Pressure
    real(8), dimension(3) :: dt_list
    integer, allocatable :: seed(:)
-   integer :: nn
+   integer :: nn, rc
+
+   namelist /md_params/ mass, rho, epsilon, sigma, Temp
+
+   ! Read parameters from namMD.nml
+
+   inquire (file='namMD.nml', iostat=rc)
+
+   print *, "rc = ", rc
+
+   open(unit=99, file='namMD.nml', status='old')
+   read(99, nml=md_params)
+   close(99)
 
    dt = 1e-4
 
@@ -25,7 +37,6 @@ Program main
    deallocate (seed)
 
    L = (N/rho)**(1./3.)
-   Temp = 1.85d0
 
    M = N**(1./3.)
    a = L/(M)
