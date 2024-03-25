@@ -30,7 +30,7 @@ Program main
    M = N**(1./3.)
    a = L/(M)
 
-   print *,"L =", L,"M =", M,"a=", a
+   print *, "L =", L, "M =", M, "a=", a
 
    cutoff = 2.5
 
@@ -81,18 +81,17 @@ Program main
    write (77, *) "#  time , Temp"
    write (96, *) "#  time , pressure"
    print *, "dt = ", dt
-   print*,  "# time , pot, kin , total , momentum"
+   print *, "# time , pot, kin , total , momentum"
 
    Nsteps = int((tfin - tini)/dt)
 
    ! We roll back to the initial positions and velocities to initialize
    r = r_ini
    vel = vel_ini
-   
 
    do step = 1, Nsteps
 
-      call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt,Ppot)
+      call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot)
       call kinetic_energy(vel, K_energy, N)
       call momentum(vel, p, N)
       ! Calculate temperature
@@ -106,13 +105,12 @@ Program main
       if (mod(step, 1000) .eq. 0) then
          print *, real(step)/Nsteps
       end if
-      
+
       ! We save the last 10% positions and velocity components of the simulation
       if (real(step)/Nsteps .gt. 0.9) then
          v_fin = v_fin + vel
          r_out = r_out + r
       end if
-
 
    end do
 
@@ -121,7 +119,7 @@ Program main
    write (55, *) "#  x, y, z"
    do i = 1, N
       write (55, *) r_out(i, :)/(Nsteps*0.1)
-   end do   
+   end do
 
    ! Write final velocities to file to plot the distribution of velocities
    write (23, *) "#  Velocities components (x, y, z) and modulus (v) for the last 10% of the simulation"
