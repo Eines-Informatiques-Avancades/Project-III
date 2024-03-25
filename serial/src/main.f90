@@ -16,7 +16,7 @@ Program main
    integer, allocatable :: seed(:)
    integer :: nn, rc
 
-   namelist /md_params/ mass, rho, epsilon, sigma, Temp
+   namelist /md_params/ mass, rho, epsilon, sigma, Temp, tfin
 
    ! Read parameters from namMD.nml
 
@@ -43,7 +43,7 @@ Program main
 
    print *, "L =", L, "M =", M, "a=", a
 
-   cutoff = 2.5
+   cutoff = L/2.d0 - 0.1d0
 
    ! """"
    ! ii) Initialize system and run simulation using velocity Verlet
@@ -82,7 +82,7 @@ Program main
    open (96, file="pressure_verlet.dat")
    ! Time parameters, initial and final time (input.txt)
    tini = 0
-   tfin = 10
+   
 
    ! Apply Verlet algorithm
    write (44, *) ""
