@@ -24,6 +24,21 @@ help:
 run: MD.exe
 	@./MD.exe
 
+# ~ PLOTS ~
+##  · make plot: Plots the output data:                              #
+##                                                                   #
+##      - Epot, Ekin, Etot vs time                                   #
+##      - Momentum vs time                                           #
+##      - T vs time                                                  #
+##      - Pressure vs time                                           #
+##                                                                   #
+
+.PHONY.: plot
+plot:
+	@echo "Plotting files..."
+	@python3 ./src/plots/plots.py
+	@cp ./src/plots/*.png ./
+	@echo "Done! Check the plots in the main directory."
 
 # ~ LINKING ~
 ##  · make all: Compiles the program and creates executable MD.exe   #
@@ -72,24 +87,6 @@ initialize.o: initialization/initialize.f90
 
 main.o: main.f90
 	$(FC) -c $^
-
-
-# ~ PLOTS ~
-##  · make plot: Plots the output data:                              #
-##                                                                   #
-##      - Epot, Ekin, Etot vs time                                   #
-##      - Momentum vs time                                           #
-##      - T vs time                                                  #
-##      - Pressure vs time                                           #
-##                                                                   #
-
-.PHONY.: plot
-plot:
-	@echo "Plotting files..."
-	@python3 ./src/plots/plots.py
-	@cp ./src/plots/*.png ./
-	@echo "Done! Check the plots in the main directory."
-
 
 ##                                                                   #
 ##                                                                   #
