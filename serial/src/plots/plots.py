@@ -10,6 +10,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 # Load data from files
 energy = np.loadtxt('../../energy_verlet.dat', skiprows=4, dtype=float)
 temperature = np.loadtxt('../../Temperatures_verlet.dat', skiprows=1, dtype=float)
+pressure = np.loadtxt('../../pressure_verlet.dat', skiprows=1, dtype=float)
 
 
 #
@@ -62,7 +63,7 @@ plt.show()
 #
 
 plt.figure()
-plt.plot(temperature[:, 0], temperature[:, 2], label='Pressure', color='goldenrod')
+plt.plot(pressure[:, 0], pressure[:, 1], label='Pressure', color='goldenrod')
 plt.xlabel('Time')
 plt.ylabel('Pressure')
 plt.legend()
