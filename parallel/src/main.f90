@@ -16,6 +16,8 @@ Program main
    integer, allocatable :: seed(:)
    integer :: nn, rc
 
+   include 'mpif.h'
+
    namelist /md_params/ mass, rho, epsilon, sigma, Temp, tfin
 
    ! Read parameters from namMD.nml
