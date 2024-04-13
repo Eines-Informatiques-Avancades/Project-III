@@ -2,6 +2,9 @@
 # Fortran compiler
 FC=mpif90.mpich
 
+# Number of processors
+N=4
+
 # Code location
 VPATH=src/
 
@@ -33,7 +36,7 @@ help:
 ##                                                                   #
 .PHONY.: run
 run: MD.exe
-	mpirun ./MD.exe
+	mpirun -n ${N} ./MD.exe
 
 # ~ PLOTS ~
 ##  · make plot: Plots the output data:                              #
