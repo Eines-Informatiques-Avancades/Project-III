@@ -16,9 +16,14 @@ Program main
    integer, allocatable :: seed(:)
    integer :: nn, rc
 
+   ! MPI
+   integer :: ierror
+
    include 'mpif.h'
 
    namelist /md_params/ mass, rho, epsilon, sigma, Temp, tfin
+
+   call MPI_INIT(ierror)
 
    ! Read parameters from namMD.nml
 
@@ -149,4 +154,8 @@ Program main
    close (23)
    close (77)
    close (96)
+
+   call MPI_FINALIZE(ierror)
+
+
 End Program
