@@ -89,6 +89,7 @@ Program main
 
    ! build recvcounts: non-negative integer array (of length group size) containing the number of elements that are received from each process (non-negative integer)
    recvcounts(rank) = imax - imin + 1
+   call MPI_ALLGATHER(recvcounts(rank), 1, MPI_INTEGER, recvcounts, 1, MPI_INTEGER, MPI_COMM_WORLD, ierror)
    ! TODO: ajuntar tots
 
    ! build displs: integer array (of length group size). Entry i specifies the displacement (relative to recvbuf) at which to place the incoming data from process i (integer)
