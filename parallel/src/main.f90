@@ -87,8 +87,14 @@ Program main
    ! imin i imax tenen les particules limit de cada processador
    print*, "rank: ", rank, "imin: ", imin, "imax", imax, "particles", imax-imin + 1
 
-   ! TODO: build recvcounts: non-negative integer array (of length group size) containing the number of elements that are received from each process (non-negative integer)
-   ! TODO: build displs: integer array (of length group size). Entry i specifies the displacement (relative to recvbuf) at which to place the incoming data from process i (integer)
+   ! build recvcounts: non-negative integer array (of length group size) containing the number of elements that are received from each process (non-negative integer)
+   recvcounts(rank) = imax - imin + 1
+   ! TODO: ajuntar tots
+
+   ! build displs: integer array (of length group size). Entry i specifies the displacement (relative to recvbuf) at which to place the incoming data from process i (integer)
+   if (rank > 0) then
+      displs(rank) = sum(recvcounts(1:rank))
+   end if
 
    ! """"
    ! ii) Initialize system and run simulation using velocity Verlet
