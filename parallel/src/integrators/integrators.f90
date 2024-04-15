@@ -251,3 +251,25 @@ Subroutine therm_Andersen(vel, nu, sigma_gaussian, N)
    end do
 !        print*, vel
 End Subroutine
+
+!#################################################################
+
+Subroutine BM(ndat, xnums, sigma)
+   Implicit none
+   Integer ::  ndat, i
+   real(8), dimension(ndat) :: xnums
+   real(8) :: r, phi, x1, x2, sigma
+   real(8), parameter :: pi = 4.d0*atan(1.d0)
+!     ATENCIÓ! Es generen 2ndat numeros
+   Do i = 1, ndat, 2
+      r = sqrt(-2.d0*log(1.d0 - rand()))
+      phi = 2.d0*pi*rand()
+      x1 = r*cos(phi)
+      x2 = r*sin(phi)
+      if (i .ne. ndat) then ! Ens assegurem que no haguem acabat la llista
+         xnums(i) = x1*sigma
+         xnums(i + 1) = x2*sigma
+      end if
+   end do
+   return
+end Subroutine

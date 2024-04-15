@@ -13,6 +13,7 @@ Program main
    integer :: step, i, dt_index, Nsteps
    real(8) :: pot, K_energy, L, cutoff, M, a, dt, absV, p, tini, tfin, Ppot, Pressure
    real(8), dimension(3) :: dt_list
+   real(8) :: nu, sigma_gaussian
    integer, allocatable :: seed(:)
    integer :: nn, rc
 
