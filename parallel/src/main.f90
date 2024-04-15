@@ -45,6 +45,10 @@ Program main
       read(99, nml=md_params)
       close(99)
 
+      L = (N/rho)**(1./3.)
+      M = N**(1./3.)
+      a = L/(M)
+
    end if
 
    dt = 1e-4
@@ -56,10 +60,19 @@ Program main
    call random_seed(put=seed)
    deallocate (seed)
 
-   L = (N/rho)**(1./3.)
+   ! Send info to the other processors
+   call MPI_Bcast(mass,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   call MPI_Bcast(rho,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   call MPI_Bcast(epsilon,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   call MPI_Bcast(sigma,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   call MPI_Bcast(Temp,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   call MPI_Bcast(tfin,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   call MPI_Bcast(L,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   call MPI_Bcast(M,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   call MPI_Bcast(a,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
 
-   M = N**(1./3.)
-   a = L/(M)
+   ! wait until the reading has finished
+   call MPI_Barrier(MPI_COMM_WORLD, ierror)
 
    print *, "L =", L, "M =", M, "a=", a
 
