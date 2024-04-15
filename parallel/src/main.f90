@@ -83,6 +83,7 @@ Program main
 
    call distribute_particles(N, rank, nprocs, imin, imax)
    ! imin i imax tenen les particules limit de cada processador
+   print*, "rank: ", rank, "imin: ", imin, "imax", imax, "particles", imax-imin + 1
 
    ! """"
    ! ii) Initialize system and run simulation using velocity Verlet

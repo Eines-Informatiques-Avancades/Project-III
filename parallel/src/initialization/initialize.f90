@@ -79,18 +79,17 @@ contains
       integer, intent(in) :: rank, nprocs
       integer :: chunklength, uneven_parts, imin, imax
 
-
       !
-      chunklength = int(N/numproc)
-      uneven_parts = mod(N, numproc)
+      chunklength = int(N/nprocs)
+      uneven_parts = mod(N, nprocs)
 
-      imin = rank*chunklength
+      imin = rank*chunklength + 1
 
       if (rank <= uneven_parts) then
-         imin = imin + (uneven_parts - rank)
+         imin = imin + rank
       end if
 
-      imax = imin + chunklength 
+      imax = imin + chunklength - 1
       
       if (rank < uneven_parts) then
          imax = imax + 1
