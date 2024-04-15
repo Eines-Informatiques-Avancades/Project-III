@@ -158,27 +158,31 @@ Program main
    end do
 
    ! Write final positions to file to plot the distribution of positions
-   write (55, *) "#  Positions components (x, y, z) for the last 10% of the simulation"
-   write (55, *) "#  x, y, z"
-   do i = 1, N
-      write (55, *) r_out(i, :)/(Nsteps*0.1)
-   end do
+   if ( rank == 0 ) then
+      write (55, *) "#  Positions components (x, y, z) for the last 10% of the simulation"
+      write (55, *) "#  x, y, z"
+      do i = 1, N
+         write (55, *) r_out(i, :)/(Nsteps*0.1)
+      end do
 
-   ! Write final velocities to file to plot the distribution of velocities
-   write (23, *) "#  Velocities components (x, y, z) and modulus (v) for the last 10% of the simulation"
-   write (23, *) "#  v_x, v_y, v_z, v"
-   do i = 1, N
-      write (23, *) v_fin(i, :)/(Nsteps*0.1), (v_fin(i, 1)**2 + v_fin(i, 2)**2 + v_fin(i, 3)**2)**(1./2.)/(Nsteps*0.1)
-   end do
+      ! Write final velocities to file to plot the distribution of velocities
 
-   write (23, *) ""
-   write (23, *) ""
+      write (23, *) "#  Velocities components (x, y, z) and modulus (v) for the last 10% of the simulation"
+      write (23, *) "#  v_x, v_y, v_z, v"
+      do i = 1, N
+         write (23, *) v_fin(i, :)/(Nsteps*0.1), (v_fin(i, 1)**2 + v_fin(i, 2)**2 + v_fin(i, 3)**2)**(1./2.)/(Nsteps*0.1)
+      end do
 
-   close (55)
-   close (44)
-   close (23)
-   close (77)
+      write (23, *) ""
+      write (23, *) ""
+
+      close (55)
+      close (44)
+      close (23)
+      close (77)
    close (96)
+
+   end if
 
    t2 = MPI_Wtime()
    print *, "Time elapsed: ", t2 - t1
