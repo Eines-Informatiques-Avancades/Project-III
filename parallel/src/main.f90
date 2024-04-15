@@ -35,19 +35,24 @@ Program main
 
    ! Read parameters from namMD.nml
 
-   inquire (file='namMD.nml', iostat=rc)
+   if ( rank == 0 ) then
+      inquire (file='namMD.nml', iostat=rc)
+      open(unit=99, file='namMD.nml', status='old')
+      if (rc /= 0) then
+         print*, "Error opening namMD.nml"
+         stop
+      end if
+      read(99, nml=md_params)
+      close(99)
 
-   !print *, "rc = ", rc
-
-   open(unit=99, file='namMD.nml', status='old')
-   read(99, nml=md_params)
-   close(99)
+   end if
 
    dt = 1e-4
 
    call random_seed(size=nn)
    allocate (seed(nn))
    seed = 123456789    ! putting arbitrary seed to all elements
+   ! TO-DO: aixo cal que ho fagin tots els processadors? O nomes un i que envii la info?
    call random_seed(put=seed)
    deallocate (seed)
 
@@ -69,45 +74,56 @@ Program main
    absV = (Temp/mass)**(1./2.)
    print *, absV
 
-   open (22, file="vel_ini.dat")
-   open (33, file="pos_ini.dat")
-   open (55, file="pos_out.dat")
+   if ( rank == 0 ) then
+      open (22, file="vel_ini.dat")
+      open (33, file="pos_ini.dat")
+      open (55, file="pos_out.dat")
+   end if
 
    call initialize_positions(N, rho, r_ini)
 
    ! Write initial positions to file
-   do i = 1, N
-      write (33, *) r_ini(i, :)
-   end do
 
-   close (33)
+   if ( rank == 0 ) then
+      do i = 1, N
+         write (33, *) r_ini(i, :)
+      end do
+
+      close (33)
+   end if
 
    call initialize_velocities(N, absV, vel_ini)
 
    ! Write initial velocities to file
-   do i = 1, N
-      write (22, *) vel_ini(i, :)
-   end do
 
-   close (22)
+   if ( rank == 0 ) then
+      do i = 1, N
+         write (22, *) vel_ini(i, :)
+      end do
+   
+      close (22)
 
-   open (44, file="energy_verlet.dat")
-   open (77, file="Temperatures_verlet.dat")
-   open (23, file="vel_fin_verlet.dat")
-   open (96, file="pressure_verlet.dat")
+      open (44, file="energy_verlet.dat")
+      open (77, file="Temperatures_verlet.dat")
+      open (23, file="vel_fin_verlet.dat")
+      open (96, file="pressure_verlet.dat")
+   
+   end if
    ! Time parameters, initial and final time (input.txt)
    tini = 0
    
-
    ! Apply Verlet algorithm
-   write (44, *) ""
-   write (44, *) ""
-   write (44, *) "dt = ", dt
-   write (44, *) "#  time , pot, kin , total , momentum"
-   write (77, *) "#  time , Temp"
-   write (96, *) "#  time , pressure"
-   print *, "dt = ", dt
-   print *, "# time , pot, kin , total , momentum"
+
+   if ( rank == 0 ) then
+      write (44, *) ""
+      write (44, *) ""
+      write (44, *) "dt = ", dt
+      write (44, *) "#  time , pot, kin , total , momentum"
+      write (77, *) "#  time , Temp"
+      write (96, *) "#  time , pressure"
+      print *, "dt = ", dt
+      print *, "# time , pot, kin , total , momentum"
+   end if 
 
    Nsteps = int((tfin - tini)/dt)
 
