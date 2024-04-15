@@ -19,7 +19,7 @@ Program main
    real(8) :: t1, t2
 
    ! MPI
-   integer :: ierror, rank, nprocs
+   integer :: ierror, rank, nprocs, imin, imax
    integer, allocatable :: particle_distrib(:)
 
    include 'mpif.h'
@@ -81,7 +81,7 @@ Program main
 
    cutoff = L/2.d0 - 0.1d0
 
-   call distribute_particles(N, rank, numproc, imin, imax)
+   call distribute_particles(N, rank, nprocs, imin, imax)
    ! imin i imax tenen les particules limit de cada processador
 
    ! """"

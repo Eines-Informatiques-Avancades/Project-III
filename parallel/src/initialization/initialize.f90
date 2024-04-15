@@ -73,11 +73,11 @@ contains
 
    !########################################################################################################
 
-   subroutine distribute_particles(N, rank, numproc, imin, imax)
+   subroutine distribute_particles(N, rank, nprocs, imin, imax)
       implicit none
       integer, intent(in) :: N
-      integer, intent(in) :: rank, numproc
-      integer :: chunklenght, uneven_parts, imin, imax
+      integer, intent(in) :: rank, nprocs
+      integer :: chunklength, uneven_parts, imin, imax
 
 
       !
