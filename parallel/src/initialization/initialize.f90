@@ -73,4 +73,30 @@ contains
 
    !########################################################################################################
 
+   subroutine distribute_particles(N, rank, numproc, imin, imax)
+      implicit none
+      integer, intent(in) :: N
+      integer, intent(in) :: rank, numproc
+      integer :: chunklenght, uneven_parts, imin, imax
+
+
+      !
+      chunklength = int(N/numproc)
+      uneven_parts = mod(N, numproc)
+
+      imin = rank*chunklength
+
+      if (rank <= uneven_parts) then
+         imin = imin + (uneven_parts - rank)
+      end if
+
+      imax = imin + chunklength 
+      
+      if (rank < uneven_parts) then
+         imax = imax + 1
+      end if
+
+   end subroutine
+
+
 end module initialization

@@ -20,6 +20,7 @@ Program main
 
    ! MPI
    integer :: ierror, rank, nprocs
+   integer, allocatable :: particle_distrib(:)
 
    include 'mpif.h'
 
@@ -32,6 +33,8 @@ Program main
    call MPI_COMM_SIZE(MPI_COMM_WORLD, nprocs, ierror)
 
    print*, "Hello from process", rank
+
+   allocate(particle_distrib(N))
 
    ! Read parameters from namMD.nml
 
@@ -77,6 +80,9 @@ Program main
    print *, "L =", L, "M =", M, "a=", a
 
    cutoff = L/2.d0 - 0.1d0
+
+   call distribute_particles(N, rank, numproc, imin, imax)
+   ! imin i imax tenen les particules limit de cada processador
 
    ! """"
    ! ii) Initialize system and run simulation using velocity Verlet
