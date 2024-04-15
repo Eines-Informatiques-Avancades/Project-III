@@ -20,7 +20,7 @@ Program main
 
    ! MPI
    integer :: ierror, rank, nprocs, imin, imax
-   integer, allocatable :: particle_distrib(:)
+   integer, allocatable :: particle_distrib(:), recvcounts(:), displs(:)
 
    include 'mpif.h'
 
@@ -35,6 +35,8 @@ Program main
    print*, "Hello from process", rank
 
    allocate(particle_distrib(N))
+   allocate(recvcounts(nprocs))
+   allocate(displs(nprocs))
 
    ! Read parameters from namMD.nml
 
@@ -84,6 +86,9 @@ Program main
    call distribute_particles(N, rank, nprocs, imin, imax)
    ! imin i imax tenen les particules limit de cada processador
    print*, "rank: ", rank, "imin: ", imin, "imax", imax, "particles", imax-imin + 1
+
+   ! TODO: build recvcounts: non-negative integer array (of length group size) containing the number of elements that are received from each process (non-negative integer)
+   ! TODO: build displs: integer array (of length group size). Entry i specifies the displacement (relative to recvbuf) at which to place the incoming data from process i (integer)
 
    ! """"
    ! ii) Initialize system and run simulation using velocity Verlet
@@ -155,7 +160,12 @@ Program main
 
       call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, imin, imax)
 
-      ! sincronitzar els processadors
+      ! TO-DO: sincronitzar els processadors (allgather?)
+
+
+      ! int MPI_Allgatherv(const void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf, const int recvcounts[], const int displs[], MPI_Datatype recvtype, MPI_Comm comm)
+      call MPI_ALLGATHERV(r(imin:imax, :), int((imax - imin + 1)*3), MPI_DOUBLE_PRECISION, r(:,:), recvcounts, displs, &
+                MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
 
       call therm_Andersen(vel, nu, sigma_gaussian, N)
       call kinetic_energy(vel, K_energy, N)
