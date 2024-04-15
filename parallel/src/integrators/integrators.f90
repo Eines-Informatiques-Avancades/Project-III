@@ -17,7 +17,7 @@ contains
 !! @param L Box size.
 !! @param cutoff Cutoff distance for LJ potential.
 !! @param dt Time step size.
-   subroutine time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot)
+   subroutine time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, imin, imax)
       implicit none
       integer, intent(in) :: N                      !< Number of particles
       real(8), dimension(N, 3), intent(inout) :: r  !< Particle positions
@@ -26,11 +26,15 @@ contains
       real(8), intent(in) :: dt, L, cutoff          !< Time step size, box size, cutoff distance
       real(8), dimension(N, 3) :: F                 !< Forces
       integer :: i                                  !< Loop variable
+
+      integer, intent(in) :: imin, imax
       ! Calculate forces and potential energy using LJ potential
-      call find_force_LJ(r, N, L, cutoff, F, pot, Ppot)
+
+
+      call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, imin, imax)  !! TO-DO
 
       ! Update positions and velocities using velocity Verlet integration
-      do i = 1, N
+      do i = imin, imax
          r(i, :) = r(i, :) + vel(i, :)*dt + 0.5*F(i, :)*dt*dt
 
          ! Apply periodic boundary conditions
@@ -42,7 +46,7 @@ contains
       end do
 
       ! Recalculate forces after updating positions
-      call find_force_LJ(r, N, L, cutoff, F, pot, Ppot)
+      call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, imin, imax)
 
       ! Update velocities using the updated forces
       do i = 1, N
@@ -51,42 +55,6 @@ contains
 
    end subroutine time_step_vVerlet
 
-!> Perform a time step using the Euler method with periodic boundary conditions.
-!! Calculates new positions and velocities for particles based on forces and previous positions/velocities.
-!! @param r_in Input array containing initial particle positions.
-!! @param r_out Output array containing updated particle positions.
-!! @param vel Input/Output array containing particle velocities.
-!! @param N Number of particles.
-!! @param L Box size.
-!! @param cutoff Cutoff distance for LJ potential.
-!! @param dt Time step size.
-!! @param pot Output potential energy.
-   subroutine time_step_Euler_pbc(r_in, r_out, vel, N, L, cutoff, dt, pot)
-      implicit none
-      integer, intent(in) :: N                         !< Number of particles
-      real(8), dimension(N, 3), intent(in) :: r_in     !< Initial particle positions
-      real(8), dimension(N, 3), intent(out) :: r_out   !< Updated particle positions
-      real(8), dimension(N, 3) :: vel                   !< Particle velocities
-      real(8), dimension(N, 3) :: F                     !< Forces
-      real(8), intent(in) :: L, dt, cutoff              !< Box size, time step size, cutoff distance
-      integer :: i, counter                             !< Loop variables
-      real(8) :: pot, Ppot                                    !< Potential energy
-
-      ! Calculate forces and potential energy using LJ potential
-      call find_force_LJ(r_in, N, L, cutoff, F, pot, Ppot)
-
-      ! Update positions and velocities using Euler integration and apply periodic boundary conditions
-      do i = 1, N
-         r_out(i, :) = r_in(i, :) + vel(i, :)*dt + 0.5*F(i, :)*dt*dt
-         vel(i, :) = vel(i, :) + F(i, :)*dt
-
-         ! Apply periodic boundary conditions
-         do while (any(r_out(i, :) .gt. L/2.) .or. any(r_out(i, :) .lt. (-L/2.)))
-            call pbc(r_out, L, size(r_out))
-         end do
-      end do
-
-   end subroutine time_step_Euler_pbc
 
 !> Generate random numbers following a Box-Muller transformation.
 !! Generates normally distributed random numbers using the Box-Muller transformation.
@@ -118,52 +86,6 @@ contains
 
    end subroutine BM
 
-!> Perform a time step using the Verlet integration method.
-!! Calculates new positions and velocities for particles based on forces and previous positions/velocities.
-!! @param r Input/Output array containing current particle positions.
-!! @param rold Input/Output array containing previous particle positions.
-!! @param vel Input/Output array containing particle velocities.
-!! @param N Number of particles.
-!! @param L Box size.
-!! @param cutoff Cutoff distance for LJ potential.
-!! @param dt Time step size.
-!! @param pot Output potential energy.
-   subroutine time_step_Verlet(r, rold, vel, N, L, cutoff, dt, pot)
-      implicit none
-      integer, intent(in) :: N                           !< Number of particles
-      real(8), dimension(N, 3), intent(inout) :: r       !< Current particle positions
-      real(8), dimension(N, 3), intent(inout) :: rold    !< Previous particle positions
-      real(8), dimension(N, 3) :: F                       !< Forces
-      real(8), dimension(N, 3), intent(inout) :: vel     !< Particle velocities
-      real(8), intent(in) :: dt, cutoff, L               !< Time step size, cutoff distance, box size
-      real(8) :: pot, Ppot                                      !< Potential energy
-      integer :: i, j                                     !< Loop variables
-      real(8), dimension(N, 3) :: raux, roldaux           !< Temporary variable for position update
-
-      ! Calculate forces and potential energy using LJ potential
-      call find_force_LJ(r, N, L, cutoff, F, pot, Ppot)
-
-      ! Save current positions to temporary array
-      roldaux = r
-
-      ! Update positions and velocities using Verlet integration
-      do i = 1, N
-         do j = 1, 3
-            r(i, j) = 2*roldaux(i, j) - rold(i, j) + F(i, j)*dt*dt
-
-            ! Apply periodic boundary conditions
-            raux(i, j) = r(i, j) - rold(i, j)
-            call pbc(raux(i, j), L, size(raux))
-
-            ! Update velocities
-            vel(i, j) = raux(i, j)/(2*dt)
-         end do
-      end do
-
-      ! Update previous positions for the next time step
-      rold = roldaux
-
-   end subroutine time_step_Verlet
 
 !! Calculate the kinetic energy of particles.
 !! @param vel Array containing particle velocities.

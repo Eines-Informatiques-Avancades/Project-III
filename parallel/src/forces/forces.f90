@@ -44,7 +44,7 @@ Contains
     !!   - The subroutine assumes that the `pbc` subroutine is defined elsewhere in the code, which handles the periodic boundary conditions.
     !!   - The subroutine assumes that the `isnan` function is available to check for NaN values.
     !!
-   Subroutine find_force_LJ(r, N, L, cutoff, F, pot, Ppot)
+   Subroutine find_force_LJ(r, N, L, cutoff, F, pot, Ppot, imin, imax)
       Implicit none
       real(8), dimension(N, 3), intent(in) :: r
       real(8), intent(in) :: L, cutoff
@@ -54,6 +54,7 @@ Contains
       integer, intent(in) :: N
       real(8), dimension(N, 3), intent(out) :: F
       real(8), intent(out) :: pot, Ppot
+      integer, intent(in) :: imin, imax !! ara no fan res
 
       pot = 0.d0
       Ppot = 0.d0
