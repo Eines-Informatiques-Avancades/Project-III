@@ -227,3 +227,27 @@ subroutine momentum(vel, p, N)
    p = sqrt(total_p(1)**2 + total_p(2)**2 + total_p(3)**2)
 
 end subroutine momentum
+
+
+!#################################################################
+
+Subroutine therm_Andersen(vel, nu, sigma_gaussian, N)
+   Implicit none
+   integer :: i, N
+   real(8) :: rand, nu, sigma_gaussian
+   real(8), dimension(N, 3) :: vel
+   real(8), dimension(2) :: xnums
+
+   do i = 1, N
+      call random_number(rand)
+      if (rand .lt. nu) then
+         call BM(2, xnums, sigma_gaussian)
+         !print*, "xnums: ", xnums
+         vel(i, 1) = xnums(1)
+         vel(i, 2) = xnums(2)
+         call BM(2, xnums, sigma_gaussian)
+         vel(i, 3) = xnums(1)
+      end if
+   end do
+!        print*, vel
+End Subroutine

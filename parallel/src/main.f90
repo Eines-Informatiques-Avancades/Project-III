@@ -15,15 +15,22 @@ Program main
    real(8), dimension(3) :: dt_list
    integer, allocatable :: seed(:)
    integer :: nn, rc
+   real(8) :: t1, t2
 
    ! MPI
-   integer :: ierror
+   integer :: ierror, rank, nprocs
 
    include 'mpif.h'
 
    namelist /md_params/ mass, rho, epsilon, sigma, Temp, tfin
 
    call MPI_INIT(ierror)
+   t1 = MPI_Wtime()
+
+   call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierror)
+   call MPI_COMM_SIZE(MPI_COMM_WORLD, nprocs, ierror)
+
+   print*, "Hello from process", rank
 
    ! Read parameters from namMD.nml
 
@@ -110,6 +117,7 @@ Program main
    do step = 1, Nsteps
 
       call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot)
+      call therm_Andersen(vel, nu, sigma_gaussian, N)
       call kinetic_energy(vel, K_energy, N)
       call momentum(vel, p, N)
       ! Calculate temperature
@@ -155,6 +163,8 @@ Program main
    close (77)
    close (96)
 
+   t2 = MPI_Wtime()
+   print *, "Time elapsed: ", t2 - t1
    call MPI_FINALIZE(ierror)
 
 

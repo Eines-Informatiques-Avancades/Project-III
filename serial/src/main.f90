@@ -103,6 +103,7 @@ Program main
    do step = 1, Nsteps
 
       call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot)
+      call therm_Andersen(vel, nu, sigma_gaussian, N)
       call kinetic_energy(vel, K_energy, N)
       call momentum(vel, p, N)
       ! Calculate temperature
