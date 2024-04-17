@@ -13,6 +13,7 @@ Program main
    integer :: step, i, dt_index, Nsteps
    real(8) :: pot, K_energy, L, cutoff, M, a, dt, absV, p, tini, tfin, Ppot, Pressure
    real(8), dimension(3) :: dt_list
+   real(8) :: nu, sigma_gaussian
    integer, allocatable :: seed(:)
    integer :: nn, rc
 
@@ -103,6 +104,7 @@ Program main
    do step = 1, Nsteps
 
       call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot)
+      call therm_Andersen(vel, nu, sigma_gaussian, N)
       call kinetic_energy(vel, K_energy, N)
       call momentum(vel, p, N)
       ! Calculate temperature
