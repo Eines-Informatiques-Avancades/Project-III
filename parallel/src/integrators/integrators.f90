@@ -30,7 +30,6 @@ contains
       integer, intent(in) :: imin, imax
       ! Calculate forces and potential energy using LJ potential
 
-
       call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, imin, imax)  !! TO-DO
 
       ! Update positions and velocities using velocity Verlet integration

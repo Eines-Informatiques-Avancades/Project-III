@@ -77,6 +77,7 @@ Contains
                F(j, :) = F(j, :) - f_ij*rij(:)
 
                if (isnan(F(i, 1))) then
+                  print*, "ERROR: Force is not a number"
                   print *, i, j
                   stop
                end if

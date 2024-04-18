@@ -9,7 +9,7 @@ Program main
    real(8) :: mass, rho, epsilon, sigma, Temp ! (LJ units, input file)
 !        real(8), parameter :: k_b = 1.380649e-23
    integer, parameter :: N = 125
-   real(8), dimension(N, 3) :: r, r_ini, vel, vel_ini, r_out, v_fin
+   real(8), dimension(N, 3) :: r, r_ini, vel, vel_ini, r_out, v_fin, r_new, vel_new
    integer :: step, i, dt_index, Nsteps
    real(8) :: pot, K_energy, L, cutoff, M, a, dt, absV, p, tini, tfin, Ppot, Pressure
    real(8), dimension(3) :: dt_list
@@ -90,12 +90,16 @@ Program main
    ! build recvcounts: non-negative integer array (of length group size) containing the number of elements that are received from each process (non-negative integer)
    recvcounts(rank) = imax - imin + 1
    call MPI_ALLGATHER(recvcounts(rank), 1, MPI_INTEGER, recvcounts, 1, MPI_INTEGER, MPI_COMM_WORLD, ierror)
-   ! TODO: ajuntar tots
+   
+   print*, "recvcounts", recvcounts
 
    ! build displs: integer array (of length group size). Entry i specifies the displacement (relative to recvbuf) at which to place the incoming data from process i (integer)
    if (rank > 0) then
       displs(rank) = sum(recvcounts(1:rank))
    end if
+
+   call MPI_ALLGATHER(displs(rank), 1, MPI_INTEGER, displs, 1, MPI_INTEGER, MPI_COMM_WORLD, ierror)
+   print*, "displs", displs
 
    ! """"
    ! ii) Initialize system and run simulation using velocity Verlet
@@ -163,37 +167,60 @@ Program main
    r = r_ini
    vel = vel_ini
 
+   print*, "Loop starts"
    do step = 1, Nsteps
 
       call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, imin, imax)
 
-      ! TO-DO: sincronitzar els processadors (allgather?)
+      call MPI_Barrier(MPI_COMM_WORLD, ierror)
 
-
+      ! sincronitzar els processadors (allgather?)
       ! int MPI_Allgatherv(const void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf, const int recvcounts[], const int displs[], MPI_Datatype recvtype, MPI_Comm comm)
-      call MPI_ALLGATHERV(r(imin:imax, :), int((imax - imin + 1)*3), MPI_DOUBLE_PRECISION, r(:,:), recvcounts, displs, &
+      do i = 1, 3
+         ! loop over dimensions
+    !     print*, "i", i, "step", step, "rank", rank
+    !     print*, imin, imax
+
+         call MPI_ALLGATHERV(r(imin:imax, i), int(imax - imin + 1), MPI_DOUBLE_PRECISION, r_new(:,i), recvcounts, displs, &
                 MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
 
-      call therm_Andersen(vel, nu, sigma_gaussian, N)
-      call kinetic_energy(vel, K_energy, N)
-      call momentum(vel, p, N)
+         call MPI_ALLGATHERV(vel(imin:imax, i), int(imax - imin + 1), MPI_DOUBLE_PRECISION, vel_new(:,i), recvcounts, displs, &
+                MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)                
+
+      end do
+
+      call MPI_Barrier(MPI_COMM_WORLD, ierror)    
+      
+     ! print*, "r_new", size(r_new, 1)
+
+     ! NEED TO FIX FORCES TO MAKE IT WORK
+     ! r = r_new
+     ! vel = vel_new
+     ! call therm_Andersen(vel, nu, sigma_gaussian, N)
+     ! call kinetic_energy(vel, K_energy, N)
+     ! call momentum(vel, p, N)
       ! Calculate temperature
       Temp = inst_temp(N, K_energy)
       ! Calculate pressure
       Pressure = (2*K_energy + Ppot)/(3*L**3)
-      write (96, *) step*dt, Pressure
-      write (77, *) step*dt, Temp
-      write (44, *) step*dt, pot, K_energy, pot + K_energy, p
-      !        print*, K_energy
-      if (mod(step, 1000) .eq. 0) then
-         print *, int(real(step)/Nsteps*100), "%"
-      end if
+
+      if ( rank == 0 ) then
+         write (96, *) step*dt, Pressure
+         write (77, *) step*dt, Temp
+         write (44, *) step*dt, pot, K_energy, pot + K_energy, p
+         !        print*, K_energy
+         if (mod(step, 1000) .eq. 0) then
+            print *, int(real(step)/Nsteps*100), "%"
+         end if
+      end if  
 
       ! We save the last 10% positions and velocity components of the simulation
       if (real(step)/Nsteps .gt. 0.9) then
          v_fin = v_fin + vel
          r_out = r_out + r
       end if
+
+      print*, "step", step
 
    end do
 
