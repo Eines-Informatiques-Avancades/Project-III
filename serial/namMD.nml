@@ -1,22 +1,8 @@
 &md_params
-! LJ Parameters
 mass=1
+rho=0.1
 epsilon=1
 sigma=1
-
-! Simulation Parameters
-n_steps =                    ! Number of steps of the simulation
-timestep = 0.001            ! Timestep [ps]
-
-rho=0.1                     ! Density [Units]
-
-
-! Writing Parameters
-n_write                      ! Write data every Nwrite steps
-n_frames =                   ! Steps between frames (for trajectories)
-
-
-! Andersen Thermostat
-temp = 1.85                 ! Temperature [K]
+Temp=1.85
 tfin=20
 /
