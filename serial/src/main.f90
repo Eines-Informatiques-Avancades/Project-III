@@ -4,7 +4,6 @@ Program main
    use :: forces
    use :: initialization
    use :: pbc_module
-   use :: file_writers
 
    Implicit none
    real(8) :: mass, rho, epsilon, sigma, Temp ! (LJ units, input file)
@@ -110,9 +109,10 @@ Program main
       Temp = inst_temp(N, K_energy)
       ! Calculate pressure
       Pressure = (2*K_energy + Ppot)/(3*L**3)
-
-      call write_thermodynamics(step, dt, pressure, Temp, pot, K_energy,p)
-
+      write (96, *) step*dt, Pressure
+      write (77, *) step*dt, Temp
+      write (44, *) step*dt, pot, K_energy, pot + K_energy, p
+      !        print*, K_energy
       if (mod(step, 1000) .eq. 0) then
          print *, int(real(step)/Nsteps*100), "%"
       end if
