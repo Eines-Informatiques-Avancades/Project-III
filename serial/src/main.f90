@@ -1,11 +1,12 @@
 Program main
-
+   use mpi
    use :: integrators
    use :: forces
    use :: initialization
    use :: pbc_module
 
    Implicit none
+   !include 'mpif.h'
    real(8) :: mass, rho, epsilon, sigma, Temp ! (LJ units, input file)
 !        real(8), parameter :: k_b = 1.380649e-23
    integer, parameter :: N = 125
@@ -15,7 +16,11 @@ Program main
    real(8), dimension(3) :: dt_list
    real(8) :: nu, sigma_gaussian
    integer, allocatable :: seed(:)
-   integer :: nn, rc
+   integer :: nn, rc, ierror, rank, nprocs
+   
+   call MPI_INIT(ierror)
+   call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierror)
+   call MPI_COMM_SIZE(MPI_COMM_WORLD, nprocs, ierror)
 
    namelist /md_params/ mass, rho, epsilon, sigma, Temp, tfin
 
@@ -100,53 +105,58 @@ Program main
    ! We roll back to the initial positions and velocities to initialize
    r = r_ini
    vel = vel_ini
-
    do step = 1, Nsteps
 
-      call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot)
-      call therm_Andersen(vel, nu, sigma_gaussian, N)
+      call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, nprocs, rank)
+      ! call therm_Andersen(vel, nu, sigma_gaussian, N)
       call kinetic_energy(vel, K_energy, N)
       call momentum(vel, p, N)
       ! Calculate temperature
       Temp = inst_temp(N, K_energy)
       ! Calculate pressure
       Pressure = (2*K_energy + Ppot)/(3*L**3)
-      write (96, *) step*dt, Pressure
-      write (77, *) step*dt, Temp
-      write (44, *) step*dt, pot, K_energy, pot + K_energy, p
-      !        print*, K_energy
-      if (mod(step, 1000) .eq. 0) then
-         print *, int(real(step)/Nsteps*100), "%"
-      end if
+      if (rank .eq. 0) then
+         write (44, *) step*dt, pot, K_energy, pot + K_energy, p
+         write (77, *) step*dt, Temp
+         write (96, *) step*dt, Pressure
+         if (mod(step, 1000) .eq. 0) then
+            print *, int(real(step)/Nsteps*100), "%"
+         end if
 
-      ! We save the last 10% positions and velocity components of the simulation
-      if (real(step)/Nsteps .gt. 0.9) then
-         v_fin = v_fin + vel
-         r_out = r_out + r
+         ! We save the last 10% positions and velocity components of the simulation
+         if (real(step)/Nsteps .gt. 0.9) then
+            v_fin = v_fin + vel
+            r_out = r_out + r
+         end if
       end if
-
    end do
+
 
    ! Write final positions to file to plot the distribution of positions
-   write (55, *) "#  Positions components (x, y, z) for the last 10% of the simulation"
-   write (55, *) "#  x, y, z"
-   do i = 1, N
-      write (55, *) r_out(i, :)/(Nsteps*0.1)
-   end do
+   if (rank .eq. 0) then
+      write (55, *) "#  Positions components (x, y, z) for the last 10% of the simulation"
+      write (55, *) "#  x, y, z"
+      do i = 1, N
+         write (55, *) r_out(i, :)/(Nsteps*0.1)
+      end do
 
-   ! Write final velocities to file to plot the distribution of velocities
-   write (23, *) "#  Velocities components (x, y, z) and modulus (v) for the last 10% of the simulation"
-   write (23, *) "#  v_x, v_y, v_z, v"
-   do i = 1, N
-      write (23, *) v_fin(i, :)/(Nsteps*0.1), (v_fin(i, 1)**2 + v_fin(i, 2)**2 + v_fin(i, 3)**2)**(1./2.)/(Nsteps*0.1)
-   end do
+      ! Write final velocities to file to plot the distribution of velocities
+      write (23, *) "#  Velocities components (x, y, z) and modulus (v) for the last 10% of the simulation"
+      write (23, *) "#  v_x, v_y, v_z, v"
+      do i = 1, N
+         write (23, *) v_fin(i, :)/(Nsteps*0.1), (v_fin(i, 1)**2 + v_fin(i, 2)**2 + v_fin(i, 3)**2)**(1./2.)/(Nsteps*0.1)
+      end do
 
-   write (23, *) ""
-   write (23, *) ""
+      write (23, *) ""
+      write (23, *) ""
+   end if
 
    close (55)
    close (44)
    close (23)
    close (77)
    close (96)
-End Program
+   call MPI_BARRIER(MPI_COMM_WORLD, ierror)
+   call MPI_FINALIZE(ierror)
+
+End Program main

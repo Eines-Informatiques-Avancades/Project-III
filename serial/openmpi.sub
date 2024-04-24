@@ -1,0 +1,57 @@
+#!/bin/csh
+##########################################
+# SGE options and parameters
+##########################################
+# (1) Name of the job
+#$ -N AP_Forces
+# (2) Requested resources
+# Parallel Environment and number of cores
+#$ -pe omp* 5
+# Queue
+#$ -q iqtc04.q
+##$ -q iqtc01.q
+# Shell
+#$ -S /bin/csh
+# (3) Output files
+#$ -cwd
+#$ -o hello.out
+#$ -e hello.err
+# (4) Remove the first '#' of the following 2 lines if you want to receive an email when the job ends.
+##$ -m e 
+##$ -M  yourmail@ub.edu
+
+##########################################
+# User environment.
+##########################################
+# Load the modules needed
+
+source /etc/profile.d/modules.csh
+# IQTC07
+module load intel_compiler_suite/2021.3
+module load openmpi/4.1.4_ics-2021.3
+## IQTC01
+##module load openmpi/2.0.1_ics-2015.0
+##########################################
+# Copying files needed
+##########################################
+# We copy the inputs to the directory where the jobs will run
+
+setenv old `pwd`
+make all
+cd $TMPDIR
+pwd
+
+##########################################
+# Run the job
+##########################################
+# We run parallel program
+cp /home/cmm18/Project-III/serial/namMD.nml .
+mpirun -np 5 /home/cmm18/Project-III/serial/MD.exe > MD.log
+
+##########################################
+# Copy the results to our home directory
+##########################################
+
+mkdir -p $old/HELLO
+cp -pr $TMPDIR $old/HELLO
+

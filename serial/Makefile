@@ -1,6 +1,9 @@
 
 # Fortran compiler
-FC=gfortran
+FC=mpif90
+
+# Number of processors
+N=5
 
 # Code location
 VPATH=src/
@@ -33,7 +36,7 @@ help:
 ##                                                                   #
 .PHONY.: run
 run: MD.exe
-	@./MD.exe
+	mpirun -n ${N} ./MD.exe
 
 # ~ PLOTS ~
 ##  · make plot: Plots the output data:                              #
@@ -68,7 +71,7 @@ MD.exe:  pbc.o forces.o integrators.o  initialize.o  main.o
 ##                                                                   #
 .PHONY.: clean
 clean:
-	@rm -f *.o *.mod MD.exe
+	@rm -rf *.o *.mod MD.exe hello.* HELLO
 	@echo "Modules, objects and executable removed!" 
 
 .PHONY.: cleandata
@@ -80,6 +83,11 @@ cleandata:
 cleanplot:
 	@rm -f *.png
 	@echo "Plot files removed!"
+
+.PHONY.: qsub
+qsub:
+	@qsub -q iqtc07.q openmpi.sub
+	@echo "Enviado a cola iqtc07"
 
 # ~ COMPILING ~
 
