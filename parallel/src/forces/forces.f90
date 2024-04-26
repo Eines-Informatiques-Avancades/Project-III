@@ -62,29 +62,41 @@ Contains
 
       do i = imin, imax
          do j = i + 1, N
+          !  print*, "ri", i, r(i, :)
+         !   print*, "rj", j, r(j, :)
             rij(1) = r(i, 1) - r(j, 1)
             rij(2) = r(i, 2) - r(j, 2)
             rij(3) = r(i, 3) - r(j, 3)
+        !    print*, "rij", rij
 
             do while (any(rij(:) .gt. L/2.) .or. (any(rij(:) .lt. (-L/2.))))
+      !         print*, "Calling PBC...", rij
                call pbc_mic(rij, L, size(rij))
+       !        print*, "After PBC...", rij
             end do
 
             d = (rij(1)**2 + rij(2)**2 + rij(3)**2)**(1.d0/2.d0)
             if (d .le. cutoff) then
+        !       print*, "d", d 
                f_ij = 48.d0/d**14 - 24.d0/d**8
+         !      print*, "fij", f_ij
+               ! update the 3 coordinates for the 2 particles
                F(i, :) = F(i, :) + f_ij*rij(:)
                F(j, :) = F(j, :) - f_ij*rij(:)
+          !     print*, "F(i,:)", F(i, :)
+           !    print*, "F(j,:)", F(j, :)
 
-               if (isnan(F(i, 1))) then
+               if (isnan(F(i, 1)) .or. isnan(F(i, 2)) .or. isnan(F(i, 3))) then
                   print*, "ERROR: Force is not a number"
-                  print *, i, j
+                  print *, i, j, F(i, j), f_ij, rij
                   stop
                end if
 
                pot = pot + 4.d0*(1.d0/d**12 - 1.d0/d**6) - 4.d0*(1/cutoff**12 - 1.d0/cutoff**6)
                Ppot = Ppot + f_ij*d
             end if
+
+         !   print*, "F", i, j, F(i,j)
 
          end do
       end do

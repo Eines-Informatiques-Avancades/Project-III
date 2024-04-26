@@ -8,6 +8,7 @@ N=4
 # Code location
 VPATH=src/
 
+COMP_D_FLAGS=-Wall -Wextra
 
 ######################################################################
 ##               MOLECULAR DYNAMICS /    HELP                       ##

@@ -30,11 +30,14 @@ contains
       integer, intent(in) :: imin, imax
       ! Calculate forces and potential energy using LJ potential
 
+      print*, "Calling forces subroutine..."
       call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, imin, imax)  !! TO-DO
+      print*, "Forces calculated."
 
       ! Update positions and velocities using velocity Verlet integration
       do i = imin, imax
          r(i, :) = r(i, :) + vel(i, :)*dt + 0.5*F(i, :)*dt*dt
+         print*, "r(i, :): ", r(i, :), i, F(i, :)
 
          ! Apply periodic boundary conditions
          do while (any(r(i, :) > L/2.) .or. any(r(i, :) < -L/2.))
