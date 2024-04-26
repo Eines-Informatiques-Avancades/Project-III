@@ -15,7 +15,7 @@ Program main
    real(8), dimension(3) :: dt_list
    real(8) :: nu, sigma_gaussian
    integer, allocatable :: seed(:)
-   integer :: nn, rc
+   integer :: nn, rc, count
 
    namelist /md_params/ mass, rho, epsilon, sigma, Temp, tfin
 
@@ -53,6 +53,8 @@ Program main
 
    ! Initialize bimodal distrubution: v_i = +- sqrt(T' / m)
    absV = (Temp/mass)**(1./2.)
+   nu = 0.1
+   sigma_gaussian = absV
    print *, absV
 
    open (22, file="vel_ini.dat")
@@ -94,12 +96,18 @@ Program main
    write (96, *) "#  time , pressure"
    print *, "dt = ", dt
    print *, "# time , pot, kin , total , momentum"
+   write (55, *) N
+   write (55, *) " "
 
    Nsteps = int((tfin - tini)/dt)
+   
+   print *, "Nsteps = ", Nsteps
 
    ! We roll back to the initial positions and velocities to initialize
    r = r_ini
    vel = vel_ini
+
+   count = 0
 
    do step = 1, Nsteps
 
@@ -120,25 +128,25 @@ Program main
       end if
 
       ! We save the last 10% positions and velocity components of the simulation
-      if (real(step)/Nsteps .gt. 0.9) then
+      if (real(step)/Nsteps .gt. 0.7 .and. mod(step,1000) .eq. 0) then
          v_fin = v_fin + vel
-         r_out = r_out + r
+         r_out = r_out
+         do i = 1, N
+            write (55, *) "A", r(i, 1), r(i, 2), r(i, 3)
+         end do
+        
+         count = count + 1
       end if
 
    end do
 
-   ! Write final positions to file to plot the distribution of positions
-   write (55, *) "#  Positions components (x, y, z) for the last 10% of the simulation"
-   write (55, *) "#  x, y, z"
-   do i = 1, N
-      write (55, *) r_out(i, :)/(Nsteps*0.1)
-   end do
+   
 
    ! Write final velocities to file to plot the distribution of velocities
    write (23, *) "#  Velocities components (x, y, z) and modulus (v) for the last 10% of the simulation"
    write (23, *) "#  v_x, v_y, v_z, v"
    do i = 1, N
-      write (23, *) v_fin(i, :)/(Nsteps*0.1), (v_fin(i, 1)**2 + v_fin(i, 2)**2 + v_fin(i, 3)**2)**(1./2.)/(Nsteps*0.1)
+      write (23, *) v_fin(i, :)/(count), (v_fin(i, 1)**2 + v_fin(i, 2)**2 + v_fin(i, 3)**2)**(1./2.)/(Nsteps*0.1)
    end do
 
    write (23, *) ""
