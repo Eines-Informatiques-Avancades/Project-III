@@ -194,8 +194,8 @@ Program main
      ! print*, "r_new", size(r_new, 1)
 
      ! NEED TO FIX FORCES TO MAKE IT WORK
-     ! r = r_new
-     ! vel = vel_new
+     r = r_new
+     vel = vel_new
      ! call therm_Andersen(vel, nu, sigma_gaussian, N)
      ! call kinetic_energy(vel, K_energy, N)
      ! call momentum(vel, p, N)

@@ -60,7 +60,7 @@ Contains
       Ppot = 0.d0
       F = 0.d0
 
-      do i = 1, N
+      do i = imin, imax
          do j = i + 1, N
             rij(1) = r(i, 1) - r(j, 1)
             rij(2) = r(i, 2) - r(j, 2)
