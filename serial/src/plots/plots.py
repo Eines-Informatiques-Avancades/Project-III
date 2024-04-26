@@ -47,7 +47,9 @@ pressure = pressure*eps/(((sigma*1e-10)**3*6.022e23))/1e6
 #temperature[:, 0] = temperature[:, 0]*6.022e23*np.sqrt(mass/1000*sigma**2*1e-20/eps)
 #pressure[:, 0] = pressure[:, 0]*6.022e23*np.sqrt(mass/1000*sigma**2*1e-20/eps)
 
-pos_fin = np.loadtxt('../../pos_out.dat', skiprows=1, dtype=float)
+pos_fin = np.loadtxt('../../pos_out.dat', skiprows=2,usecols = (1,2,3), dtype=float) 
+print(pos_fin.shape)
+
 
 
 # Compute the radial distribution function
@@ -71,7 +73,7 @@ def rdf(pos, L, N, dr):
                 k = int(r/dr)
                 hist[k-1] += 2
     # Normalize the histogram
-    rho = n / (L**3)
+    rho = N / (L**3)
     for i in range(nbins):
         r = (i + 0.5) * dr
         hist[i] /= 4 * np.pi * r**2 * dr * rho * N
@@ -80,11 +82,13 @@ def rdf(pos, L, N, dr):
 #
 #       PLOT RDF 
 #
-L = 10.77
+L = 8.55
 N = 125
-dr = 0.1
-rdf = rdf(pos_fin, L, N, dr)
+dr = 0.03
+rdf = rdf(pos_fin[:N], L, N, dr)
+
 r = np.linspace(0.5*dr, L/2-0.5*dr, len(rdf))
+print(len(rdf))
 plt.figure()
 plt.plot(r, rdf, label='Radial Distribution Function', color='mediumseagreen')
 plt.xlabel('r')
@@ -100,9 +104,9 @@ plt.savefig('Radial_Distribution_function.png')
 #
 
 plt.figure(figsize=(10, 5))
-plt.plot(energy[:, 0], energy[:, 1], label='Potential Energy', color='#C75146')
-plt.plot(energy[:, 0], energy[:, 2], label='Kinetic Energy', color='#AD2E24')
-plt.plot(energy[:, 0], energy[:, 3], label='Total Energy', color='#EA8C55')
+plt.plot(energy[:, 0], energy[:, 1], label='Potential Energy', color='coral')
+plt.plot(energy[:, 0], energy[:, 2], label='Kinetic Energy', color='crimson')
+plt.plot(energy[:, 0], energy[:, 3], label='Total Energy', color='darkgreen')
 plt.xlabel('Timestep')
 plt.ylabel('Energy (kJ/mol)')
 plt.legend()
@@ -117,7 +121,7 @@ plt.savefig('Energies.png')
 
 plt.figure()
 plt.plot(energy[:, 0], momentum, label='Momentum', color='mediumaquamarine', linewidth=2)
-plt.ylim(np.mean(momentum)-1, np.mean(momentum)+1)
+plt.ylim(np.mean(momentum)-100, np.mean(momentum)+100)
 plt.xlabel('Timestep')
 plt.ylabel('Momentum\'')
 plt.legend()
