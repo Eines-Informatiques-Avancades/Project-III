@@ -26,35 +26,24 @@ Program main
 
    namelist /md_params/ mass, rho, epsilon, sigma, Temp, tfin
 
-   call MPI_INIT(ierror)
-   t1 = MPI_Wtime()
-
-   call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierror)
-   call MPI_COMM_SIZE(MPI_COMM_WORLD, nprocs, ierror)
-
-   print*, "Hello from process", rank
-
    allocate(particle_distrib(N))
    allocate(recvcounts(nprocs))
    allocate(displs(nprocs))
 
    ! Read parameters from namMD.nml
 
-   if ( rank == 0 ) then
-      inquire (file='namMD.nml', iostat=rc)
-      open(unit=99, file='namMD.nml', status='old')
-      if (rc /= 0) then
-         print*, "Error opening namMD.nml"
-         stop
-      end if
-      read(99, nml=md_params)
-      close(99)
-
-      L = (N/rho)**(1./3.)
-      M = N**(1./3.)
-      a = L/(M)
-
+   inquire (file='namMD.nml', iostat=rc)
+   open(unit=99, file='namMD.nml', status='old')
+   if (rc /= 0) then
+      print*, "Error opening namMD.nml"
+      stop
    end if
+   read(99, nml=md_params)
+   close(99)
+
+   L = (N/rho)**(1./3.)
+   M = N**(1./3.)
+   a = L/(M)
 
    dt = 1e-4
 
@@ -64,6 +53,12 @@ Program main
    ! TO-DO: aixo cal que ho fagin tots els processadors? O nomes un i que envii la info?
    call random_seed(put=seed)
    deallocate (seed)
+
+   call MPI_INIT(ierror)
+   t1 = MPI_Wtime()
+
+   call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierror)
+   call MPI_COMM_SIZE(MPI_COMM_WORLD, nprocs, ierror)
 
    ! Send info to the other processors
    call MPI_Bcast(mass,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
@@ -77,7 +72,7 @@ Program main
    call MPI_Bcast(a,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
 
    ! wait until the reading has finished
-   call MPI_Barrier(MPI_COMM_WORLD, ierror)
+!   call MPI_Barrier(MPI_COMM_WORLD, ierror)
 
    print *, "L =", L, "M =", M, "a=", a
 
@@ -86,7 +81,6 @@ Program main
    call distribute_particles(N, rank, nprocs, imin, imax)
    ! imin i imax tenen les particules limit de cada processador
    print*, "rank: ", rank, "imin: ", imin, "imax", imax, "particles", imax-imin + 1
-
    ! build recvcounts: non-negative integer array (of length group size) containing the number of elements that are received from each process (non-negative integer)
    recvcounts(rank) = imax - imin + 1
    call MPI_ALLGATHER(recvcounts(rank), 1, MPI_INTEGER, recvcounts, 1, MPI_INTEGER, MPI_COMM_WORLD, ierror)
@@ -199,9 +193,9 @@ Program main
 !     print*, "r", r
      vel = vel_new
 !     print*, "vel", vel
-     ! call therm_Andersen(vel, nu, sigma_gaussian, N)
-     ! call kinetic_energy(vel, K_energy, N)
-     ! call momentum(vel, p, N)
+      call therm_Andersen(vel, nu, sigma_gaussian, N)
+      call kinetic_energy(vel, K_energy, N)
+      call momentum(vel, p, N)
       ! Calculate temperature
       Temp = inst_temp(N, K_energy)
       ! Calculate pressure
