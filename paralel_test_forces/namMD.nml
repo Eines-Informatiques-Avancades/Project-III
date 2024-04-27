@@ -1,0 +1,8 @@
+&md_params
+mass=1
+rho=0.1
+epsilon=1
+sigma=1
+Temp=1.85
+tfin=20
+/
