@@ -80,19 +80,19 @@ contains
       integer :: chunklength, uneven_parts, imin, imax
 
       !
-      chunklength = int(N/nprocs)
-      uneven_parts = mod(N, nprocs)
+      chunklength = N / nprocs
+      uneven_parts = mod(N, nprocs) ! 5
 
-      imin = rank*chunklength + 1
+      print*, "uneven_parts = ", uneven_parts
 
-      if (rank <= uneven_parts) then
-         imin = imin + rank
-      end if
-
+      imin = rank * chunklength + 1
       imax = imin + chunklength - 1
-      
-      if (rank < uneven_parts) then
-         imax = imax + 1
+
+      if (rank >= (nprocs - uneven_parts)) then
+         print*, "Im rank", rank, "and . They already reparted", rank - (nprocs - uneven_parts)
+         
+         imin = imin + rank - (nprocs - uneven_parts)
+         imax = imin + chunklength
       end if
 
    end subroutine

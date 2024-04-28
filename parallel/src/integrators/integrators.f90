@@ -4,7 +4,10 @@ module integrators
    use forces
    use pbc_module
 
-   implicit none
+   include 'mpif.h'
+
+   Private
+   Public :: time_step_vVerlet, BM, kinetic_energy, inst_temp, momentum, therm_Andersen, time_step_vVerlet_serial
 
 contains
 
@@ -17,42 +20,62 @@ contains
 !! @param L Box size.
 !! @param cutoff Cutoff distance for LJ potential.
 !! @param dt Time step size.
-   subroutine time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, imin, imax)
-      implicit none
-      integer, intent(in) :: N                      !< Number of particles
-      real(8), dimension(N, 3), intent(inout) :: r  !< Particle positions
-      real(8), dimension(N, 3), intent(inout) :: vel  !< Particle velocities
-      real(8), intent(out) :: pot, Ppot                 !< Potential energy
-      real(8), intent(in) :: dt, L, cutoff          !< Time step size, box size, cutoff distance
-      real(8), dimension(N, 3) :: F                 !< Forces
-      integer :: i                                  !< Loop variable
 
-      integer, intent(in) :: imin, imax
-      ! Calculate forces and potential energy using LJ potential
+subroutine time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
+   implicit none
+   integer, intent(in) :: N                      !< Number of particles
+   real(8), dimension(N, 3), intent(inout) :: r  !< Particle positions
+   real(8), dimension(N, 3), intent(inout) :: vel  !< Particle velocities
+   real(8), intent(out) :: pot, Ppot                 !< Potential energy
+   real(8), intent(in) :: dt, L, cutoff          !< Time step size, box size, cutoff distance
+   real(8), dimension(N, 3) :: F                 !< Forces
+   integer :: i, nprocs, rank, ierror                                 !< Loop variable
+   integer :: counts_recv(:), displs_recv(:)
+   integer :: imin, imax
+   real(8), dimension(N, 3) :: r_new, v_new
+   ! Calculate forces and potential energy using LJ potential
+   call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
+   ! Update positions and velocities using velocity Verlet integration
 
-      call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, imin, imax)  !! TO-DO
+   do i = imin, imax
+      r(i, :) = r(i, :) + vel(i, :)*dt + 0.5*F(i, :)*dt*dt
 
-      ! Update positions and velocities using velocity Verlet integration
-      do i = imin, imax
-         r(i, :) = r(i, :) + vel(i, :)*dt + 0.5*F(i, :)*dt*dt
-
-         ! Apply periodic boundary conditions
-         do while (any(r(i, :) > L/2.) .or. any(r(i, :) < -L/2.))
-            call pbc_mic(r(i, :), L, size(r(i, :))) !< Apply periodic boundary conditions using the pbc subroutine
-         end do
-
-         vel(i, :) = vel(i, :) + F(i, :)*0.5*dt
+      ! Apply periodic boundary conditions
+      do while (any(r(i, :) > L/2.) .or. any(r(i, :) < -L/2.))
+         call pbc_mic(r(i, :), L, size(r(i, :))) !< Apply periodic boundary conditions using the pbc subroutine
       end do
 
-      ! Recalculate forces after updating positions
-      call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, imin, imax)
+      vel(i, :) = vel(i, :) + F(i, :)*0.5*dt
+   end do
 
+   call MPI_ALLGATHERV(r(imin:imax,1), int(imax - imin + 1), MPI_DOUBLE_PRECISION, r_new(:,1), counts_recv, &
+   displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
+   call MPI_ALLGATHERV(r(imin:imax,2), int(imax - imin + 1), MPI_DOUBLE_PRECISION, r_new(:,2), counts_recv, &
+   displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
+   call MPI_ALLGATHERV(r(imin:imax,3), int(imax - imin + 1), MPI_DOUBLE_PRECISION, r_new(:,3), counts_recv, &
+   displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
+
+   r = r_new
+
+   ! Recalculate forces after updating positions
+   call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
+   
       ! Update velocities using the updated forces
-      do i = 1, N
-         vel(i, :) = vel(i, :) + F(i, :)*0.5*dt
-      end do
+   do i = imin, imax
+      vel(i, :) = vel(i, :) + F(i, :)*0.5*dt
+   end do
 
-   end subroutine time_step_vVerlet
+   call MPI_ALLGATHERV(vel(imin:imax,1), int(imax - imin + 1), MPI_DOUBLE_PRECISION, v_new(:,1), counts_recv, &
+   displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
+   call MPI_ALLGATHERV(vel(imin:imax,2), int(imax - imin + 1), MPI_DOUBLE_PRECISION, v_new(:,2), counts_recv, &
+   displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
+   call MPI_ALLGATHERV(vel(imin:imax,3), int(imax - imin + 1), MPI_DOUBLE_PRECISION, v_new(:,3), counts_recv, &
+   displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
+
+   vel = v_new
+
+
+end subroutine time_step_vVerlet
 
 
 !> Generate random numbers following a Box-Muller transformation.
@@ -84,7 +107,6 @@ contains
       end do
 
    end subroutine BM
-
 
 !! Calculate the kinetic energy of particles.
 !! @param vel Array containing particle velocities.
@@ -123,74 +145,56 @@ contains
 
    end function inst_temp
 
+
+
+! > Calculate the total momentum of particles.
+!    ! @param vel Array containing particle velocities.
+!    ! @param p Output variable for the total momentum.
+!    ! @param N Number of particles.
+   subroutine momentum(vel, p, N)
+      implicit none
+      integer, intent(in) :: N                           !< Number of particles
+      real(8), dimension(N, 3), intent(in) :: vel        !< Array containing particle velocities
+      real(8), dimension(3) :: total_p                    !< Total momentum
+      integer :: i                                        !< Loop variable
+      real(8), intent(out) :: p                           !< Output variable for the total momentum
+
+      total_p(:) = 0
+
+      ! Accumulate momentum
+      do i = 1, N
+         total_p(:) = total_p(:) + vel(i, :)
+      end do
+
+      ! Calculate the magnitude of the total momentum
+      p = sqrt(total_p(1)**2 + total_p(2)**2 + total_p(3)**2)
+
+   end subroutine momentum
+
+!#################################################################
+
+   Subroutine therm_Andersen(vel, nu, sigma_gaussian, N)
+      Implicit none
+      integer :: i, N
+      real(8) :: rand, nu, sigma_gaussian
+      real(8), dimension(N, 3) :: vel
+      real(8), dimension(2) :: xnums
+
+      do i = 1, N
+         call random_number(rand)
+         if (rand .lt. nu) then
+            call BM(2, xnums, sigma_gaussian)
+            !print*, "xnums: ", xnums
+            vel(i, 1) = xnums(1)
+            vel(i, 2) = xnums(2)
+            call BM(2, xnums, sigma_gaussian)
+            vel(i, 3) = xnums(1)
+         end if
+      end do
+   !        print*, vel
+   End Subroutine
+
+
 end module integrators
 
-!> Calculate the total momentum of particles.
-   !! @param vel Array containing particle velocities.
-   !! @param p Output variable for the total momentum.
-   !! @param N Number of particles.
-subroutine momentum(vel, p, N)
-   implicit none
-   integer, intent(in) :: N                           !< Number of particles
-   real(8), dimension(N, 3), intent(in) :: vel        !< Array containing particle velocities
-   real(8), dimension(3) :: total_p                    !< Total momentum
-   integer :: i                                        !< Loop variable
-   real(8), intent(out) :: p                           !< Output variable for the total momentum
 
-   total_p(:) = 0
-
-   ! Accumulate momentum
-   do i = 1, N
-      total_p(:) = total_p(:) + vel(i, :)
-   end do
-
-   ! Calculate the magnitude of the total momentum
-   p = sqrt(total_p(1)**2 + total_p(2)**2 + total_p(3)**2)
-
-end subroutine momentum
-
-
-!#################################################################
-
-Subroutine therm_Andersen(vel, nu, sigma_gaussian, N)
-   Implicit none
-   integer :: i, N
-   real(8) :: rand, nu, sigma_gaussian
-   real(8), dimension(N, 3) :: vel
-   real(8), dimension(2) :: xnums
-
-   do i = 1, N
-      call random_number(rand)
-      if (rand .lt. nu) then
-         call BM(2, xnums, sigma_gaussian)
-         !print*, "xnums: ", xnums
-         vel(i, 1) = xnums(1)
-         vel(i, 2) = xnums(2)
-         call BM(2, xnums, sigma_gaussian)
-         vel(i, 3) = xnums(1)
-      end if
-   end do
-!        print*, vel
-End Subroutine
-
-!#################################################################
-
-Subroutine BM(ndat, xnums, sigma)
-   Implicit none
-   Integer ::  ndat, i
-   real(8), dimension(ndat) :: xnums
-   real(8) :: r, phi, x1, x2, sigma
-   real(8), parameter :: pi = 4.d0*atan(1.d0)
-!     ATENCIÓ! Es generen 2ndat numeros
-   Do i = 1, ndat, 2
-      r = sqrt(-2.d0*log(1.d0 - rand()))
-      phi = 2.d0*pi*rand()
-      x1 = r*cos(phi)
-      x2 = r*sin(phi)
-      if (i .ne. ndat) then ! Ens assegurem que no haguem acabat la llista
-         xnums(i) = x1*sigma
-         xnums(i + 1) = x2*sigma
-      end if
-   end do
-   return
-end Subroutine

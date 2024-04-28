@@ -16,6 +16,8 @@ contains
       real(8), dimension(D), intent(inout) :: vector
       real(8), intent(in) :: L
 
+ !     print*, "vector", vector
+
       do i = 1, D
          if (vector(i) .gt. L/2.) then
             vector(i) = vector(i) - L

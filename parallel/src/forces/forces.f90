@@ -8,11 +8,8 @@
 !! The module also contains a private section for internal use.
 !! @endmodule
 Module forces
-
    use pbc_module
-
-   Implicit none
-
+   include 'mpif.h'
    Private
    Public :: find_force_LJ
 
@@ -44,24 +41,34 @@ Contains
     !!   - The subroutine assumes that the `pbc` subroutine is defined elsewhere in the code, which handles the periodic boundary conditions.
     !!   - The subroutine assumes that the `isnan` function is available to check for NaN values.
     !!
-   Subroutine find_force_LJ(r, N, L, cutoff, F, pot, Ppot, imin, imax)
+   Subroutine find_force_LJ(r, N, L, cutoff, F, pot, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
       Implicit none
+      !include 'mpif.h'
       real(8), dimension(N, 3), intent(in) :: r
       real(8), intent(in) :: L, cutoff
-      real(8) :: d, f_ij
+      real(8) :: d, f_ij, pot_rank
       real(8), dimension(3) :: rij
-      integer :: i, j
+      integer :: i, j, ierror
+      integer, intent(in) :: nprocs, rank
       integer, intent(in) :: N
       real(8), dimension(N, 3), intent(out) :: F
+      real(8), dimension(N, 3) :: F_new
+      integer :: displs_recv(:),counts_recv(:)
+      real(8), dimension(N/nprocs, 3) :: F_cut
       real(8), intent(out) :: pot, Ppot
-      integer, intent(in) :: imin, imax !! ara no fan res
+      integer :: imin, imax, k, ii
+
+ !     print*, "Starting forces rutine, rank", rank
+
+!      call MPI_BCAST(r,N*3,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,ierror)
 
       pot = 0.d0
       Ppot = 0.d0
       F = 0.d0
 
-      do i = 1, N
-         do j = i + 1, N
+      do i = imin, imax
+         do j = 1, N
+         if ( i .ne. j)then
             rij(1) = r(i, 1) - r(j, 1)
             rij(2) = r(i, 2) - r(j, 2)
             rij(3) = r(i, 3) - r(j, 3)
@@ -74,7 +81,7 @@ Contains
             if (d .le. cutoff) then
                f_ij = 48.d0/d**14 - 24.d0/d**8
                F(i, :) = F(i, :) + f_ij*rij(:)
-               F(j, :) = F(j, :) - f_ij*rij(:)
+               !F(j, :) = F(j, :) - f_ij*rij(:)
 
                if (isnan(F(i, 1))) then
                   print*, "ERROR: Force is not a number"
@@ -83,12 +90,28 @@ Contains
                end if
 
                pot = pot + 4.d0*(1.d0/d**12 - 1.d0/d**6) - 4.d0*(1/cutoff**12 - 1.d0/cutoff**6)
-               Ppot = Ppot + f_ij*d
+               Ppot = Ppot + f_ij * d
             end if
-
+         end if
          end do
       end do
 
+      call MPI_BARRIER(MPI_COMM_WORLD, ierror)
+      
+      pot_rank = pot
+      pot = 0
+      !call MPI_GATHER(pot, 1, MPI_DOUBLE_PRECISION, pot_list, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+      !call MPI_GATHER(Ppot, 1, MPI_DOUBLE_PRECISION, Ppot_list, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)      
+      call MPI_REDUCE(pot_rank,pot,1,MPI_DOUBLE_PRECISION,MPI_SUM,0,MPI_COMM_WORLD,ierror)
+
+!      print*, "Ending forces rutine, rank", rank
+   
+      pot = pot/2
+
+     
    End Subroutine find_force_LJ
+
+
+
 
 End Module forces

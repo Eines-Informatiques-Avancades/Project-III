@@ -3,11 +3,12 @@
 FC=mpif90.mpich
 
 # Number of processors
-N=4
+N=7
 
 # Code location
 VPATH=src/
 
+COMP_D_FLAGS=-Wall -Wextra -g -fcheck=all -Wall -Wextra -pedantic -std=f2008 -fbacktrace -ffpe-trap=zero,overflow,underflow -finit-real=nan -finit-integer=-9999
 
 ######################################################################
 ##               MOLECULAR DYNAMICS /    HELP                       ##

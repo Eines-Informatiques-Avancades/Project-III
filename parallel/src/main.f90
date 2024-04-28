@@ -20,41 +20,27 @@ Program main
 
    ! MPI
    integer :: ierror, rank, nprocs, imin, imax
-   integer, allocatable :: particle_distrib(:), recvcounts(:), displs(:)
+   integer, allocatable :: particle_distrib(:), counts_recv(:), displs_recv(:)
 
    include 'mpif.h'
 
    namelist /md_params/ mass, rho, epsilon, sigma, Temp, tfin
 
-   call MPI_INIT(ierror)
-   t1 = MPI_Wtime()
-
-   call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierror)
-   call MPI_COMM_SIZE(MPI_COMM_WORLD, nprocs, ierror)
-
-   print*, "Hello from process", rank
-
-   allocate(particle_distrib(N))
-   allocate(recvcounts(nprocs))
-   allocate(displs(nprocs))
-
    ! Read parameters from namMD.nml
 
-   if ( rank == 0 ) then
-      inquire (file='namMD.nml', iostat=rc)
-      open(unit=99, file='namMD.nml', status='old')
-      if (rc /= 0) then
-         print*, "Error opening namMD.nml"
-         stop
-      end if
-      read(99, nml=md_params)
-      close(99)
-
-      L = (N/rho)**(1./3.)
-      M = N**(1./3.)
-      a = L/(M)
-
+   inquire (file='namMD.nml', iostat=rc)
+   open(unit=99, file='namMD.nml', status='old')
+   if (rc /= 0) then
+      print*, "Error opening namMD.nml"
+      stop
    end if
+   read(99, nml=md_params)
+   close(99)
+
+   L = (N/rho)**(1./3.)
+   M = N**(1./3.)
+   a = L/(M)
+   nu = 1
 
    dt = 1e-4
 
@@ -64,6 +50,17 @@ Program main
    ! TO-DO: aixo cal que ho fagin tots els processadors? O nomes un i que envii la info?
    call random_seed(put=seed)
    deallocate (seed)
+
+   call MPI_INIT(ierror)
+   t1 = MPI_Wtime()
+
+
+   call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierror)
+   call MPI_COMM_SIZE(MPI_COMM_WORLD, nprocs, ierror)
+
+   allocate(particle_distrib(N))
+   allocate(counts_recv(nprocs))
+   allocate(displs_recv(nprocs))
 
    ! Send info to the other processors
    call MPI_Bcast(mass,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
@@ -77,7 +74,7 @@ Program main
    call MPI_Bcast(a,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
 
    ! wait until the reading has finished
-   call MPI_Barrier(MPI_COMM_WORLD, ierror)
+!   call MPI_Barrier(MPI_COMM_WORLD, ierror)
 
    print *, "L =", L, "M =", M, "a=", a
 
@@ -86,20 +83,22 @@ Program main
    call distribute_particles(N, rank, nprocs, imin, imax)
    ! imin i imax tenen les particules limit de cada processador
    print*, "rank: ", rank, "imin: ", imin, "imax", imax, "particles", imax-imin + 1
+   ! build counts_recv: non-negative integer array (of length group size) containing the number of elements that are received from each process (non-negative integer)
+   counts_recv(rank) = imax - imin + 1
 
-   ! build recvcounts: non-negative integer array (of length group size) containing the number of elements that are received from each process (non-negative integer)
-   recvcounts(rank) = imax - imin + 1
-   call MPI_ALLGATHER(recvcounts(rank), 1, MPI_INTEGER, recvcounts, 1, MPI_INTEGER, MPI_COMM_WORLD, ierror)
-   
-   print*, "recvcounts", recvcounts
+   call MPI_ALLGATHER(counts_recv(rank), 1, MPI_INTEGER, counts_recv, 1, MPI_INTEGER, MPI_COMM_WORLD, ierror)
 
-   ! build displs: integer array (of length group size). Entry i specifies the displacement (relative to recvbuf) at which to place the incoming data from process i (integer)
+   print*, counts_recv
+
+   ! build displs_recv: integer array (of length group size). Entry i specifies the displacement (relative to recvbuf) at which to place the incoming data from process i (integer)
    if (rank > 0) then
-      displs(rank) = sum(recvcounts(1:rank))
+      displs_recv(rank) = sum(counts_recv(1:rank))
    end if
 
-   call MPI_ALLGATHER(displs(rank), 1, MPI_INTEGER, displs, 1, MPI_INTEGER, MPI_COMM_WORLD, ierror)
-   print*, "displs", displs
+   call MPI_ALLGATHER(displs_recv(rank), 1, MPI_INTEGER, displs_recv, 1, MPI_INTEGER, MPI_COMM_WORLD, ierror)
+   print*, "displs_recv", displs_recv
+
+
 
    ! """"
    ! ii) Initialize system and run simulation using velocity Verlet
@@ -113,7 +112,6 @@ Program main
    if ( rank == 0 ) then
       open (22, file="vel_ini.dat")
       open (33, file="pos_ini.dat")
-      open (55, file="pos_out.dat")
    end if
 
    call initialize_positions(N, rho, r_ini)
@@ -141,7 +139,6 @@ Program main
 
       open (44, file="energy_verlet.dat")
       open (77, file="Temperatures_verlet.dat")
-      open (23, file="vel_fin_verlet.dat")
       open (96, file="pressure_verlet.dat")
    
    end if
@@ -170,41 +167,20 @@ Program main
    print*, "Loop starts"
    do step = 1, Nsteps
 
-      call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, imin, imax)
-
-      call MPI_Barrier(MPI_COMM_WORLD, ierror)
-
-      ! sincronitzar els processadors (allgather?)
-      ! int MPI_Allgatherv(const void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf, const int recvcounts[], const int displs[], MPI_Datatype recvtype, MPI_Comm comm)
-      do i = 1, 3
-         ! loop over dimensions
-    !     print*, "i", i, "step", step, "rank", rank
-    !     print*, imin, imax
-
-         call MPI_ALLGATHERV(r(imin:imax, i), int(imax - imin + 1), MPI_DOUBLE_PRECISION, r_new(:,i), recvcounts, displs, &
-                MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
-
-         call MPI_ALLGATHERV(vel(imin:imax, i), int(imax - imin + 1), MPI_DOUBLE_PRECISION, vel_new(:,i), recvcounts, displs, &
-                MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)                
-
-      end do
-
-      call MPI_Barrier(MPI_COMM_WORLD, ierror)    
+      call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
       
-     ! print*, "r_new", size(r_new, 1)
+      if (rank .eq. 0) then
+!         print*, "vel", vel
+!         call therm_Andersen(vel, nu, sigma_gaussian, N)
+!         print*, "vel", vel
+         call kinetic_energy(vel, K_energy, N)
+!         print*, "K_energy", vel, K_energy
+         call momentum(vel, p, N)
+         ! Calculate temperature
+         Temp = inst_temp(N, K_energy)
+         ! Calculate pressure
+         Pressure = (2*K_energy + Ppot)/(3*L**3)
 
-     ! NEED TO FIX FORCES TO MAKE IT WORK
-     ! r = r_new
-     ! vel = vel_new
-     ! call therm_Andersen(vel, nu, sigma_gaussian, N)
-     ! call kinetic_energy(vel, K_energy, N)
-     ! call momentum(vel, p, N)
-      ! Calculate temperature
-      Temp = inst_temp(N, K_energy)
-      ! Calculate pressure
-      Pressure = (2*K_energy + Ppot)/(3*L**3)
-
-      if ( rank == 0 ) then
          write (96, *) step*dt, Pressure
          write (77, *) step*dt, Temp
          write (44, *) step*dt, pot, K_energy, pot + K_energy, p
@@ -212,20 +188,31 @@ Program main
          if (mod(step, 1000) .eq. 0) then
             print *, int(real(step)/Nsteps*100), "%"
          end if
-      end if  
 
-      ! We save the last 10% positions and velocity components of the simulation
-      if (real(step)/Nsteps .gt. 0.9) then
-         v_fin = v_fin + vel
-         r_out = r_out + r
-      end if
+         ! We save the last 10% positions and velocity components of the simulation
+         if (real(step)/Nsteps .gt. 0.9) then
+            v_fin = v_fin + vel
+            r_out = r_out + r
+         end if
 
-      print*, "step", step
+      end if 
+      
+      call MPI_Bcast(vel, N*3, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+!      print*, "step", step
 
    end do
 
-   ! Write final positions to file to plot the distribution of positions
-   if ( rank == 0 ) then
+   if (rank .eq. 0) then
+
+      print*, "r_out", r_out
+
+      close (77)
+      close (96)
+      close (44)
+
+      open (23, file="vel_fin_verlet.dat")
+      open (55, file="pos_out.dat")
+      ! Write final positions to file to plot the distribution of positions
       write (55, *) "#  Positions components (x, y, z) for the last 10% of the simulation"
       write (55, *) "#  x, y, z"
       do i = 1, N
@@ -244,16 +231,19 @@ Program main
       write (23, *) ""
 
       close (55)
-      close (44)
       close (23)
-      close (77)
-   close (96)
 
    end if
 
-   t2 = MPI_Wtime()
-   print *, "Time elapsed: ", t2 - t1
-   call MPI_FINALIZE(ierror)
+      t2 = MPI_Wtime()
+      print *, "Time elapsed: ", t2 - t1
+   
+ !     call MPI_Waitall(nprocs, counts_recv, MPI_STATUSES_IGNORE, ierror)  
+   
+      print*, "Barrier passed"
+      call MPI_FINALIZE(ierror)
+   
+      print*, "MPI finalized"
 
 
 End Program
