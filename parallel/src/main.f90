@@ -81,15 +81,20 @@ Program main
 
    call distribute_particles(N, rank, nprocs, imin, imax)
    ! imin i imax tenen les particules limit de cada processador
+   
    print *, "rank: ", rank, "imin: ", imin, "imax", imax, "particles", imax - imin + 1
-   ! build counts_recv: non-negative integer array (of length group size) containing the number of elements that are received from each process (non-negative integer)
+   ! build counts_recv: non-negative integer array (of length group size) 
+   ! containing the number of elements that are received from each process 
+   ! (non-negative integer)
    counts_recv(rank) = imax - imin + 1
 
    call MPI_ALLGATHER(counts_recv(rank), 1, MPI_INTEGER, counts_recv, 1, MPI_INTEGER, MPI_COMM_WORLD, ierror)
 
    print *, counts_recv
 
-   ! build displs_recv: integer array (of length group size). Entry i specifies the displacement (relative to recvbuf) at which to place the incoming data from process i (integer)
+   ! build displs_recv: integer array (of length group size). 
+   ! Entry i specifies the displacement (relative to recvbuf) 
+   ! at which to place the incoming data from process i (integer)
    if (rank > 0) then
       displs_recv(rank) = sum(counts_recv(1:rank))
    end if
@@ -142,8 +147,6 @@ Program main
    ! Time parameters, initial and final time (input.txt)
    tini = 0
 
-   ! Apply Verlet algorithm
-
    if (rank == 0) then
       write (44, *) ""
       write (44, *) ""
@@ -157,13 +160,13 @@ Program main
 
    Nsteps = int((tfin - tini)/dt)
 
-   ! We roll back to the initial positions and velocities to initialize
+   ! We set initial positions and velocities
    r = r_ini
    vel = vel_ini
 
    print *, "Loop starts"
    do step = 1, Nsteps
-
+      ! Apply Verlet algorithm
       call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
 
       if (rank .eq. 0) then
@@ -171,7 +174,6 @@ Program main
 !         call therm_Andersen(vel, nu, sigma_gaussian, N)
 !         print*, "vel", vel
          call kinetic_energy(vel, K_energy, N)
-!         print*, "K_energy", vel, K_energy
          call momentum(vel, p, N)
          ! Calculate temperature
          Temp = inst_temp(N, K_energy)
@@ -181,7 +183,6 @@ Program main
          write (96, *) step*dt, Pressure
          write (77, *) step*dt, Temp
          write (44, *) step*dt, pot, K_energy, pot + K_energy, p
-         !        print*, K_energy
          if (mod(step, 1000) .eq. 0) then
             print *, int(real(step)/Nsteps*100), "%"
          end if
@@ -195,8 +196,6 @@ Program main
       end if
 
       call MPI_Bcast(vel, N*3, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
-!      print*, "step", step
-
    end do
 
    if (rank .eq. 0) then

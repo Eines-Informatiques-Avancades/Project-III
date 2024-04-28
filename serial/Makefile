@@ -5,6 +5,8 @@ FC=gfortran
 # Code location
 VPATH=src/
 
+COMP_D_FLAGS=-pg -no-pie
+
 
 ######################################################################
 ##               MOLECULAR DYNAMICS /    HELP                       ##

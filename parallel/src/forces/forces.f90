@@ -1,12 +1,10 @@
-!> @module Forces_Module
-!! This module contains the subroutine `find_force_LJ` which calculates the forces and potential energy
-!! between particles using the Lennard-Jones potential.
-!! The module provides a public interface for the `find_force_LJ` subroutine.
-!! The `find_force_LJ` subroutine takes in the positions of particles, box size, cutoff distance,
-!! and returns the forces acting on the particles and the total potential energy.
-!! The forces are calculated using periodic boundary conditions (PBC).
-!! The module also contains a private section for internal use.
-!! @endmodule
+!> This module contains the subroutine `find_force_LJ` which calculates the forces and potential energy
+!> between particles using the Lennard-Jones potential.
+!> The module provides a public interface for the `find_force_LJ` subroutine.
+!> The `find_force_LJ` subroutine takes in the positions of particles, box size, cutoff distance,
+!> and returns the forces acting on the particles and the total potential energy.
+!> The forces are calculated using periodic boundary conditions (PBC).
+!> The module also contains a private section for internal use.
 Module forces
    use pbc_module
    include 'mpif.h'
