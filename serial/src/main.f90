@@ -25,9 +25,9 @@ Program main
 
    !print *, "rc = ", rc
 
-   open(unit=99, file='namMD.nml', status='old')
-   read(99, nml=md_params)
-   close(99)
+   open (unit=99, file='namMD.nml', status='old')
+   read (99, nml=md_params)
+   close (99)
 
    dt = 1e-4
 
@@ -85,7 +85,6 @@ Program main
    open (96, file="pressure_verlet.dat")
    ! Time parameters, initial and final time (input.txt)
    tini = 0
-   
 
    ! Apply Verlet algorithm
    write (44, *) ""
@@ -100,7 +99,7 @@ Program main
    write (55, *) " "
 
    Nsteps = int((tfin - tini)/dt)
-   
+
    print *, "Nsteps = ", Nsteps
 
    ! We roll back to the initial positions and velocities to initialize
@@ -128,19 +127,17 @@ Program main
       end if
 
       ! We save the last 10% positions and velocity components of the simulation
-      if (real(step)/Nsteps .gt. 0.7 .and. mod(step,1000) .eq. 0) then
+      if (real(step)/Nsteps .gt. 0.7 .and. mod(step, 1000) .eq. 0) then
          v_fin = v_fin + vel
          r_out = r_out
          do i = 1, N
             write (55, *) "A", r(i, 1), r(i, 2), r(i, 3)
          end do
-        
+
          count = count + 1
       end if
 
    end do
-
-   
 
    ! Write final velocities to file to plot the distribution of velocities
    write (23, *) "#  Velocities components (x, y, z) and modulus (v) for the last 10% of the simulation"
