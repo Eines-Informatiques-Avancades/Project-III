@@ -202,8 +202,6 @@ contains
 
    end function inst_temp
 
-
-
 ! > Calculate the total momentum of particles.
 !    ! @param vel Array containing particle velocities.
 !    ! @param p Output variable for the total momentum.
@@ -248,7 +246,7 @@ contains
             vel(i, 3) = xnums(1)
          end if
       end do
-   !        print*, vel
+      !        print*, vel
    End Subroutine
 end module integrators
 !#################################################################

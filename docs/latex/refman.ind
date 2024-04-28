@@ -1,27 +1,63 @@
 \begin{theindex}
 
   \item {bm}
-    \subitem {integrators}, \hyperpage{5}
+    \subitem {integrators}, \hyperpage{11}
 
   \indexspace
 
-  \item {integrators}, \hyperpage{5}
-    \subitem {bm}, \hyperpage{5}
-    \subitem {time\_step\_euler\_pbc}, \hyperpage{6}
-    \subitem {time\_step\_verlet}, \hyperpage{6}
-    \subitem {time\_step\_vverlet}, \hyperpage{7}
+  \item {distribute\_particles}
+    \subitem {initialization}, \hyperpage{9}
 
   \indexspace
 
-  \item {Project-\/III}, \hyperpage{1}
+  \item {find\_force\_lj}
+    \subitem {forces}, \hyperpage{7, 8}
+  \item {forces}, \hyperpage{7}
+    \subitem {find\_force\_lj}, \hyperpage{7, 8}
+
+  \indexspace
+
+  \item {initialization}, \hyperpage{9}
+    \subitem {distribute\_particles}, \hyperpage{9}
+    \subitem {initialize\_positions}, \hyperpage{10}
+    \subitem {initialize\_velocities}, \hyperpage{10}
+  \item {initialize\_positions}
+    \subitem {initialization}, \hyperpage{10}
+  \item {initialize\_velocities}
+    \subitem {initialization}, \hyperpage{10}
+  \item {inst\_temp}
+    \subitem {integrators}, \hyperpage{12}
+  \item {integrators}, \hyperpage{11}
+    \subitem {bm}, \hyperpage{11}
+    \subitem {inst\_temp}, \hyperpage{12}
+    \subitem {kinetic\_energy}, \hyperpage{12}
+    \subitem {momentum}, \hyperpage{13}
+    \subitem {time\_step\_euler\_pbc}, \hyperpage{13}
+    \subitem {time\_step\_verlet}, \hyperpage{13}
+    \subitem {time\_step\_vverlet}, \hyperpage{14, 15}
+
+  \indexspace
+
+  \item {kinetic\_energy}
+    \subitem {integrators}, \hyperpage{12}
+
+  \indexspace
+
+  \item {momentum}
+    \subitem {integrators}, \hyperpage{13}
+
+  \indexspace
+
+  \item {Project-\/III: Simulation of a Van der Waals gas using Molecular Dynamics.}, 
+		\hyperpage{1}
 
   \indexspace
 
   \item {time\_step\_euler\_pbc}
-    \subitem {integrators}, \hyperpage{6}
+    \subitem {integrators}, \hyperpage{13}
   \item {time\_step\_verlet}
-    \subitem {integrators}, \hyperpage{6}
+    \subitem {integrators}, \hyperpage{13}
   \item {time\_step\_vverlet}
-    \subitem {integrators}, \hyperpage{7}
+    \subitem {integrators}, \hyperpage{14, 15}
 
 \end{theindex}

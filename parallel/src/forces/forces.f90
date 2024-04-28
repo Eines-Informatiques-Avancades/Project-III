@@ -1,12 +1,10 @@
-!> @module Forces_Module
-!! This module contains the subroutine `find_force_LJ` which calculates the forces and potential energy
-!! between particles using the Lennard-Jones potential.
-!! The module provides a public interface for the `find_force_LJ` subroutine.
-!! The `find_force_LJ` subroutine takes in the positions of particles, box size, cutoff distance,
-!! and returns the forces acting on the particles and the total potential energy.
-!! The forces are calculated using periodic boundary conditions (PBC).
-!! The module also contains a private section for internal use.
-!! @endmodule
+!> This module contains the subroutine `find_force_LJ` which calculates the forces and potential energy
+!> between particles using the Lennard-Jones potential.
+!> The module provides a public interface for the `find_force_LJ` subroutine.
+!> The `find_force_LJ` subroutine takes in the positions of particles, box size, cutoff distance,
+!> and returns the forces acting on the particles and the total potential energy.
+!> The forces are calculated using periodic boundary conditions (PBC).
+!> The module also contains a private section for internal use.
 Module forces
    use pbc_module
    include 'mpif.h'
@@ -53,12 +51,12 @@ Contains
       integer, intent(in) :: N
       real(8), dimension(N, 3), intent(out) :: F
       real(8), dimension(N, 3) :: F_new
-      integer :: displs_recv(:),counts_recv(:)
+      integer :: displs_recv(:), counts_recv(:)
       real(8), dimension(N/nprocs, 3) :: F_cut
       real(8), intent(out) :: pot, Ppot
       integer :: imin, imax, k, ii
 
- !     print*, "Starting forces rutine, rank", rank
+      !     print*, "Starting forces rutine, rank", rank
 
 !      call MPI_BCAST(r,N*3,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,ierror)
 
@@ -68,7 +66,7 @@ Contains
 
       do i = imin, imax
          do j = 1, N
-         if ( i .ne. j)then
+         if (i .ne. j) then
             rij(1) = r(i, 1) - r(j, 1)
             rij(2) = r(i, 2) - r(j, 2)
             rij(3) = r(i, 3) - r(j, 3)
@@ -84,34 +82,30 @@ Contains
                !F(j, :) = F(j, :) - f_ij*rij(:)
 
                if (isnan(F(i, 1))) then
-                  print*, "ERROR: Force is not a number"
+                  print *, "ERROR: Force is not a number"
                   print *, i, j
                   stop
                end if
 
                pot = pot + 4.d0*(1.d0/d**12 - 1.d0/d**6) - 4.d0*(1/cutoff**12 - 1.d0/cutoff**6)
-               Ppot = Ppot + f_ij * d
+               Ppot = Ppot + f_ij*d
             end if
          end if
          end do
       end do
 
       call MPI_BARRIER(MPI_COMM_WORLD, ierror)
-      
+
       pot_rank = pot
       pot = 0
       !call MPI_GATHER(pot, 1, MPI_DOUBLE_PRECISION, pot_list, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
-      !call MPI_GATHER(Ppot, 1, MPI_DOUBLE_PRECISION, Ppot_list, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)      
-      call MPI_REDUCE(pot_rank,pot,1,MPI_DOUBLE_PRECISION,MPI_SUM,0,MPI_COMM_WORLD,ierror)
+      !call MPI_GATHER(Ppot, 1, MPI_DOUBLE_PRECISION, Ppot_list, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+      call MPI_REDUCE(pot_rank, pot, 1, MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierror)
 
 !      print*, "Ending forces rutine, rank", rank
-   
+
       pot = pot/2
 
-     
    End Subroutine find_force_LJ
-
-
-
 
 End Module forces

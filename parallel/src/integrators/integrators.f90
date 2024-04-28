@@ -21,62 +21,60 @@ contains
 !! @param cutoff Cutoff distance for LJ potential.
 !! @param dt Time step size.
 
-subroutine time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
-   implicit none
-   integer, intent(in) :: N                      !< Number of particles
-   real(8), dimension(N, 3), intent(inout) :: r  !< Particle positions
-   real(8), dimension(N, 3), intent(inout) :: vel  !< Particle velocities
-   real(8), intent(out) :: pot, Ppot                 !< Potential energy
-   real(8), intent(in) :: dt, L, cutoff          !< Time step size, box size, cutoff distance
-   real(8), dimension(N, 3) :: F                 !< Forces
-   integer :: i, nprocs, rank, ierror                                 !< Loop variable
-   integer :: counts_recv(:), displs_recv(:)
-   integer :: imin, imax
-   real(8), dimension(N, 3) :: r_new, v_new
-   ! Calculate forces and potential energy using LJ potential
-   call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
-   ! Update positions and velocities using velocity Verlet integration
+   subroutine time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
+      implicit none
+      integer, intent(in) :: N                      !< Number of particles
+      real(8), dimension(N, 3), intent(inout) :: r  !< Particle positions
+      real(8), dimension(N, 3), intent(inout) :: vel  !< Particle velocities
+      real(8), intent(out) :: pot, Ppot                 !< Potential energy
+      real(8), intent(in) :: dt, L, cutoff          !< Time step size, box size, cutoff distance
+      real(8), dimension(N, 3) :: F                 !< Forces
+      integer :: i, nprocs, rank, ierror                                 !< Loop variable
+      integer :: counts_recv(:), displs_recv(:)
+      integer :: imin, imax
+      real(8), dimension(N, 3) :: r_new, v_new
+      ! Calculate forces and potential energy using LJ potential
+      call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
+      ! Update positions and velocities using velocity Verlet integration
 
-   do i = imin, imax
-      r(i, :) = r(i, :) + vel(i, :)*dt + 0.5*F(i, :)*dt*dt
+      do i = imin, imax
+         r(i, :) = r(i, :) + vel(i, :)*dt + 0.5*F(i, :)*dt*dt
 
-      ! Apply periodic boundary conditions
-      do while (any(r(i, :) > L/2.) .or. any(r(i, :) < -L/2.))
-         call pbc_mic(r(i, :), L, size(r(i, :))) !< Apply periodic boundary conditions using the pbc subroutine
+         ! Apply periodic boundary conditions
+         do while (any(r(i, :) > L/2.) .or. any(r(i, :) < -L/2.))
+            call pbc_mic(r(i, :), L, size(r(i, :))) !< Apply periodic boundary conditions using the pbc subroutine
+         end do
+
+         vel(i, :) = vel(i, :) + F(i, :)*0.5*dt
       end do
 
-      vel(i, :) = vel(i, :) + F(i, :)*0.5*dt
-   end do
+      call MPI_ALLGATHERV(r(imin:imax, 1), int(imax - imin + 1), MPI_DOUBLE_PRECISION, r_new(:, 1), counts_recv, &
+                          displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
+      call MPI_ALLGATHERV(r(imin:imax, 2), int(imax - imin + 1), MPI_DOUBLE_PRECISION, r_new(:, 2), counts_recv, &
+                          displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
+      call MPI_ALLGATHERV(r(imin:imax, 3), int(imax - imin + 1), MPI_DOUBLE_PRECISION, r_new(:, 3), counts_recv, &
+                          displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
 
-   call MPI_ALLGATHERV(r(imin:imax,1), int(imax - imin + 1), MPI_DOUBLE_PRECISION, r_new(:,1), counts_recv, &
-   displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
-   call MPI_ALLGATHERV(r(imin:imax,2), int(imax - imin + 1), MPI_DOUBLE_PRECISION, r_new(:,2), counts_recv, &
-   displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
-   call MPI_ALLGATHERV(r(imin:imax,3), int(imax - imin + 1), MPI_DOUBLE_PRECISION, r_new(:,3), counts_recv, &
-   displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
+      r = r_new
 
-   r = r_new
+      ! Recalculate forces after updating positions
+      call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
 
-   ! Recalculate forces after updating positions
-   call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
-   
       ! Update velocities using the updated forces
-   do i = imin, imax
-      vel(i, :) = vel(i, :) + F(i, :)*0.5*dt
-   end do
+      do i = imin, imax
+         vel(i, :) = vel(i, :) + F(i, :)*0.5*dt
+      end do
 
-   call MPI_ALLGATHERV(vel(imin:imax,1), int(imax - imin + 1), MPI_DOUBLE_PRECISION, v_new(:,1), counts_recv, &
-   displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
-   call MPI_ALLGATHERV(vel(imin:imax,2), int(imax - imin + 1), MPI_DOUBLE_PRECISION, v_new(:,2), counts_recv, &
-   displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
-   call MPI_ALLGATHERV(vel(imin:imax,3), int(imax - imin + 1), MPI_DOUBLE_PRECISION, v_new(:,3), counts_recv, &
-   displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
+      call MPI_ALLGATHERV(vel(imin:imax, 1), int(imax - imin + 1), MPI_DOUBLE_PRECISION, v_new(:, 1), counts_recv, &
+                          displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
+      call MPI_ALLGATHERV(vel(imin:imax, 2), int(imax - imin + 1), MPI_DOUBLE_PRECISION, v_new(:, 2), counts_recv, &
+                          displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
+      call MPI_ALLGATHERV(vel(imin:imax, 3), int(imax - imin + 1), MPI_DOUBLE_PRECISION, v_new(:, 3), counts_recv, &
+                          displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
 
-   vel = v_new
+      vel = v_new
 
-
-end subroutine time_step_vVerlet
-
+   end subroutine time_step_vVerlet
 
 !> Generate random numbers following a Box-Muller transformation.
 !! Generates normally distributed random numbers using the Box-Muller transformation.
@@ -145,8 +143,6 @@ end subroutine time_step_vVerlet
 
    end function inst_temp
 
-
-
 ! > Calculate the total momentum of particles.
 !    ! @param vel Array containing particle velocities.
 !    ! @param p Output variable for the total momentum.
@@ -191,10 +187,8 @@ end subroutine time_step_vVerlet
             vel(i, 3) = xnums(1)
          end if
       end do
-   !        print*, vel
+      !        print*, vel
    End Subroutine
 
-
 end module integrators
-
 

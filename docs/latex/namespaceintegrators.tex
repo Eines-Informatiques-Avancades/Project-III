@@ -8,12 +8,23 @@ Module containing various integrators for molecular dynamics simulations.
 \doxysubsubsection*{Functions/\+Subroutines}
 \begin{DoxyCompactItemize}
 \item 
-subroutine \mbox{\hyperlink{namespaceintegrators_a98afb88187da877b8f58d8daeac786b2}{time\+\_\+step\+\_\+vverlet}} (r, vel, pot, n, l, cutoff, dt)
+subroutine, public \mbox{\hyperlink{namespaceintegrators_a311cd639599672973c15859fe4d5a6b5}{time\+\_\+step\+\_\+vverlet}} (r, vel, pot, n, l, cutoff, dt, ppot, nprocs, rank, counts\+\_\+recv, displs\+\_\+recv, imin, imax)
+\begin{DoxyCompactList}\small\item\em Perform a time step using the velocity Verlet integration method. Calculates new positions and velocities for particles based on forces and previous positions/velocities. \end{DoxyCompactList}\item 
+subroutine, public \mbox{\hyperlink{namespaceintegrators_a73109dd3820b3e40274631b081f6b8ed}{bm}} (ndat, xnums, sigma)
+\begin{DoxyCompactList}\small\item\em Generate random numbers following a Box-\/\+Muller transformation. Generates normally distributed random numbers using the Box-\/\+Muller transformation. \end{DoxyCompactList}\item 
+subroutine, public \mbox{\hyperlink{namespaceintegrators_aabb253009c0ac7548802b9c619cb370e}{kinetic\+\_\+energy}} (vel, k\+\_\+energy, n)
+\item 
+real(8) function, public \mbox{\hyperlink{namespaceintegrators_a33ac028fe6c494547559fb0d30c51cf5}{inst\+\_\+temp}} (n, k\+\_\+energy)
+\begin{DoxyCompactList}\small\item\em Calculate the instantaneous temperature of the system. \end{DoxyCompactList}\item 
+subroutine, public \mbox{\hyperlink{namespaceintegrators_ab6e2d830d918ebe829cc569478fad34f}{momentum}} (vel, p, n)
+\item 
+\Hypertarget{namespaceintegrators_af0d3d3832ec0bc5a5c18556df0497dd7}\label{namespaceintegrators_af0d3d3832ec0bc5a5c18556df0497dd7} 
+subroutine, public {\bfseries therm\+\_\+andersen} (vel, nu, sigma\+\_\+gaussian, n)
+\item 
+subroutine \mbox{\hyperlink{namespaceintegrators_a66484636bdc7550676d9a17afcb9ce46}{time\+\_\+step\+\_\+vverlet}} (r, vel, pot, n, l, cutoff, dt, ppot)
 \begin{DoxyCompactList}\small\item\em Perform a time step using the velocity Verlet integration method. Calculates new positions and velocities for particles based on forces and previous positions/velocities. \end{DoxyCompactList}\item 
 subroutine \mbox{\hyperlink{namespaceintegrators_aee467d61a76e103d4f1269f89e4ee50e}{time\+\_\+step\+\_\+euler\+\_\+pbc}} (r\+\_\+in, r\+\_\+out, vel, n, l, cutoff, dt, pot)
 \begin{DoxyCompactList}\small\item\em Perform a time step using the Euler method with periodic boundary conditions. Calculates new positions and velocities for particles based on forces and previous positions/velocities. \end{DoxyCompactList}\item 
-subroutine \mbox{\hyperlink{namespaceintegrators_a73109dd3820b3e40274631b081f6b8ed}{bm}} (ndat, xnums, sigma)
-\begin{DoxyCompactList}\small\item\em Generate random numbers following a Box-\/\+Muller transformation. Generates normally distributed random numbers using the Box-\/\+Muller transformation. \end{DoxyCompactList}\item 
 subroutine \mbox{\hyperlink{namespaceintegrators_afef35a9b13476c623770c841fa78201b}{time\+\_\+step\+\_\+verlet}} (r, rold, vel, n, l, cutoff, dt, pot)
 \begin{DoxyCompactList}\small\item\em Perform a time step using the Verlet integration method. Calculates new positions and velocities for particles based on forces and previous positions/velocities. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
@@ -45,6 +56,66 @@ Generate random numbers following a Box-\/\+Muller transformation. Generates nor
 \mbox{\texttt{ out}}  & {\em xnums} & Output array containing generated random numbers \\
 \hline
 \mbox{\texttt{ in}}  & {\em sigma} & Standard deviation of the normal distribution \\
+\hline
+\end{DoxyParams}
+\Hypertarget{namespaceintegrators_a33ac028fe6c494547559fb0d30c51cf5}\label{namespaceintegrators_a33ac028fe6c494547559fb0d30c51cf5} 
+\index{integrators@{integrators}!inst\_temp@{inst\_temp}}
+\index{inst\_temp@{inst\_temp}!integrators@{integrators}}
+\doxysubsubsection{\texorpdfstring{inst\_temp()}{inst\_temp()}}
+{\footnotesize\ttfamily real(8) function, public integrators\+::inst\+\_\+temp (\begin{DoxyParamCaption}\item[{integer, intent(in)}]{n,  }\item[{real(8), intent(in)}]{k\+\_\+energy }\end{DoxyParamCaption})}
+
+
+
+Calculate the instantaneous temperature of the system. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em N} & Number of particles. \\
+\hline
+{\em K\+\_\+energy} & Kinetic energy of the particles. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Instantaneous temperature of the system. 
+\end{DoxyReturn}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em n} & Number of particles \\
+\hline
+\mbox{\texttt{ in}}  & {\em k\+\_\+energy} & Kinetic energy of the particles \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Instantaneous temperature of the system 
+\end{DoxyReturn}
+\Hypertarget{namespaceintegrators_aabb253009c0ac7548802b9c619cb370e}\label{namespaceintegrators_aabb253009c0ac7548802b9c619cb370e} 
+\index{integrators@{integrators}!kinetic\_energy@{kinetic\_energy}}
+\index{kinetic\_energy@{kinetic\_energy}!integrators@{integrators}}
+\doxysubsubsection{\texorpdfstring{kinetic\_energy()}{kinetic\_energy()}}
+{\footnotesize\ttfamily subroutine integrators\+::kinetic\+\_\+energy (\begin{DoxyParamCaption}\item[{real(8), dimension(n, 3), intent(in)}]{vel,  }\item[{real(8), intent(out)}]{k\+\_\+energy,  }\item[{integer, intent(in)}]{n }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em n} & Number of particles\\
+\hline
+\mbox{\texttt{ in}}  & {\em vel} & Array containing particle velocities\\
+\hline
+\mbox{\texttt{ out}}  & {\em k\+\_\+energy} & Output variable for the kinetic energy \\
+\hline
+\end{DoxyParams}
+\Hypertarget{namespaceintegrators_ab6e2d830d918ebe829cc569478fad34f}\label{namespaceintegrators_ab6e2d830d918ebe829cc569478fad34f} 
+\index{integrators@{integrators}!momentum@{momentum}}
+\index{momentum@{momentum}!integrators@{integrators}}
+\doxysubsubsection{\texorpdfstring{momentum()}{momentum()}}
+{\footnotesize\ttfamily subroutine integrators\+::momentum (\begin{DoxyParamCaption}\item[{real(8), dimension(n, 3), intent(in)}]{vel,  }\item[{real(8), intent(out)}]{p,  }\item[{integer, intent(in)}]{n }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em n} & Number of particles\\
+\hline
+\mbox{\texttt{ in}}  & {\em vel} & Array containing particle velocities\\
+\hline
+\mbox{\texttt{ out}}  & {\em p} & Output variable for the total momentum \\
 \hline
 \end{DoxyParams}
 \Hypertarget{namespaceintegrators_aee467d61a76e103d4f1269f89e4ee50e}\label{namespaceintegrators_aee467d61a76e103d4f1269f89e4ee50e} 
@@ -85,8 +156,6 @@ Perform a time step using the Euler method with periodic boundary conditions. Ca
 \hline
 \mbox{\texttt{ in}}  & {\em cutoff} & Box size, time step size, cutoff distance \\
 \hline
- & {\em pot} & Potential energy \\
-\hline
 \end{DoxyParams}
 \Hypertarget{namespaceintegrators_afef35a9b13476c623770c841fa78201b}\label{namespaceintegrators_afef35a9b13476c623770c841fa78201b} 
 \index{integrators@{integrators}!time\_step\_verlet@{time\_step\_verlet}}
@@ -126,14 +195,12 @@ Perform a time step using the Verlet integration method. Calculates new position
 \hline
 \mbox{\texttt{ in}}  & {\em l} & Time step size, cutoff distance, box size \\
 \hline
- & {\em pot} & Potential energy \\
-\hline
 \end{DoxyParams}
-\Hypertarget{namespaceintegrators_a98afb88187da877b8f58d8daeac786b2}\label{namespaceintegrators_a98afb88187da877b8f58d8daeac786b2} 
+\Hypertarget{namespaceintegrators_a66484636bdc7550676d9a17afcb9ce46}\label{namespaceintegrators_a66484636bdc7550676d9a17afcb9ce46} 
 \index{integrators@{integrators}!time\_step\_vverlet@{time\_step\_vverlet}}
 \index{time\_step\_vverlet@{time\_step\_vverlet}!integrators@{integrators}}
-\doxysubsubsection{\texorpdfstring{time\_step\_vverlet()}{time\_step\_vverlet()}}
-{\footnotesize\ttfamily subroutine integrators\+::time\+\_\+step\+\_\+vverlet (\begin{DoxyParamCaption}\item[{real(8), dimension(n, 3), intent(inout)}]{r,  }\item[{real(8), dimension(n, 3), intent(inout)}]{vel,  }\item[{real(8), intent(out)}]{pot,  }\item[{integer, intent(in)}]{n,  }\item[{real(8), intent(in)}]{l,  }\item[{real(8), intent(in)}]{cutoff,  }\item[{real(8), intent(in)}]{dt }\end{DoxyParamCaption})}
+\doxysubsubsection{\texorpdfstring{time\_step\_vverlet()}{time\_step\_vverlet()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily subroutine integrators\+::time\+\_\+step\+\_\+vverlet (\begin{DoxyParamCaption}\item[{real(8), dimension(n, 3), intent(inout)}]{r,  }\item[{real(8), dimension(n, 3), intent(inout)}]{vel,  }\item[{real(8), intent(out)}]{pot,  }\item[{integer, intent(in)}]{n,  }\item[{real(8), intent(in)}]{l,  }\item[{real(8), intent(in)}]{cutoff,  }\item[{real(8), intent(in)}]{dt,  }\item[{real(8), intent(out)}]{ppot }\end{DoxyParamCaption})}
 
 
 
@@ -161,7 +228,44 @@ Perform a time step using the velocity Verlet integration method. Calculates new
 \hline
 \mbox{\texttt{ in,out}}  & {\em vel} & Particle velocities \\
 \hline
-\mbox{\texttt{ out}}  & {\em pot} & Potential energy \\
+\mbox{\texttt{ out}}  & {\em ppot} & Potential energy \\
+\hline
+\mbox{\texttt{ in}}  & {\em cutoff} & Time step size, box size, cutoff distance \\
+\hline
+\end{DoxyParams}
+\Hypertarget{namespaceintegrators_a311cd639599672973c15859fe4d5a6b5}\label{namespaceintegrators_a311cd639599672973c15859fe4d5a6b5} 
+\index{integrators@{integrators}!time\_step\_vverlet@{time\_step\_vverlet}}
+\index{time\_step\_vverlet@{time\_step\_vverlet}!integrators@{integrators}}
+\doxysubsubsection{\texorpdfstring{time\_step\_vverlet()}{time\_step\_vverlet()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily subroutine, public integrators\+::time\+\_\+step\+\_\+vverlet (\begin{DoxyParamCaption}\item[{real(8), dimension(n, 3), intent(inout)}]{r,  }\item[{real(8), dimension(n, 3), intent(inout)}]{vel,  }\item[{real(8), intent(out)}]{pot,  }\item[{integer, intent(in)}]{n,  }\item[{real(8), intent(in)}]{l,  }\item[{real(8), intent(in)}]{cutoff,  }\item[{real(8), intent(in)}]{dt,  }\item[{real(8), intent(out)}]{ppot,  }\item[{integer}]{nprocs,  }\item[{integer}]{rank,  }\item[{integer, dimension(\+:)}]{counts\+\_\+recv,  }\item[{integer, dimension(\+:)}]{displs\+\_\+recv,  }\item[{integer}]{imin,  }\item[{integer}]{imax }\end{DoxyParamCaption})}
+
+
+
+Perform a time step using the velocity Verlet integration method. Calculates new positions and velocities for particles based on forces and previous positions/velocities. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em r} & Input/\+Output array containing particle positions. \\
+\hline
+ & {\em vel} & Input/\+Output array containing particle velocities. \\
+\hline
+ & {\em pot} & Output potential energy. \\
+\hline
+ & {\em N} & Number of particles. \\
+\hline
+ & {\em L} & Box size. \\
+\hline
+ & {\em cutoff} & Cutoff distance for LJ potential. \\
+\hline
+ & {\em dt} & Time step size. \\
+\hline
+\mbox{\texttt{ in}}  & {\em n} & Number of particles \\
+\hline
+\mbox{\texttt{ in,out}}  & {\em r} & Particle positions \\
+\hline
+\mbox{\texttt{ in,out}}  & {\em vel} & Particle velocities \\
+\hline
+\mbox{\texttt{ out}}  & {\em ppot} & Potential energy \\
 \hline
 \mbox{\texttt{ in}}  & {\em cutoff} & Time step size, box size, cutoff distance \\
 \hline

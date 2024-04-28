@@ -1,11 +1,104 @@
-\chapter{Project-\/\+III}
-\hypertarget{md_README}{}\label{md_README}\index{Project-\/III@{Project-\/III}}
+\chapter{Project-\/\+III\+: Simulation of a Van der Waals gas using Molecular Dynamics.}
+\hypertarget{md_README}{}\label{md_README}\index{Project-\/III: Simulation of a Van der Waals gas using Molecular Dynamics.@{Project-\/III: Simulation of a Van der Waals gas using Molecular Dynamics.}}
 \label{md_README_autotoc_md0}%
 \Hypertarget{md_README_autotoc_md0}%
- Manel Serrano Visualització i estadística
+ \hypertarget{md_README_autotoc_md1}{}\doxysection{\texorpdfstring{Brief description of the project}{Brief description of the project}}\label{md_README_autotoc_md1}
+This project involves the development of a Molecular Dynamics code to simulate a Van der Waals gas, performing calculations in both serial and parallel modes.
 
-Albert Plazas Forces
+Additionally, this project requires collaborative work to ensure the proper functioning of the code.\hypertarget{md_README_autotoc_md2}{}\doxysection{\texorpdfstring{Team Members and Responsibilities}{Team Members and Responsibilities}}\label{md_README_autotoc_md2}
+Each team member has assigned tasks, which are indicated below\+:
 
-{\bfseries{Anna Monclús}} Cond. inicials i de contorn (Coordinació e integració de tot el codi)
 
-Aina Gaya Integració 
+\begin{DoxyEnumerate}
+\item {\bfseries{Anna Monclús (@anna-\/mr98)}}\+: Initialize the configuration and define boundary conditions. Also coordinates the Git\+Hub repository.
+\end{DoxyEnumerate}
+\begin{DoxyEnumerate}
+\item {\bfseries{Aina Gaya (@ainagaya)}}\+: Integration Newton\textquotesingle{}s equations.
+\item {\bfseries{Albert Plazas (@\+Alplalo)}}\+: Compute the forces for a Van der Waals interaction.
+\item {\bfseries{Manel Serrano (@gluoon8)}}\+: Post-\/processing of data, statistics, and visualization.
+\end{DoxyEnumerate}\hypertarget{md_README_autotoc_md3}{}\doxysection{\texorpdfstring{Prerequisites}{Prerequisites}}\label{md_README_autotoc_md3}
+To execute the program, there are some pre-\/requisites\+:
+\begin{DoxyItemize}
+\item Make\+: to execute the program (\href{https://www.gnu.org/software/make/\#download}{\texttt{ https\+://www.\+gnu.\+org/software/make/\#download}})
+\item Gfortran\+: to run the MD simulation. (\href{https://gcc.gnu.org/wiki/GFortran}{\texttt{ https\+://gcc.\+gnu.\+org/wiki/\+GFortran}})
+\item Python 3.\+x \+: to generate the plots after simulation
+\begin{DoxyItemize}
+\item Numpy (\href{https://numpy.org/install/}{\texttt{ https\+://numpy.\+org/install/}})
+\item Matplotlib (\href{https://matplotlib.org/stable/users/installing/index.html}{\texttt{ https\+://matplotlib.\+org/stable/users/installing/index.\+html}})
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md4}{}\doxysection{\texorpdfstring{How to}{How to}}\label{md_README_autotoc_md4}
+\begin{quote}
+\mbox{[}!\+IMPORTANT\mbox{]} Current features are only available for serial code, parallel code is WIP! \end{quote}
+
+\begin{DoxyEnumerate}
+\item Clone repository to your local host
+\item Choose {\itshape serial} or {\itshape parallel (WIP)} folder with {\ttfamily cd serial} or {\ttfamily cd parallel}
+\item Use {\ttfamily make} or {\ttfamily make help} to see the available commands.
+\item Before starting a simulation, change your parameters in {\itshape nam\+MD.\+nml} file ~\newline
+
+\item To carry out the simulation, use {\ttfamily make run} and the program will be compiled and run.
+\item Data is generated in \texorpdfstring{$\ast$}{*}.dat\texorpdfstring{$\ast$}{*} files. If you want to generate figures, use {\ttfamily make plot}
+\end{DoxyEnumerate}\hypertarget{md_README_autotoc_md5}{}\doxysubsection{\texorpdfstring{Quick guide}{Quick guide}}\label{md_README_autotoc_md5}
+To carry out a simulation after choosing parameters in {\itshape nam\+MD.\+nml} file you can use\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{make\ run}
+\DoxyCodeLine{make\ plot}
+
+\end{DoxyCode}
+ And files will appear in your main directory!
+
+\begin{quote}
+\mbox{[}!\+TIP\mbox{]} There are some ways to clean generated files, have a look at {\ttfamily make clean}, {\ttfamily make cleandata} and {\ttfamily make cleanplot}. \end{quote}
+\hypertarget{md_README_autotoc_md6}{}\doxysection{\texorpdfstring{Help}{Help}}\label{md_README_autotoc_md6}
+
+\begin{DoxyItemize}
+\item Commands\+: ~\newline
+
+\begin{DoxyItemize}
+\item {\ttfamily make run}\+: Compiles needed files and also runs the program. ~\newline
+
+\item {\ttfamily make plot}\+: Plots the output data\+: ~\newline
+
+\begin{DoxyItemize}
+\item Epot, Ekin, Etot vs time ~\newline
+
+\item Momentum vs time ~\newline
+
+\item T vs time ~\newline
+
+\item Pressure vs time ~\newline
+
+\end{DoxyItemize}
+\item {\ttfamily make all}\+: Compiles the program and creates executable MD.\+exe ~\newline
+
+\item {\ttfamily make clean}\+: Removes the modules, objects and executable ~\newline
+
+\item {\ttfamily make cleandata}\+: Removes data files ~\newline
+
+\item {\ttfamily make cleanplot}\+: Removes plot files ~\newline
+
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md7}{}\doxysection{\texorpdfstring{Contributors}{Contributors}}\label{md_README_autotoc_md7}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{4}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Anna Monclús   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Aina Gaya   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Albert Plazas   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Manel Serrano    }\\\cline{1-4}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Anna Monclús   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Aina Gaya   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Albert Plazas   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Manel Serrano    }\\\cline{1-4}
+\endhead
+   &   &   &    \\\cline{1-4}
+\href{https://github.com/anna-mr98}{\texttt{ anna-\/mr98}}   &\href{https://github.com/ainagaya}{\texttt{ ainagaya}}   &\href{https://github.com/Alplalo}{\texttt{ Alplalo}}   &\href{https://github.com/gluoon8}{\texttt{ gluoon8}}   \\\cline{1-4}
+\end{longtabu}
+
+
+Work developed in the Advanced Informatic Tools subject from \href{http://www.ub.edu/computational_modelling/}{\texttt{ Master of Atomistic and Multiscale Computational Modelling in Physics, Chemistry and Biochemistry}}.
+
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+ &  \\\cline{1-2}
+Universitat de Barcelona &Universitat Politècnica de Catalunya  \\\cline{1-2}
+\end{longtabu}

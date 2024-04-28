@@ -53,18 +53,17 @@ contains
       Implicit none
       integer, intent(in) :: N
       real(8), dimension(N, 3), intent(out) :: v
-      real(8) :: v_ini, v_i,rand
-      integer :: particle,i
+      real(8) :: v_ini, v_i, rand
+      integer :: particle, i
 
-      
       ! Set the velocity of every particle using a bimodal distribution
       do particle = 1, N
          do i = 1, 3
             call random_number(rand)
             if (rand < 0.5d0) then
-               v(particle, i)  = + v_ini
+               v(particle, i) = +v_ini
             else
-               v(particle, i)  = - v_ini
+               v(particle, i) = -v_ini
             end if
 
          end do

@@ -8,7 +8,8 @@ N=7
 # Code location
 VPATH=src/
 
-COMP_D_FLAGS=-Wall -Wextra -g -fcheck=all -Wall -Wextra -pedantic -std=f2008 -fbacktrace -ffpe-trap=zero,overflow,underflow -finit-real=nan -finit-integer=-9999
+#COMP_D_FLAGS=-Wall -Wextra -g -fcheck=all -Wall -Wextra -pedantic -std=f2008 -fbacktrace -ffpe-trap=zero,overflow,underflow -finit-real=nan -finit-integer=-9999
+COMP_P_FLAGS=-O2 -pg
 
 ######################################################################
 ##               MOLECULAR DYNAMICS /    HELP                       ##
@@ -60,7 +61,7 @@ plot:
 ##                                                                   #
 all: MD.exe
 MD.exe:  pbc.o forces.o integrators.o  initialize.o  main.o
-	$(FC) $(F_FLAGS) $(COMP_D_FLAGS) $(COMP_R_FLAGS) $^ -o $@
+	$(FC) $(F_FLAGS) $(COMP_P_FLAGS) $(COMP_R_FLAGS) $^ -o $@
 
 
 # ~ CLEANING ~

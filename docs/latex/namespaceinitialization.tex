@@ -1,0 +1,109 @@
+\doxysection{initialization Module Reference}
+\hypertarget{namespaceinitialization}{}\label{namespaceinitialization}\index{initialization@{initialization}}
+
+
+Module containing initialization rutines for molecular dynamics simulations.  
+
+
+\doxysubsubsection*{Functions/\+Subroutines}
+\begin{DoxyCompactItemize}
+\item 
+subroutine \mbox{\hyperlink{namespaceinitialization_a045d9c9244067895a7c7659c5635ca64}{initialize\+\_\+positions}} (n, rho, r)
+\begin{DoxyCompactList}\small\item\em Initializes the positions of N particles in a cubic box with density rho. The box is centered at the origin. The positions are stored in the array r. The length of the box is calculated as L = (N/rho)\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}(1/3). The box is divided in M = N\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}(1/3) cells. The length of each cell is a = L/M. \end{DoxyCompactList}\item 
+subroutine \mbox{\hyperlink{namespaceinitialization_a3199908e53ed9c24046d7b36f6c55c36}{initialize\+\_\+velocities}} (n, v\+\_\+ini, v)
+\begin{DoxyCompactList}\small\item\em Initializes the velocities of N particles with a given velocity v\+\_\+ini. The velocities are stored in the array v. The velocities are chosen randomly from a bimodal distribution. \end{DoxyCompactList}\item 
+subroutine \mbox{\hyperlink{namespaceinitialization_a9805a660ae3da22b2f5195e29807c8d7}{distribute\+\_\+particles}} (n, rank, nprocs, imin, imax)
+\begin{DoxyCompactList}\small\item\em Distributes the particles among the processors. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Module containing initialization rutines for molecular dynamics simulations. 
+
+\doxysubsection{Function/\+Subroutine Documentation}
+\Hypertarget{namespaceinitialization_a9805a660ae3da22b2f5195e29807c8d7}\label{namespaceinitialization_a9805a660ae3da22b2f5195e29807c8d7} 
+\index{initialization@{initialization}!distribute\_particles@{distribute\_particles}}
+\index{distribute\_particles@{distribute\_particles}!initialization@{initialization}}
+\doxysubsubsection{\texorpdfstring{distribute\_particles()}{distribute\_particles()}}
+{\footnotesize\ttfamily subroutine initialization\+::distribute\+\_\+particles (\begin{DoxyParamCaption}\item[{integer, intent(in)}]{n,  }\item[{integer, intent(in)}]{rank,  }\item[{integer, intent(in)}]{nprocs,  }\item[{integer}]{imin,  }\item[{integer}]{imax }\end{DoxyParamCaption})}
+
+
+
+Distributes the particles among the processors. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em N} & Number of particles. \\
+\hline
+{\em rank} & Rank of the processor. \\
+\hline
+{\em nprocs} & Number of processors. \\
+\hline
+{\em imin,imax} & Indexes of the particles to be handled by the processor. \\
+\hline
+{\em chunklength} & Number of particles to be handled by each processor. \\
+\hline
+{\em uneven\+\_\+parts} & Number of processors that will handle an extra particle. \\
+\hline
+{\em i} & Loop variable. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{namespaceinitialization_a045d9c9244067895a7c7659c5635ca64}\label{namespaceinitialization_a045d9c9244067895a7c7659c5635ca64} 
+\index{initialization@{initialization}!initialize\_positions@{initialize\_positions}}
+\index{initialize\_positions@{initialize\_positions}!initialization@{initialization}}
+\doxysubsubsection{\texorpdfstring{initialize\_positions()}{initialize\_positions()}}
+{\footnotesize\ttfamily subroutine initialization\+::initialize\+\_\+positions (\begin{DoxyParamCaption}\item[{integer, intent(in)}]{n,  }\item[{real(8), intent(in)}]{rho,  }\item[{real(8), dimension(n, 3), intent(out)}]{r }\end{DoxyParamCaption})}
+
+
+
+Initializes the positions of N particles in a cubic box with density rho. The box is centered at the origin. The positions are stored in the array r. The length of the box is calculated as L = (N/rho)\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}(1/3). The box is divided in M = N\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}(1/3) cells. The length of each cell is a = L/M. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em N} & Number of particles. \\
+\hline
+{\em rho} & Density of the system. \\
+\hline
+{\em r} & Array containing the positions of the particles. \\
+\hline
+{\em L} & Length of the box. \\
+\hline
+{\em a} & Length of each cell. \\
+\hline
+{\em x,y,z} & Coordinates of the particle. \\
+\hline
+{\em ini} & Initial position of the box. \\
+\hline
+{\em M} & Number of cells in each direction. \\
+\hline
+{\em i,j,k} & Loop variables. \\
+\hline
+{\em particle} & Index of the particle. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{namespaceinitialization_a3199908e53ed9c24046d7b36f6c55c36}\label{namespaceinitialization_a3199908e53ed9c24046d7b36f6c55c36} 
+\index{initialization@{initialization}!initialize\_velocities@{initialize\_velocities}}
+\index{initialize\_velocities@{initialize\_velocities}!initialization@{initialization}}
+\doxysubsubsection{\texorpdfstring{initialize\_velocities()}{initialize\_velocities()}}
+{\footnotesize\ttfamily subroutine initialization\+::initialize\+\_\+velocities (\begin{DoxyParamCaption}\item[{integer, intent(in)}]{n,  }\item[{real(8)}]{v\+\_\+ini,  }\item[{real(8), dimension(n, 3), intent(out)}]{v }\end{DoxyParamCaption})}
+
+
+
+Initializes the velocities of N particles with a given velocity v\+\_\+ini. The velocities are stored in the array v. The velocities are chosen randomly from a bimodal distribution. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em N} & Number of particles. \\
+\hline
+{\em v\+\_\+ini} & Initial velocity of the particles. \\
+\hline
+{\em v} & Array containing the velocities of the particles. \\
+\hline
+{\em v\+\_\+i} & Velocity of the particle. \\
+\hline
+{\em rand} & Random number. \\
+\hline
+{\em particle} & Index of the particle. \\
+\hline
+{\em i} & Loop variable. \\
+\hline
+\end{DoxyParams}
