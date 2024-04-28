@@ -29,13 +29,13 @@ Program main
    ! Read parameters from namMD.nml
 
    inquire (file='namMD.nml', iostat=rc)
-   open(unit=99, file='namMD.nml', status='old')
+   open (unit=99, file='namMD.nml', status='old')
    if (rc /= 0) then
-      print*, "Error opening namMD.nml"
+      print *, "Error opening namMD.nml"
       stop
    end if
-   read(99, nml=md_params)
-   close(99)
+   read (99, nml=md_params)
+   close (99)
 
    L = (N/rho)**(1./3.)
    M = N**(1./3.)
@@ -54,24 +54,23 @@ Program main
    call MPI_INIT(ierror)
    t1 = MPI_Wtime()
 
-
    call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierror)
    call MPI_COMM_SIZE(MPI_COMM_WORLD, nprocs, ierror)
 
-   allocate(particle_distrib(N))
-   allocate(counts_recv(nprocs))
-   allocate(displs_recv(nprocs))
+   allocate (particle_distrib(N))
+   allocate (counts_recv(nprocs))
+   allocate (displs_recv(nprocs))
 
    ! Send info to the other processors
-   call MPI_Bcast(mass,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
-   call MPI_Bcast(rho,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
-   call MPI_Bcast(epsilon,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
-   call MPI_Bcast(sigma,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
-   call MPI_Bcast(Temp,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
-   call MPI_Bcast(tfin,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
-   call MPI_Bcast(L,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
-   call MPI_Bcast(M,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
-   call MPI_Bcast(a,  1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   call MPI_Bcast(mass, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   call MPI_Bcast(rho, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   call MPI_Bcast(epsilon, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   call MPI_Bcast(sigma, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   call MPI_Bcast(Temp, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   call MPI_Bcast(tfin, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   call MPI_Bcast(L, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   call MPI_Bcast(M, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   call MPI_Bcast(a, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
 
    ! wait until the reading has finished
 !   call MPI_Barrier(MPI_COMM_WORLD, ierror)
@@ -82,13 +81,13 @@ Program main
 
    call distribute_particles(N, rank, nprocs, imin, imax)
    ! imin i imax tenen les particules limit de cada processador
-   print*, "rank: ", rank, "imin: ", imin, "imax", imax, "particles", imax-imin + 1
+   print *, "rank: ", rank, "imin: ", imin, "imax", imax, "particles", imax - imin + 1
    ! build counts_recv: non-negative integer array (of length group size) containing the number of elements that are received from each process (non-negative integer)
    counts_recv(rank) = imax - imin + 1
 
    call MPI_ALLGATHER(counts_recv(rank), 1, MPI_INTEGER, counts_recv, 1, MPI_INTEGER, MPI_COMM_WORLD, ierror)
 
-   print*, counts_recv
+   print *, counts_recv
 
    ! build displs_recv: integer array (of length group size). Entry i specifies the displacement (relative to recvbuf) at which to place the incoming data from process i (integer)
    if (rank > 0) then
@@ -96,9 +95,7 @@ Program main
    end if
 
    call MPI_ALLGATHER(displs_recv(rank), 1, MPI_INTEGER, displs_recv, 1, MPI_INTEGER, MPI_COMM_WORLD, ierror)
-   print*, "displs_recv", displs_recv
-
-
+   print *, "displs_recv", displs_recv
 
    ! """"
    ! ii) Initialize system and run simulation using velocity Verlet
@@ -109,7 +106,7 @@ Program main
    absV = (Temp/mass)**(1./2.)
    print *, absV
 
-   if ( rank == 0 ) then
+   if (rank == 0) then
       open (22, file="vel_ini.dat")
       open (33, file="pos_ini.dat")
    end if
@@ -118,7 +115,7 @@ Program main
 
    ! Write initial positions to file
 
-   if ( rank == 0 ) then
+   if (rank == 0) then
       do i = 1, N
          write (33, *) r_ini(i, :)
       end do
@@ -130,24 +127,24 @@ Program main
 
    ! Write initial velocities to file
 
-   if ( rank == 0 ) then
+   if (rank == 0) then
       do i = 1, N
          write (22, *) vel_ini(i, :)
       end do
-   
+
       close (22)
 
       open (44, file="energy_verlet.dat")
       open (77, file="Temperatures_verlet.dat")
       open (96, file="pressure_verlet.dat")
-   
+
    end if
    ! Time parameters, initial and final time (input.txt)
    tini = 0
-   
+
    ! Apply Verlet algorithm
 
-   if ( rank == 0 ) then
+   if (rank == 0) then
       write (44, *) ""
       write (44, *) ""
       write (44, *) "dt = ", dt
@@ -156,7 +153,7 @@ Program main
       write (96, *) "#  time , pressure"
       print *, "dt = ", dt
       print *, "# time , pot, kin , total , momentum"
-   end if 
+   end if
 
    Nsteps = int((tfin - tini)/dt)
 
@@ -164,11 +161,11 @@ Program main
    r = r_ini
    vel = vel_ini
 
-   print*, "Loop starts"
+   print *, "Loop starts"
    do step = 1, Nsteps
 
       call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
-      
+
       if (rank .eq. 0) then
 !         print*, "vel", vel
 !         call therm_Andersen(vel, nu, sigma_gaussian, N)
@@ -195,8 +192,8 @@ Program main
             r_out = r_out + r
          end if
 
-      end if 
-      
+      end if
+
       call MPI_Bcast(vel, N*3, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
 !      print*, "step", step
 
@@ -204,7 +201,7 @@ Program main
 
    if (rank .eq. 0) then
 
-      print*, "r_out", r_out
+      print *, "r_out", r_out
 
       close (77)
       close (96)
@@ -235,15 +232,14 @@ Program main
 
    end if
 
-      t2 = MPI_Wtime()
-      print *, "Time elapsed: ", t2 - t1
-   
- !     call MPI_Waitall(nprocs, counts_recv, MPI_STATUSES_IGNORE, ierror)  
-   
-      print*, "Barrier passed"
-      call MPI_FINALIZE(ierror)
-   
-      print*, "MPI finalized"
+   t2 = MPI_Wtime()
+   print *, "Time elapsed: ", t2 - t1
 
+   !     call MPI_Waitall(nprocs, counts_recv, MPI_STATUSES_IGNORE, ierror)
+
+   print *, "Barrier passed"
+   call MPI_FINALIZE(ierror)
+
+   print *, "MPI finalized"
 
 End Program

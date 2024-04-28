@@ -53,18 +53,17 @@ contains
       Implicit none
       integer, intent(in) :: N
       real(8), dimension(N, 3), intent(out) :: v
-      real(8) :: v_ini, v_i,rand
-      integer :: particle,i
+      real(8) :: v_ini, v_i, rand
+      integer :: particle, i
 
-      
       ! Set the velocity of every particle using a bimodal distribution
       do particle = 1, N
          do i = 1, 3
             call random_number(rand)
             if (rand < 0.5d0) then
-               v(particle, i)  = + v_ini
+               v(particle, i) = +v_ini
             else
-               v(particle, i)  = - v_ini
+               v(particle, i) = -v_ini
             end if
 
          end do
@@ -80,22 +79,21 @@ contains
       integer :: chunklength, uneven_parts, imin, imax
 
       !
-      chunklength = N / nprocs
+      chunklength = N/nprocs
       uneven_parts = mod(N, nprocs) ! 5
 
-      print*, "uneven_parts = ", uneven_parts
+      print *, "uneven_parts = ", uneven_parts
 
-      imin = rank * chunklength + 1
+      imin = rank*chunklength + 1
       imax = imin + chunklength - 1
 
       if (rank >= (nprocs - uneven_parts)) then
-         print*, "Im rank", rank, "and . They already reparted", rank - (nprocs - uneven_parts)
-         
+         print *, "Im rank", rank, "and . They already reparted", rank - (nprocs - uneven_parts)
+
          imin = imin + rank - (nprocs - uneven_parts)
          imax = imin + chunklength
       end if
 
    end subroutine
-
 
 end module initialization
