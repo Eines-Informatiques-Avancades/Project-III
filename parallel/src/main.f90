@@ -98,6 +98,8 @@ Program main
    call MPI_ALLGATHER(displs_recv(rank), 1, MPI_INTEGER, displs_recv, 1, MPI_INTEGER, MPI_COMM_WORLD, ierror)
    print*, "displs_recv", displs_recv
 
+
+
    ! """"
    ! ii) Initialize system and run simulation using velocity Verlet
    !
@@ -165,32 +167,32 @@ Program main
    print*, "Loop starts"
    do step = 1, Nsteps
 
-      call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, imin, imax, counts_recv, displs_recv, rank, nprocs)
+      call time_step_vVerlet_serial(r, vel, pot, N, L, cutoff, dt, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
 
-      call MPI_Barrier(MPI_COMM_WORLD, ierror)
+!      call MPI_Barrier(MPI_COMM_WORLD, ierror)
 
       ! sincronitzar els processadors (allgather?)
       ! int MPI_Allgatherv(const void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf, const int counts_recv[], const int displs_recv[], MPI_Datatype recvtype, MPI_Comm comm)
-      do i = 1, 3
+!      do i = 1, 3
          ! loop over dimensions
     !     print*, "i", i, "step", step, "rank", rank
     !     print*, imin, imax
 
-         call MPI_ALLGATHERV(r(imin:imax, i), int(imax - imin + 1), MPI_DOUBLE_PRECISION, r_new(:,i), counts_recv, &
-            displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
+!         call MPI_ALLGATHERV(r(imin:imax, i), int(imax - imin + 1), MPI_DOUBLE_PRECISION, r_new(:,i), counts_recv, &
+!            displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
 
-         call MPI_ALLGATHERV(vel(imin:imax, i), int(imax - imin + 1), MPI_DOUBLE_PRECISION, vel_new(:,i), counts_recv,  &
-            displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)                
+!         call MPI_ALLGATHERV(vel(imin:imax, i), int(imax - imin + 1), MPI_DOUBLE_PRECISION, vel_new(:,i), counts_recv,  &
+!            displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)                
 
-      end do
+!      end do
 
-      call MPI_Barrier(MPI_COMM_WORLD, ierror)    
+!      call MPI_Barrier(MPI_COMM_WORLD, ierror)    
       
      ! print*, "r_new", size(r_new, 1)
 
-      r = r_new
+!      r = r_new
 
-      vel = vel_new
+!      vel = vel_new
 !     print*, "vel_new(6)_1", vel_new(6,:)
       
       if (rank .eq. 0) then
@@ -228,6 +230,8 @@ Program main
 
    if (rank .eq. 0) then
 
+      print*, "r_out", r_out
+
       close (77)
       close (96)
       close (44)
@@ -260,7 +264,7 @@ Program main
       t2 = MPI_Wtime()
       print *, "Time elapsed: ", t2 - t1
    
-      call MPI_Barrier(MPI_COMM_WORLD, ierror)
+ !     call MPI_Waitall(nprocs, counts_recv, MPI_STATUSES_IGNORE, ierror)  
    
       print*, "Barrier passed"
       call MPI_FINALIZE(ierror)

@@ -3,7 +3,7 @@
 FC=mpif90.mpich
 
 # Number of processors
-N=4
+N=1
 
 # Code location
 VPATH=src/

@@ -7,7 +7,7 @@ module integrators
    include 'mpif.h'
 
    Private
-   Public :: time_step_vVerlet, BM, kinetic_energy, inst_temp, momentum, therm_Andersen
+   Public :: time_step_vVerlet, BM, kinetic_energy, inst_temp, momentum, therm_Andersen, time_step_vVerlet_serial
 
 contains
 
@@ -182,6 +182,45 @@ contains
       end do
    !        print*, vel
    End Subroutine
+
+   subroutine time_step_vVerlet_serial(r, vel, pot, N, L, cutoff, dt, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
+      implicit none
+      integer, intent(in) :: N                      !< Number of particles
+      real(8), dimension(N, 3), intent(inout) :: r  !< Particle positions
+      real(8), dimension(N, 3), intent(inout) :: vel  !< Particle velocities
+      real(8), intent(out) :: pot, Ppot                 !< Potential energy
+      real(8), intent(in) :: dt, L, cutoff          !< Time step size, box size, cutoff distance
+      real(8), dimension(N, 3) :: F                 !< Forces
+      integer :: i, nprocs, rank, ierror                                 !< Loop variable
+      integer :: counts_recv(:), displs_recv(:)
+      integer :: imin, imax
+      ! Calculate forces and potential energy using LJ potential
+      call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
+      ! Update positions and velocities using velocity Verlet integration
+      if (rank .eq. 0) then
+         do i = 1, N
+            r(i, :) = r(i, :) + vel(i, :)*dt + 0.5*F(i, :)*dt*dt
+
+            ! Apply periodic boundary conditions
+            do while (any(r(i, :) > L/2.) .or. any(r(i, :) < -L/2.))
+               call pbc_mic(r(i, :), L, size(r(i, :))) !< Apply periodic boundary conditions using the pbc subroutine
+            end do
+
+            vel(i, :) = vel(i, :) + F(i, :)*0.5*dt
+         end do
+      end if
+
+      ! Recalculate forces after updating positions
+      call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
+      
+      if (rank .eq. 0) then
+         ! Update velocities using the updated forces
+         do i = 1, N
+            vel(i, :) = vel(i, :) + F(i, :)*0.5*dt
+         end do
+      end if
+
+   end subroutine time_step_vVerlet_serial
 
 end module integrators
 
