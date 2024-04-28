@@ -167,33 +167,7 @@ Program main
    print*, "Loop starts"
    do step = 1, Nsteps
 
-      call time_step_vVerlet_serial(r, vel, pot, N, L, cutoff, dt, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
-
-!      call MPI_Barrier(MPI_COMM_WORLD, ierror)
-
-      ! sincronitzar els processadors (allgather?)
-      ! int MPI_Allgatherv(const void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf, const int counts_recv[], const int displs_recv[], MPI_Datatype recvtype, MPI_Comm comm)
-!      do i = 1, 3
-         ! loop over dimensions
-    !     print*, "i", i, "step", step, "rank", rank
-    !     print*, imin, imax
-
-!         call MPI_ALLGATHERV(r(imin:imax, i), int(imax - imin + 1), MPI_DOUBLE_PRECISION, r_new(:,i), counts_recv, &
-!            displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
-
-!         call MPI_ALLGATHERV(vel(imin:imax, i), int(imax - imin + 1), MPI_DOUBLE_PRECISION, vel_new(:,i), counts_recv,  &
-!            displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)                
-
-!      end do
-
-!      call MPI_Barrier(MPI_COMM_WORLD, ierror)    
-      
-     ! print*, "r_new", size(r_new, 1)
-
-!      r = r_new
-
-!      vel = vel_new
-!     print*, "vel_new(6)_1", vel_new(6,:)
+      call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
       
       if (rank .eq. 0) then
 !         print*, "vel", vel
