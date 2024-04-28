@@ -4,7 +4,10 @@ module integrators
    use forces
    use pbc_module
 
-   implicit none
+   include 'mpif.h'
+
+   Private
+   Public :: time_step_vVerlet, BM, kinetic_energy, inst_temp, momentum, therm_Andersen
 
 contains
 
@@ -17,7 +20,7 @@ contains
 !! @param L Box size.
 !! @param cutoff Cutoff distance for LJ potential.
 !! @param dt Time step size.
-   subroutine time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, imin, imax)
+   subroutine time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, imin, imax, counts_recv, displs_recv, rank, nprocs)
       implicit none
       integer, intent(in) :: N                      !< Number of particles
       real(8), dimension(N, 3), intent(inout) :: r  !< Particle positions
@@ -26,12 +29,17 @@ contains
       real(8), intent(in) :: dt, L, cutoff          !< Time step size, box size, cutoff distance
       real(8), dimension(N, 3) :: F                 !< Forces
       integer :: i                                  !< Loop variable
+      integer :: nprocs, rank, ierror
+      integer :: counts_recv(:), displs_recv(:)
 
       integer, intent(in) :: imin, imax
       ! Calculate forces and potential energy using LJ potential
 
-    !  print*, "Calling forces subroutine..."
-      call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, imin, imax)  !! TO-DO
+      call MPI_BCAST(r,N*3,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,ierror)
+      call MPI_BCAST(vel,N*3,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,ierror)
+
+    !  print*, "Calling forces subroutine..., rank", rank
+      call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
     !  print*, "Forces calculated."
 
       ! Update positions and velocities using velocity Verlet integration
@@ -48,7 +56,7 @@ contains
       end do
 
       ! Recalculate forces after updating positions
-      call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, imin, imax)
+      call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
 
       ! Update velocities using the updated forces
       do i = 1, N
@@ -56,6 +64,7 @@ contains
       end do
 
    end subroutine time_step_vVerlet
+
 
 
 !> Generate random numbers following a Box-Muller transformation.
@@ -87,7 +96,6 @@ contains
       end do
 
    end subroutine BM
-
 
 !! Calculate the kinetic energy of particles.
 !! @param vel Array containing particle velocities.
@@ -126,74 +134,55 @@ contains
 
    end function inst_temp
 
+
+
+! > Calculate the total momentum of particles.
+!    ! @param vel Array containing particle velocities.
+!    ! @param p Output variable for the total momentum.
+!    ! @param N Number of particles.
+   subroutine momentum(vel, p, N)
+      implicit none
+      integer, intent(in) :: N                           !< Number of particles
+      real(8), dimension(N, 3), intent(in) :: vel        !< Array containing particle velocities
+      real(8), dimension(3) :: total_p                    !< Total momentum
+      integer :: i                                        !< Loop variable
+      real(8), intent(out) :: p                           !< Output variable for the total momentum
+
+      total_p(:) = 0
+
+      ! Accumulate momentum
+      do i = 1, N
+         total_p(:) = total_p(:) + vel(i, :)
+      end do
+
+      ! Calculate the magnitude of the total momentum
+      p = sqrt(total_p(1)**2 + total_p(2)**2 + total_p(3)**2)
+
+   end subroutine momentum
+
+!#################################################################
+
+   Subroutine therm_Andersen(vel, nu, sigma_gaussian, N)
+      Implicit none
+      integer :: i, N
+      real(8) :: rand, nu, sigma_gaussian
+      real(8), dimension(N, 3) :: vel
+      real(8), dimension(2) :: xnums
+
+      do i = 1, N
+         call random_number(rand)
+         if (rand .lt. nu) then
+            call BM(2, xnums, sigma_gaussian)
+            !print*, "xnums: ", xnums
+            vel(i, 1) = xnums(1)
+            vel(i, 2) = xnums(2)
+            call BM(2, xnums, sigma_gaussian)
+            vel(i, 3) = xnums(1)
+         end if
+      end do
+   !        print*, vel
+   End Subroutine
+
 end module integrators
 
-!> Calculate the total momentum of particles.
-   !! @param vel Array containing particle velocities.
-   !! @param p Output variable for the total momentum.
-   !! @param N Number of particles.
-subroutine momentum(vel, p, N)
-   implicit none
-   integer, intent(in) :: N                           !< Number of particles
-   real(8), dimension(N, 3), intent(in) :: vel        !< Array containing particle velocities
-   real(8), dimension(3) :: total_p                    !< Total momentum
-   integer :: i                                        !< Loop variable
-   real(8), intent(out) :: p                           !< Output variable for the total momentum
 
-   total_p(:) = 0
-
-   ! Accumulate momentum
-   do i = 1, N
-      total_p(:) = total_p(:) + vel(i, :)
-   end do
-
-   ! Calculate the magnitude of the total momentum
-   p = sqrt(total_p(1)**2 + total_p(2)**2 + total_p(3)**2)
-
-end subroutine momentum
-
-
-!#################################################################
-
-Subroutine therm_Andersen(vel, nu, sigma_gaussian, N)
-   Implicit none
-   integer :: i, N
-   real(8) :: rand, nu, sigma_gaussian
-   real(8), dimension(N, 3) :: vel
-   real(8), dimension(2) :: xnums
-
-   do i = 1, N
-      call random_number(rand)
-      if (rand .lt. nu) then
-         call BM(2, xnums, sigma_gaussian)
-         !print*, "xnums: ", xnums
-         vel(i, 1) = xnums(1)
-         vel(i, 2) = xnums(2)
-         call BM(2, xnums, sigma_gaussian)
-         vel(i, 3) = xnums(1)
-      end if
-   end do
-!        print*, vel
-End Subroutine
-
-!#################################################################
-
-Subroutine BM(ndat, xnums, sigma)
-   Implicit none
-   Integer ::  ndat, i
-   real(8), dimension(ndat) :: xnums
-   real(8) :: r, phi, x1, x2, sigma
-   real(8), parameter :: pi = 4.d0*atan(1.d0)
-!     ATENCIÓ! Es generen 2ndat numeros
-   Do i = 1, ndat, 2
-      r = sqrt(-2.d0*log(1.d0 - rand()))
-      phi = 2.d0*pi*rand()
-      x1 = r*cos(phi)
-      x2 = r*sin(phi)
-      if (i .ne. ndat) then ! Ens assegurem que no haguem acabat la llista
-         xnums(i) = x1*sigma
-         xnums(i + 1) = x2*sigma
-      end if
-   end do
-   return
-end Subroutine
