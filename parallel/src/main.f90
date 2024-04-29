@@ -11,7 +11,7 @@ Program main
    integer, parameter :: N = 125
    real(8), dimension(N, 3) :: r, r_ini, vel, vel_ini, r_out, v_fin, r_new, vel_new
    integer :: step, i, dt_index, Nsteps
-   real(8) :: pot, K_energy, L, cutoff, M, a, dt, absV, p, tini, tfin, Ppot, Pressure
+   real(8) :: pot, K_energy,total, L, cutoff, M, a, dt, absV, p, tini, tfin, Ppot, Pressure
    real(8), dimension(3) :: dt_list
    real(8) :: nu, sigma_gaussian
    integer, allocatable :: seed(:)
@@ -182,7 +182,8 @@ Program main
 
          write (96, *) step*dt, Pressure
          write (77, *) step*dt, Temp
-         write (44, *) step*dt, pot, K_energy, pot + K_energy, p
+         total = pot + K_energy
+         write (44, '(F9.4, 2X,F9.4, 2X,F9.4, 2X,F9.4, 2X,F9.4, 2X,F9.4)') step*dt, pot, K_energy, total, p 
          if (mod(step, 1000) .eq. 0) then
             print *, int(real(step)/Nsteps*100), "%"
          end if

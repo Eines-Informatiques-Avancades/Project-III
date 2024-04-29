@@ -1,15 +1,13 @@
 
 # Fortran compiler
-FC=mpif90.mpich
+FC=mpif90
 
 # Number of processors
-N=7
+N=5
 
 # Code location
 VPATH=src/
 
-#COMP_D_FLAGS=-Wall -Wextra -g -fcheck=all -Wall -Wextra -pedantic -std=f2008 -fbacktrace -ffpe-trap=zero,overflow,underflow -finit-real=nan -finit-integer=-9999
-COMP_P_FLAGS=-O2 -pg
 
 ######################################################################
 ##               MOLECULAR DYNAMICS /    HELP                       ##
@@ -61,7 +59,7 @@ plot:
 ##                                                                   #
 all: MD.exe
 MD.exe:  pbc.o forces.o integrators.o  initialize.o  main.o
-	$(FC) $(F_FLAGS) $(COMP_P_FLAGS) $(COMP_R_FLAGS) $^ -o $@
+	$(FC) $(F_FLAGS) $(COMP_D_FLAGS) $(COMP_R_FLAGS) $^ -o $@
 
 
 # ~ CLEANING ~
@@ -73,7 +71,7 @@ MD.exe:  pbc.o forces.o integrators.o  initialize.o  main.o
 ##                                                                   #
 .PHONY.: clean
 clean:
-	@rm -f *.o *.mod MD.exe
+	@rm -rf *.o *.mod MD.exe hello.* HELLO
 	@echo "Modules, objects and executable removed!" 
 
 .PHONY.: cleandata
@@ -85,6 +83,11 @@ cleandata:
 cleanplot:
 	@rm -f *.png
 	@echo "Plot files removed!"
+
+.PHONY.: qsub
+qsub:
+	@qsub -q iqtc07.q openmpi.sub
+	@echo "Enviado a cola iqtc07"
 
 # ~ COMPILING ~
 
