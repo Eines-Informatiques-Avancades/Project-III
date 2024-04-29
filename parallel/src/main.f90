@@ -60,8 +60,6 @@ Program main
    allocate (particle_distrib(N))
    allocate (counts_recv(0:nprocs-1))
    allocate (displs_recv(0:nprocs-1))
-!   allocate(counts_recv(nprocs))
-!   allocate(displs_recv(nprocs))
 
    ! Send info to the other processors
    call MPI_Bcast(mass, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
@@ -215,7 +213,6 @@ Program main
    print *, "Loop starts"
    do step = 1, Nsteps
       ! Apply Verlet algorithm
-      print*, step
       call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
 
       if (rank .eq. 0) then

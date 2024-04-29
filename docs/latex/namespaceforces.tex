@@ -2,20 +2,22 @@
 \hypertarget{namespaceforces}{}\label{namespaceforces}\index{forces@{forces}}
 
 
-This module contains the subroutine {\ttfamily find\+\_\+force\+\_\+\+LJ} which calculates the forces and potential energy between particles using the Lennard-\/\+Jones potential. The module provides a public interface for the {\ttfamily find\+\_\+force\+\_\+\+LJ} subroutine. The {\ttfamily find\+\_\+force\+\_\+\+LJ} subroutine takes in the positions of particles, box size, cutoff distance, and returns the forces acting on the particles and the total potential energy. The forces are calculated using periodic boundary conditions (PBC). The module also contains a private section for internal use.  
+Module containing the subroutine {\ttfamily find\+\_\+force\+\_\+\+LJ} which calculates the forces and potential energy between particles using the Lennard-\/\+Jones potential.  
 
 
 \doxysubsubsection*{Functions/\+Subroutines}
 \begin{DoxyCompactItemize}
 \item 
 subroutine, public \mbox{\hyperlink{namespaceforces_af634ff2cd56d59fe07a57e259e3caefd}{find\+\_\+force\+\_\+lj}} (r, n, l, cutoff, f, pot, ppot, nprocs, rank, counts\+\_\+recv, displs\+\_\+recv, imin, imax)
-\begin{DoxyCompactList}\small\item\em Calculates the forces and potential energy between particles using the Lennard-\/\+Jones potential. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Calculates the forces and potential energy between particles using the Lennard-\/\+Jones potential (parallel implementation). \end{DoxyCompactList}\item 
 subroutine, public \mbox{\hyperlink{namespaceforces_a1419d1df02f23b32124a5ab461cadd3e}{find\+\_\+force\+\_\+lj}} (r, n, l, cutoff, f, pot, ppot)
-\begin{DoxyCompactList}\small\item\em Calculates the forces and potential energy between particles using the Lennard-\/\+Jones potential. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Calculates the forces and potential energy between particles using the Lennard-\/\+Jones potential (serial implementation). \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
-This module contains the subroutine {\ttfamily find\+\_\+force\+\_\+\+LJ} which calculates the forces and potential energy between particles using the Lennard-\/\+Jones potential. The module provides a public interface for the {\ttfamily find\+\_\+force\+\_\+\+LJ} subroutine. The {\ttfamily find\+\_\+force\+\_\+\+LJ} subroutine takes in the positions of particles, box size, cutoff distance, and returns the forces acting on the particles and the total potential energy. The forces are calculated using periodic boundary conditions (PBC). The module also contains a private section for internal use. 
+Module containing the subroutine {\ttfamily find\+\_\+force\+\_\+\+LJ} which calculates the forces and potential energy between particles using the Lennard-\/\+Jones potential. 
+
+This module contains the subroutine {\ttfamily find\+\_\+force\+\_\+\+LJ} which calculates the forces and potential energy between particles using the Lennard-\/\+Jones potential. 
 
 \doxysubsection{Function/\+Subroutine Documentation}
 \Hypertarget{namespaceforces_a1419d1df02f23b32124a5ab461cadd3e}\label{namespaceforces_a1419d1df02f23b32124a5ab461cadd3e} 
@@ -26,19 +28,9 @@ This module contains the subroutine {\ttfamily find\+\_\+force\+\_\+\+LJ} which 
 
 
 
-Calculates the forces and potential energy between particles using the Lennard-\/\+Jones potential. 
+Calculates the forces and potential energy between particles using the Lennard-\/\+Jones potential (serial implementation). 
 
 This subroutine calculates the forces and potential energy between particles in a system using the Lennard-\/\+Jones potential. The Lennard-\/\+Jones potential is a pairwise potential that models the interaction between neutral atoms or molecules. It is commonly used to simulate the behavior of noble gases and other non-\/reactive systems.
-
-Parameters\+: r\+: real(8), dimension(\+N, 3), intent(in)
-\begin{DoxyItemize}
-\item The positions of the particles in the system. N\+: integer, intent(in)
-\item The number of particles in the system. L\+: real(8), intent(in)
-\item The length of the simulation box. cutoff\+: real(8), intent(in)
-\item The cutoff distance for the Lennard-\/\+Jones potential. F\+: real(8), dimension(\+N, 3), intent(out)
-\item The forces acting on each particle. pot\+: real(8), intent(out)
-\item The potential energy of the system.
-\end{DoxyItemize}
 
 Notes\+:
 \begin{DoxyItemize}
@@ -52,11 +44,11 @@ Notes\+:
 \index{forces@{forces}!find\_force\_lj@{find\_force\_lj}}
 \index{find\_force\_lj@{find\_force\_lj}!forces@{forces}}
 \doxysubsubsection{\texorpdfstring{find\_force\_lj()}{find\_force\_lj()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
-{\footnotesize\ttfamily subroutine, public forces\+::find\+\_\+force\+\_\+lj (\begin{DoxyParamCaption}\item[{real(8), dimension(n, 3), intent(in)}]{r,  }\item[{integer, intent(in)}]{n,  }\item[{real(8), intent(in)}]{l,  }\item[{real(8), intent(in)}]{cutoff,  }\item[{real(8), dimension(n, 3), intent(out)}]{f,  }\item[{real(8), intent(out)}]{pot,  }\item[{real(8), intent(out)}]{ppot,  }\item[{integer, intent(in)}]{nprocs,  }\item[{integer, intent(in)}]{rank,  }\item[{integer, dimension(\+:)}]{counts\+\_\+recv,  }\item[{integer, dimension(\+:)}]{displs\+\_\+recv,  }\item[{integer}]{imin,  }\item[{integer}]{imax }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily subroutine, public forces\+::find\+\_\+force\+\_\+lj (\begin{DoxyParamCaption}\item[{real(8), dimension(n, 3), intent(in)}]{r,  }\item[{integer, intent(in)}]{n,  }\item[{real(8), intent(in)}]{l,  }\item[{real(8), intent(in)}]{cutoff,  }\item[{real(8), dimension(n, 3), intent(out)}]{f,  }\item[{real(8), intent(out)}]{pot,  }\item[{real(8), intent(out)}]{ppot,  }\item[{integer, intent(in)}]{nprocs,  }\item[{integer, intent(in)}]{rank,  }\item[{integer, dimension(0\+:nprocs)}]{counts\+\_\+recv,  }\item[{integer, dimension(0\+:nprocs-\/1)}]{displs\+\_\+recv,  }\item[{integer}]{imin,  }\item[{integer}]{imax }\end{DoxyParamCaption})}
 
 
 
-Calculates the forces and potential energy between particles using the Lennard-\/\+Jones potential. 
+Calculates the forces and potential energy between particles using the Lennard-\/\+Jones potential (parallel implementation). 
 
 This subroutine calculates the forces and potential energy between particles in a system using the Lennard-\/\+Jones potential. The Lennard-\/\+Jones potential is a pairwise potential that models the interaction between neutral atoms or molecules. It is commonly used to simulate the behavior of noble gases and other non-\/reactive systems.
 

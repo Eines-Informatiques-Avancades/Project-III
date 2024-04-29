@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.15)  28 APR 2024 22:21
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.15)  29 APR 2024 18:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -994,20 +994,20 @@ LaTeX Font Info:    Font shape `T1/phv/m/it' in size <9> not available
 LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
 (Font)              scaled to size 8.09995pt on input line 12.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 7.19995pt on input line 24.
+(Font)              scaled to size 7.19995pt on input line 26.
 LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <8> not available
-(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 25.
+(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 27.
  [7]
 LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <7> not available
-(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 55.
+(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 47.
  [8]) (./namespaceinitialization.tex [9] [10])
 (./namespaceintegrators.tex [11]
-Underfull \hbox (badness 10000) detected at line 78
+Underfull \hbox (badness 10000) detected at line 81
 [][][]
  []
 
 
-Underfull \hbox (badness 10000) detected at line 88
+Underfull \hbox (badness 10000) detected at line 91
 [][][]
  []
 
@@ -1015,27 +1015,27 @@ Underfull \hbox (badness 10000) detected at line 88
 Overfull \vbox (0.52736pt too high) has occurred while \output is active []
 
 
-[12] [13] [14]) [15] [16
-
-] (./refman.ind
+[12] [13] [14]) (./namespacepbc__module.tex [15]) [16] (./refman.ind
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 (Font)              scaled to size 22.39185pt on input line 1.
  [17
 
 
 
-]) (./refman.aux)
+
+])
+(./refman.aux)
 Package rerunfilecheck Info: File `refman.out' has not changed.
-(rerunfilecheck)             Checksum: B1639427D3F1A7C06536B8CFB60A6E2C;6958.
+(rerunfilecheck)             Checksum: F3B7AE0484BA7F873D035F74CD05632D;7378.
  ) 
 Here is how much of TeX's memory you used:
- 18050 strings out of 478287
- 290923 string characters out of 5849289
- 619080 words of memory out of 5000000
- 35805 multiletter control sequences out of 15000+600000
+ 18070 strings out of 478287
+ 291525 string characters out of 5849289
+ 619286 words of memory out of 5000000
+ 35816 multiletter control sequences out of 15000+600000
  525860 words of font info for 98 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 99i,15n,117p,761b,637s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 99i,15n,117p,771b,637s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/
@@ -1045,10 +1045,10 @@ rro8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></
 usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8ac.pfb></usr/share/t
 exlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf
 -dist/fonts/type1/urw/helvetic/uhvro8a.pfb>
-Output written on refman.pdf (21 pages, 122676 bytes).
+Output written on refman.pdf (21 pages, 123567 bytes).
 PDF statistics:
- 456 PDF objects out of 1000 (max. 8388607)
- 402 compressed objects within 5 object streams
- 106 named destinations out of 1000 (max. 500000)
- 273 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 476 PDF objects out of 1000 (max. 8388607)
+ 422 compressed objects within 5 object streams
+ 113 named destinations out of 1000 (max. 500000)
+ 289 words of extra memory for PDF output out of 10000 (max. 10000000)
 

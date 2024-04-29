@@ -1,3 +1,4 @@
+!> Module containing subroutines to apply periodic boundary conditions to a N-dimensional system.
 module pbc_module
 
    implicit none
@@ -11,12 +12,10 @@ contains
       ! OUTPUT: vector
       ! """"
       Implicit none
-      integer :: i
-      integer, intent(in) :: D
-      real(8), dimension(D), intent(inout) :: vector
-      real(8), intent(in) :: L
-
-      !     print*, "vector", vector
+      integer :: i !> Loop variable
+      integer, intent(in) :: D !> Dimension of the system
+      real(8), dimension(D), intent(inout) :: vector !> Vector to apply PBC
+      real(8), intent(in) :: L !> Box size
 
       do i = 1, D
          if (vector(i) .gt. L/2.) then
@@ -47,10 +46,10 @@ contains
       ! OUTPUT: vector
       ! """"
       Implicit none
-      integer :: i
-      integer, intent(in) :: D
-      real(8), dimension(D), intent(inout) :: vector
-      real(8), intent(in) :: L
+      integer :: i !> Loop variable
+      integer, intent(in) :: D !> Dimension of the system
+      real(8), dimension(D), intent(inout) :: vector !> Vector to apply PBC
+      real(8), intent(in) :: L !> Box size
 
       do i = 1, D
          if (vector(i) .gt. L) then
