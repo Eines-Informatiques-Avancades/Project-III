@@ -51,7 +51,7 @@ Contains
       integer, intent(in) :: N
       real(8), dimension(N, 3), intent(out) :: F
       real(8), dimension(N, 3) :: F_new
-      integer :: displs_recv(:), counts_recv(:)
+      integer :: displs_recv(0:nprocs-1), counts_recv(0:nprocs)
       real(8), dimension(N/nprocs, 3) :: F_cut
       real(8), intent(out) :: pot, Ppot
       integer :: imin, imax, k, ii
@@ -95,12 +95,20 @@ Contains
       end do
 
       call MPI_BARRIER(MPI_COMM_WORLD, ierror)
+      if (ierror.ne.0) then
+         print*, "Error in MPI_BARRIER"
+         stop
+      end if
 
       pot_rank = pot
       pot = 0
       !call MPI_GATHER(pot, 1, MPI_DOUBLE_PRECISION, pot_list, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
       !call MPI_GATHER(Ppot, 1, MPI_DOUBLE_PRECISION, Ppot_list, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
       call MPI_REDUCE(pot_rank, pot, 1, MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierror)
+      if (ierror.ne.0) then
+         print*, "Error in MPI_REDUCE"
+         stop
+      end if
 
 !      print*, "Ending forces rutine, rank", rank
 
