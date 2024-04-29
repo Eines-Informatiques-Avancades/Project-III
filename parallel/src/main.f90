@@ -239,6 +239,12 @@ Program main
    print *, "Barrier passed"
    call MPI_FINALIZE(ierror)
 
+   print*, "ierror", ierror
+
+   deallocate (particle_distrib)
+   deallocate (counts_recv)
+   deallocate (displs_recv)
+
    print *, "MPI finalized"
 
 End Program
