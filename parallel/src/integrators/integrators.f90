@@ -30,14 +30,19 @@ contains
       real(8), intent(in) :: dt, L, cutoff          !< Time step size, box size, cutoff distance
       real(8), dimension(N, 3) :: F                 !< Forces
       integer :: i, nprocs, rank, ierror                                 !< Loop variable
-      integer :: counts_recv(:), displs_recv(:)
+      integer :: counts_recv(0:nprocs-1), displs_recv(0:nprocs-1)
       integer :: imin, imax
       real(8), dimension(N, 3) :: r_new, v_new
       ! Calculate forces and potential energy using LJ potential
       call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
       ! Update positions and velocities using velocity Verlet integration
+      
+     
 
       do i = imin, imax
+
+      !   print*, "INITIAL r(i, :): ", i, rank, r(i, :)
+
          r(i, :) = r(i, :) + vel(i, :)*dt + 0.5*F(i, :)*dt*dt
 
          ! Apply periodic boundary conditions
@@ -50,12 +55,30 @@ contains
 
       call MPI_ALLGATHERV(r(imin:imax, 1), int(imax - imin + 1), MPI_DOUBLE_PRECISION, r_new(:, 1), counts_recv, &
                           displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
+      if (ierror .ne. 0) then
+         print*, "Error in MPI_ALLGATHERV"
+         stop
+      end if
       call MPI_ALLGATHERV(r(imin:imax, 2), int(imax - imin + 1), MPI_DOUBLE_PRECISION, r_new(:, 2), counts_recv, &
                           displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
+      if (ierror .ne. 0) then
+         print*, "Error in MPI_ALLGATHERV"
+         stop
+      end if
       call MPI_ALLGATHERV(r(imin:imax, 3), int(imax - imin + 1), MPI_DOUBLE_PRECISION, r_new(:, 3), counts_recv, &
                           displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
+      if (ierror .ne. 0) then
+         print*, "Error in MPI_ALLGATHERV"
+         stop
+      end if
 
       r = r_new
+
+   !   print*, "rank", rank, "imin", imin, "imax", imax
+   !   print*, "rank", rank, "counts_recv", counts_recv
+   !   print*, "rank", rank, "displs_recv", displs_recv
+
+   !   print*, "FINAL r(i, :): ", i, rank, r(i, :)
 
       ! Recalculate forces after updating positions
       call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
@@ -67,11 +90,22 @@ contains
 
       call MPI_ALLGATHERV(vel(imin:imax, 1), int(imax - imin + 1), MPI_DOUBLE_PRECISION, v_new(:, 1), counts_recv, &
                           displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
+      if (ierror .ne. 0) then
+         print*, "Error in MPI_ALLGATHERV"
+         stop
+      end if
       call MPI_ALLGATHERV(vel(imin:imax, 2), int(imax - imin + 1), MPI_DOUBLE_PRECISION, v_new(:, 2), counts_recv, &
                           displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
+      if (ierror .ne. 0) then
+         print*, "Error in MPI_ALLGATHERV"
+         stop
+      end if
       call MPI_ALLGATHERV(vel(imin:imax, 3), int(imax - imin + 1), MPI_DOUBLE_PRECISION, v_new(:, 3), counts_recv, &
                           displs_recv, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, ierror)
-
+      if (ierror .ne. 0) then
+         print*, "Error in MPI_ALLGATHERV"
+         stop
+      end if
       vel = v_new
 
    end subroutine time_step_vVerlet
