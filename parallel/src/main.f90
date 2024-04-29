@@ -40,7 +40,7 @@ Program main
    L = (N/rho)**(1./3.)
    M = N**(1./3.)
    a = L/(M)
-   nu = 1
+   nu = 0.1
 
    dt = 1e-4
 
@@ -110,7 +110,8 @@ Program main
    ! Initialize bimodal distrubution: v_i = +- sqrt(T' / m)
    absV = (Temp/mass)**(1./2.)
    print *, absV
-
+    
+   sigma_gaussian = absV
    if (rank == 0) then
       open (22, file="vel_ini.dat")
       open (33, file="pos_ini.dat")
@@ -171,7 +172,7 @@ Program main
 
       if (rank .eq. 0) then
 !         print*, "vel", vel
-!         call therm_Andersen(vel, nu, sigma_gaussian, N)
+         call therm_Andersen(vel, nu, sigma_gaussian, N)
 !         print*, "vel", vel
          call kinetic_energy(vel, K_energy, N)
          call momentum(vel, p, N)
