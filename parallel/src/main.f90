@@ -19,7 +19,7 @@ Program main
    real(8) :: t1, t2
 
    ! MPI
-   integer :: ierror, rank, nprocs, imin, imax
+   integer :: ierror, rank, nprocs, imin, imax, counts_recv_rank, displs_recv_rank
    integer, allocatable :: particle_distrib(:), counts_recv(:), displs_recv(:)
 
    include 'mpif.h'
@@ -58,19 +58,57 @@ Program main
    call MPI_COMM_SIZE(MPI_COMM_WORLD, nprocs, ierror)
 
    allocate (particle_distrib(N))
-   allocate (counts_recv(nprocs))
-   allocate (displs_recv(nprocs))
+   allocate (counts_recv(0:nprocs-1))
+   allocate (displs_recv(0:nprocs-1))
+!   allocate(counts_recv(nprocs))
+!   allocate(displs_recv(nprocs))
 
    ! Send info to the other processors
    call MPI_Bcast(mass, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   if (ierror.ne.0) then
+      print *, "Error broadcasting mass"
+      stop
+   end if
    call MPI_Bcast(rho, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   if (ierror.ne.0) then
+      print *, "Error broadcasting rho"
+      stop
+   end if
    call MPI_Bcast(epsilon, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   if (ierror.ne.0) then
+      print *, "Error broadcasting epsilon"
+      stop
+   end if
    call MPI_Bcast(sigma, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   if (ierror.ne.0) then
+      print *, "Error broadcasting sigma"
+      stop
+   end if
    call MPI_Bcast(Temp, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   if (ierror.ne.0) then
+      print *, "Error broadcasting Temp"
+      stop
+   end if
    call MPI_Bcast(tfin, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   if (ierror.ne.0) then
+      print *, "Error broadcasting tfin"
+      stop
+   end if
    call MPI_Bcast(L, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   if (ierror.ne.0) then
+      print *, "Error broadcasting L"
+      stop
+   end if
    call MPI_Bcast(M, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   if (ierror.ne.0) then
+      print *, "Error broadcasting M"
+      stop
+   end if
    call MPI_Bcast(a, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+   if (ierror.ne.0) then
+      print *, "Error broadcasting a"
+      stop
+   end if
 
    ! wait until the reading has finished
 !   call MPI_Barrier(MPI_COMM_WORLD, ierror)
@@ -86,21 +124,29 @@ Program main
    ! build counts_recv: non-negative integer array (of length group size) 
    ! containing the number of elements that are received from each process 
    ! (non-negative integer)
-   counts_recv(rank) = imax - imin + 1
+   counts_recv_rank = imax - imin + 1
 
-   call MPI_ALLGATHER(counts_recv(rank), 1, MPI_INTEGER, counts_recv, 1, MPI_INTEGER, MPI_COMM_WORLD, ierror)
+   call MPI_BARRIER(MPI_COMM_WORLD, ierror)
 
-   print *, counts_recv
+   call MPI_ALLGATHER(counts_recv_rank, 1, MPI_INTEGER, counts_recv, 1, MPI_INTEGER, MPI_COMM_WORLD, ierror)
+   if (ierror.ne.0) then
+      print *, "Error gathering counts_recv"
+      stop
+   end if
+
+   print*, "counts_recv", counts_recv
 
    ! build displs_recv: integer array (of length group size). 
    ! Entry i specifies the displacement (relative to recvbuf) 
    ! at which to place the incoming data from process i (integer)
-   if (rank > 0) then
-      displs_recv(rank) = sum(counts_recv(1:rank))
-   end if
+   displs_recv_rank = sum(counts_recv(0:rank-1))
 
-   call MPI_ALLGATHER(displs_recv(rank), 1, MPI_INTEGER, displs_recv, 1, MPI_INTEGER, MPI_COMM_WORLD, ierror)
-   print *, "displs_recv", displs_recv
+   call MPI_ALLGATHER(displs_recv_rank, 1, MPI_INTEGER, displs_recv, 1, MPI_INTEGER, MPI_COMM_WORLD, ierror)
+   if (ierror.ne.0) then
+      print *, "Error gathering displs_recv"
+      stop
+   end if
+   print*, "displs_recv", displs_recv
 
    ! """"
    ! ii) Initialize system and run simulation using velocity Verlet
@@ -109,7 +155,7 @@ Program main
 
    ! Initialize bimodal distrubution: v_i = +- sqrt(T' / m)
    absV = (Temp/mass)**(1./2.)
-   print *, absV
+   print *, "absV", absV
 
    if (rank == 0) then
       open (22, file="vel_ini.dat")
@@ -164,9 +210,12 @@ Program main
    r = r_ini
    vel = vel_ini
 
+   r_out = 0
+
    print *, "Loop starts"
    do step = 1, Nsteps
       ! Apply Verlet algorithm
+      print*, step
       call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
 
       if (rank .eq. 0) then
@@ -196,7 +245,7 @@ Program main
 
       end if
 
-      call MPI_Bcast(vel, N*3, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+!      call MPI_Bcast(vel, N*3, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
    end do
 
    if (rank .eq. 0) then
@@ -239,6 +288,14 @@ Program main
 
    print *, "Barrier passed"
    call MPI_FINALIZE(ierror)
+   if (ierror.ne.0) then
+      print *, "Error finalizing MPI"
+      stop
+   end if
+
+   deallocate (particle_distrib)
+   deallocate (counts_recv)
+   deallocate (displs_recv)
 
    print *, "MPI finalized"
 

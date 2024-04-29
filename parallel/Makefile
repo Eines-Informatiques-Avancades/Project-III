@@ -3,10 +3,14 @@
 FC=mpif90
 
 # Number of processors
-N=5
+N=4
+
 
 # Code location
 VPATH=src/
+
+#COMP_D_FLAGS=-Wall -Wextra -g -fcheck=all -Wall -Wextra -pedantic -std=f2008 -fbacktrace -ffpe-trap=zero,overflow,underflow -finit-real=nan -finit-integer=-9999
+#COMP_P_FLAGS=-O0 -g #-pg -fallow-argument-mismatch
 
 
 ######################################################################
