@@ -102,35 +102,6 @@ contains
 
    end subroutine time_step_vVerlet
 
-!> Generate random numbers following a Box-Muller transformation.
-!! Generates normally distributed random numbers using the Box-Muller transformation.
-!! @param ndat Number of data points (must be even).
-!! @param xnums Output array containing the generated random numbers.
-!! @param sigma Standard deviation of the normal distribution.
-   subroutine BM(ndat, xnums, sigma)
-      implicit none
-      integer, intent(in) :: ndat                     !< Number of data points (must be even)
-      integer :: i                                     !< Loop variable
-      real(8), dimension(ndat), intent(out) :: xnums  !< Output array containing generated random numbers
-      real(8) :: r, phi, x1, x2                        !< Variables for the Box-Muller transformation
-      real(8), intent(in) :: sigma                     !< Standard deviation of the normal distribution
-      real(8), parameter :: pi = 4.d0*atan(1.d0)     !< Mathematical constant pi
-
-      ! Generate random numbers using Box-Muller transformation
-      do i = 1, ndat, 2
-         r = sqrt(-2.d0*log(1.d0 - rand()))
-         phi = 2.d0*pi*rand()
-         x1 = r*cos(phi)
-         x2 = r*sin(phi)
-
-         ! Store the generated random numbers in the output array
-         if (i .ne. ndat) then
-            xnums(i) = x1*sigma
-            xnums(i + 1) = x2*sigma
-         end if
-      end do
-
-   end subroutine BM
 
 !! Calculate the kinetic energy of particles.
 !! @param vel Array containing particle velocities.
@@ -193,7 +164,6 @@ contains
 
    end subroutine momentum
 
-
 ! > Andersen thermostat. Randomly select a particle and assign it a new velocity.
 !    ! @param vel Array containing particle velocities.
 !    ! @param nu Probability of selecting a particle.
@@ -223,5 +193,44 @@ contains
 
    End Subroutine
 
-end module integrators
 
+!#################################################################
+
+
+ !> Generate random numbers following a Box-Muller transformation.
+ !! Generates normally distributed random numbers using the Box-Muller transformation.
+ !! @param ndat Number of data points (must be even).
+ !! @param xnums Output array containing the generated random numbers.
+ !! @param sigma Standard deviation of the normal distribution.
+
+    subroutine BM(ndat, xnums, sigma)
+       implicit none
+       integer, intent(in) :: ndat                     !< Number of data points (must be even)
+       integer :: i                                     !< Loop variable
+       real(8), dimension(ndat), intent(out) :: xnums  !< Output array containing generated random numbers
+       real(8) :: r, phi, x1, x2, rand1, rand2            !< Variables for the Box-Muller transformation
+       real(8), intent(in) :: sigma                     !< Standard deviation of the normal distribution
+       real(8), parameter :: pi = 4.d0*atan(1.d0)     !< Mathematical constant pi
+
+       ! Generate random numbers using Box-Muller transformation
+        
+       do i = 1, ndat, 2
+          call random_number(rand1)
+          call random_number(rand2)
+          r = sqrt(-2.d0*log(1.d0 - rand1))
+          phi = 2.d0*pi*rand2
+          x1 = r*cos(phi)
+          x2 = r*sin(phi)
+
+          ! Store the generated random numbers in the output array
+          if (i .ne. ndat) then
+             xnums(i) = x1*sigma
+             xnums(i + 1) = x2*sigma
+          end if
+       end do
+
+    end subroutine BM
+
+
+
+end module integrators
