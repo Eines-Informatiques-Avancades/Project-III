@@ -27,6 +27,7 @@ VPATH=src/
 ##    !IMPORTANT: Remember   to   choose    your                     #
 ##                parameters in namMD.nml file!!                     #
 ##                                                                   #
+##-------------------------------------------------------------------#
 ##                                                                   #
 ## - Commands:                                                       #
 ##                                                                   #
@@ -42,21 +43,44 @@ help:
 run: MD.exe
 	mpirun -n ${N} ./MD.exe
 
-# ~ PLOTS ~
-##  · make plot: Plots the output data:                              #
+# ~ SUBMITTING TO QUEUE ~
+##  · make qsub: Submits the job to the queue (iqtc07)               #
 ##                                                                   #
+
+.PHONY.: qsub
+qsub:
+	@qsub -q iqtc07.q openmpi.sub
+	@echo "Enviado a cola iqtc07"
+
+# ~ PLOTS ~
+##  · make plot: Plots the output data and perform statistics:       #
+##                                                                   #
+##     Plots                                                         #
 ##      - Epot, Ekin, Etot vs time                                   #
 ##      - Momentum vs time                                           #
 ##      - T vs time                                                  #
 ##      - Pressure vs time                                           #
+##      - Radial distribution function                               #
+##                                                                   #
+##     Statistics                                                    #
+##      - Mean values of Epot, Ekin, Etot, momentum, T, P            #
+##             with standard deviations                              #
 ##                                                                   #
 
 .PHONY.: plot
 plot:
-	@echo "Plotting files..."
+	@echo "Plotting files... (this may take a while)"
 	@python3 ./src/plots/plots.py
-	@cp ./src/plots/*.png ./
+	@cp ./src/plots/*.png ./src/plots/*.gif ./results/
 	@echo "Done! Check the plots in the main directory."
+	@echo "Calculating statistics..."
+	@echo " "
+	@python3 ./src/postproc/stats.py
+	@cp ./src/postproc/*.png ./src/postproc/*.dat ./results/
+	@echo " "
+	@echo "Done! Check the statistics in the results folder."
+
+
 
 # ~ LINKING ~
 ##  · make all: Compiles the program and creates executable MD.exe   #
@@ -88,10 +112,7 @@ cleanplot:
 	@rm -f *.png
 	@echo "Plot files removed!"
 
-.PHONY.: qsub
-qsub:
-	@qsub -q iqtc07.q openmpi.sub
-	@echo "Enviado a cola iqtc07"
+
 
 # ~ COMPILING ~
 
