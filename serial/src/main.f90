@@ -1,3 +1,15 @@
+!> @file main.f90
+!! @brief Main program for the molecular dynamics simulation
+!! @author A. Monclús, A. Plazas, M. Serrano, A. Gaya
+!! @date April 2024
+!! @details This program runs a molecular dynamics simulation using the velocity Verlet algorithm
+!! and the Andersen thermostat. The system is composed of N particles with Lennard-Jones interactions.
+!! The program reads the parameters from the file namMD.nml and writes the initial and final positions and
+!! velocities to files pos_ini.dat, pos_out.dat, vel_ini.dat and vel_fin.dat. The program also writes the
+!! energy, temperature and pressure of the system to files energy_verlet.dat, Temperatures_verlet.dat and
+!! pressure_verlet.dat. The program also writes the velocities of the particles for the last 10% of the
+!! simulation to file vel_fin_verlet.dat.
+
 Program main
 
    use :: integrators

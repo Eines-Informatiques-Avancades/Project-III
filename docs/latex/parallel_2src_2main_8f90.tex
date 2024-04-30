@@ -1,0 +1,27 @@
+\doxysection{parallel/src/main.f90 File Reference}
+\hypertarget{parallel_2src_2main_8f90}{}\label{parallel_2src_2main_8f90}\index{parallel/src/main.f90@{parallel/src/main.f90}}
+
+
+Program to simulate a Lennard-\/\+Jones fluid using MPI.  
+
+
+\doxysubsubsection*{Functions/\+Subroutines}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{parallel_2src_2main_8f90_a8ec2266d83cd6c0b762cbcbc92c0af3d}\label{parallel_2src_2main_8f90_a8ec2266d83cd6c0b762cbcbc92c0af3d} 
+program {\bfseries main}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Program to simulate a Lennard-\/\+Jones fluid using MPI. 
+
+\begin{DoxyAuthor}{Author}
+A. Monclús, A. Plazas, M. Serrano, A. Gaya 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+April 2024s
+\end{DoxyDate}
+Program to simulate a Lennard-\/\+Jones fluid using MPI
+
+The program simulates a Lennard-\/\+Jones fluid using the velocity Verlet algorithm. The program is parallelized using MPI. The program reads the parameters from a namelist file called nam\+MD.\+nml. The program writes the initial and final positions and velocities to files called pos\+\_\+ini.\+dat, vel\+\_\+ini.\+dat, pos\+\_\+out.\+dat and vel\+\_\+fin.\+dat. The program writes the energy, temperature and pressure to files called energy\+\_\+verlet.\+dat, Temperatures\+\_\+verlet.\+dat and pressure\+\_\+verlet.\+dat. The program writes the distribution of positions and velocities for the last 10\% of the simulation to files called pos\+\_\+out.\+dat and vel\+\_\+fin.\+dat. The program writes the time elapsed to the standard output. 

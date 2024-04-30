@@ -9,29 +9,39 @@
 \contentsline {section}{\numberline {1.6}Contributors}{2}{section.1.6}%
 \contentsline {chapter}{\numberline {2}Modules Index}{5}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Modules List}{5}{section.2.1}%
-\contentsline {chapter}{\numberline {3}Module Documentation}{7}{chapter.3}%
-\contentsline {section}{\numberline {3.1}forces Module Reference}{7}{section.3.1}%
-\contentsline {subsection}{\numberline {3.1.1}Detailed Description}{7}{subsection.3.1.1}%
-\contentsline {subsection}{\numberline {3.1.2}Function/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Subroutine Documentation}{7}{subsection.3.1.2}%
-\contentsline {subsubsection}{\numberline {3.1.2.1}find\_force\_lj()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{7}{subsubsection.3.1.2.1}%
-\contentsline {subsubsection}{\numberline {3.1.2.2}find\_force\_lj()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{8}{subsubsection.3.1.2.2}%
-\contentsline {section}{\numberline {3.2}initialization Module Reference}{9}{section.3.2}%
-\contentsline {subsection}{\numberline {3.2.1}Detailed Description}{9}{subsection.3.2.1}%
-\contentsline {subsection}{\numberline {3.2.2}Function/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Subroutine Documentation}{9}{subsection.3.2.2}%
-\contentsline {subsubsection}{\numberline {3.2.2.1}distribute\_particles()}{9}{subsubsection.3.2.2.1}%
-\contentsline {subsubsection}{\numberline {3.2.2.2}initialize\_positions()}{10}{subsubsection.3.2.2.2}%
-\contentsline {subsubsection}{\numberline {3.2.2.3}initialize\_velocities()}{10}{subsubsection.3.2.2.3}%
-\contentsline {section}{\numberline {3.3}integrators Module Reference}{11}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Detailed Description}{11}{subsection.3.3.1}%
-\contentsline {subsection}{\numberline {3.3.2}Function/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Subroutine Documentation}{11}{subsection.3.3.2}%
-\contentsline {subsubsection}{\numberline {3.3.2.1}bm()}{11}{subsubsection.3.3.2.1}%
-\contentsline {subsubsection}{\numberline {3.3.2.2}inst\_temp()}{12}{subsubsection.3.3.2.2}%
-\contentsline {subsubsection}{\numberline {3.3.2.3}kinetic\_energy()}{12}{subsubsection.3.3.2.3}%
-\contentsline {subsubsection}{\numberline {3.3.2.4}momentum()}{13}{subsubsection.3.3.2.4}%
-\contentsline {subsubsection}{\numberline {3.3.2.5}time\_step\_euler\_pbc()}{13}{subsubsection.3.3.2.5}%
-\contentsline {subsubsection}{\numberline {3.3.2.6}time\_step\_verlet()}{13}{subsubsection.3.3.2.6}%
-\contentsline {subsubsection}{\numberline {3.3.2.7}time\_step\_vverlet()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{14}{subsubsection.3.3.2.7}%
-\contentsline {subsubsection}{\numberline {3.3.2.8}time\_step\_vverlet()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{15}{subsubsection.3.3.2.8}%
-\contentsline {section}{\numberline {3.4}pbc\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}\_\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}module Module Reference}{15}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Detailed Description}{16}{subsection.3.4.1}%
-\contentsline {chapter}{Index}{17}{section*.5}%
+\contentsline {chapter}{\numberline {3}File Index}{7}{chapter.3}%
+\contentsline {section}{\numberline {3.1}File List}{7}{section.3.1}%
+\contentsline {chapter}{\numberline {4}Module Documentation}{9}{chapter.4}%
+\contentsline {section}{\numberline {4.1}forces Module Reference}{9}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Detailed Description}{9}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Function/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Subroutine Documentation}{9}{subsection.4.1.2}%
+\contentsline {subsubsection}{\numberline {4.1.2.1}find\_force\_lj()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{9}{subsubsection.4.1.2.1}%
+\contentsline {subsubsection}{\numberline {4.1.2.2}find\_force\_lj()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{10}{subsubsection.4.1.2.2}%
+\contentsline {section}{\numberline {4.2}initialization Module Reference}{11}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Detailed Description}{11}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Function/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Subroutine Documentation}{11}{subsection.4.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.2.1}distribute\_particles()}{11}{subsubsection.4.2.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.2.2}initialize\_positions()}{12}{subsubsection.4.2.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.2.3}initialize\_velocities()}{12}{subsubsection.4.2.2.3}%
+\contentsline {section}{\numberline {4.3}integrators Module Reference}{13}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Detailed Description}{13}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Function/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Subroutine Documentation}{13}{subsection.4.3.2}%
+\contentsline {subsubsection}{\numberline {4.3.2.1}bm()}{13}{subsubsection.4.3.2.1}%
+\contentsline {subsubsection}{\numberline {4.3.2.2}inst\_temp()}{14}{subsubsection.4.3.2.2}%
+\contentsline {subsubsection}{\numberline {4.3.2.3}kinetic\_energy()}{14}{subsubsection.4.3.2.3}%
+\contentsline {subsubsection}{\numberline {4.3.2.4}momentum()}{15}{subsubsection.4.3.2.4}%
+\contentsline {subsubsection}{\numberline {4.3.2.5}time\_step\_euler\_pbc()}{15}{subsubsection.4.3.2.5}%
+\contentsline {subsubsection}{\numberline {4.3.2.6}time\_step\_verlet()}{15}{subsubsection.4.3.2.6}%
+\contentsline {subsubsection}{\numberline {4.3.2.7}time\_step\_vverlet()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{16}{subsubsection.4.3.2.7}%
+\contentsline {subsubsection}{\numberline {4.3.2.8}time\_step\_vverlet()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{17}{subsubsection.4.3.2.8}%
+\contentsline {section}{\numberline {4.4}pbc\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}\_\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}module Module Reference}{17}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Detailed Description}{18}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Function/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Subroutine Documentation}{18}{subsection.4.4.2}%
+\contentsline {subsubsection}{\numberline {4.4.2.1}pbc()}{18}{subsubsection.4.4.2.1}%
+\contentsline {subsubsection}{\numberline {4.4.2.2}pbc\_mic()}{18}{subsubsection.4.4.2.2}%
+\contentsline {chapter}{\numberline {5}File Documentation}{19}{chapter.5}%
+\contentsline {section}{\numberline {5.1}parallel/src/main.f90 File Reference}{19}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Detailed Description}{19}{subsection.5.1.1}%
+\contentsline {section}{\numberline {5.2}serial/src/main.f90 File Reference}{19}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Detailed Description}{20}{subsection.5.2.1}%
+\contentsline {chapter}{Index}{21}{section*.7}%

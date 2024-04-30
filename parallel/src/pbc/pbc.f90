@@ -5,6 +5,11 @@ module pbc_module
 
 contains
 
+!> Subroutine to apply periodic boundary conditions to a N-dimensional system, minimum image convention
+!> @param vector Vector to apply PBC
+!> @param L Box size
+!> @param D Dimension of the system
+
    Subroutine pbc_mic(vector, L, D)
       ! """"
       ! Applies periodic boundary conditions to a N-dimensional system, minimum image convention
@@ -37,6 +42,11 @@ contains
    End Subroutine
 
    !########################################################################################################
+
+!> Subroutine to apply periodic boundary conditions to a N-dimensional system
+!> @param vector Vector to apply PBC
+!> @param L Box size
+!> @param D Dimension of the system
 
    Subroutine pbc(vector, L, D)
       ! """"
