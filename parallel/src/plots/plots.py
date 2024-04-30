@@ -77,12 +77,26 @@ def update(frame):          # Define the update function for the animation
 # temperature[:, 0] = temperature[:, 0]*6.022e23*np.sqrt(mass/1000*sigma**2*1e-20/eps)
 # pressure[:, 0] = pressure[:, 0]*6.022e23*np.sqrt(mass/1000*sigma**2*1e-20/eps)
 
+#--------------------------------POSICIONS INICIALS--------------------------------|
+pos_ini = np.loadtxt("../../pos_ini.dat", dtype=float)
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter(pos_ini[:, 0], pos_ini[:, 1], pos_ini[:, 2], color='#8F4B53')
+ax.set_title('Initial Particle Positions')
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
+plt.savefig('Initial_positions.png', dpi=300)
+#plt.show()
+
+
+
 #-----------------------------------TRAJECTORIES-----------------------------------|
 
-pos_fin = np.loadtxt("../../pos_out.dat", skiprows=1, usecols=(1,2,3),dtype=float)
+pos_fin = np.loadtxt("../../traj.xyz", skiprows=1, usecols=(1,2,3),dtype=float)
 
 N = 125
-
 n_frames = int(len(pos_fin)/N)              # Number of frames
 traj = np.array_split(pos_fin, n_frames)    # Split the array into frames
 
@@ -122,7 +136,7 @@ r = np.linspace(0.5*dr, L/2-0.5*dr, len(rdf_hist))
 
 plt.figure()
 plt.axhline(y=1, color='black', linestyle='--', linewidth=0.5)
-plt.plot(r, rdf_hist, label='Radial Distribution Function', color='#5782FB')
+plt.plot(r, rdf_hist, label='g(r)', color='#5782FB')
 plt.xlabel('r(Angstrom)')
 plt.ylabel('g(r)')
 plt.title('Radial Distribution Function')
