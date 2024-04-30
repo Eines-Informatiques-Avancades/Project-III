@@ -1,0 +1,25 @@
+\doxysection{serial/src/main.f90 File Reference}
+\hypertarget{serial_2src_2main_8f90}{}\label{serial_2src_2main_8f90}\index{serial/src/main.f90@{serial/src/main.f90}}
+
+
+Main program for the molecular dynamics simulation.  
+
+
+\doxysubsubsection*{Functions/\+Subroutines}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{serial_2src_2main_8f90_a8ec2266d83cd6c0b762cbcbc92c0af3d}\label{serial_2src_2main_8f90_a8ec2266d83cd6c0b762cbcbc92c0af3d} 
+program {\bfseries main}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Main program for the molecular dynamics simulation. 
+
+\begin{DoxyAuthor}{Author}
+A. Monclús, A. Plazas, M. Serrano, A. Gaya 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+April 2024
+\end{DoxyDate}
+This program runs a molecular dynamics simulation using the velocity Verlet algorithm and the Andersen thermostat. The system is composed of N particles with Lennard-\/\+Jones interactions. The program reads the parameters from the file nam\+MD.\+nml and writes the initial and final positions and velocities to files pos\+\_\+ini.\+dat, pos\+\_\+out.\+dat, vel\+\_\+ini.\+dat and vel\+\_\+fin.\+dat. The program also writes the energy, temperature and pressure of the system to files energy\+\_\+verlet.\+dat, Temperatures\+\_\+verlet.\+dat and pressure\+\_\+verlet.\+dat. The program also writes the velocities of the particles for the last 10\% of the simulation to file vel\+\_\+fin\+\_\+verlet.\+dat. 

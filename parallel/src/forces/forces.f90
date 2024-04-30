@@ -1,10 +1,5 @@
-!> This module contains the subroutine `find_force_LJ` which calculates the forces and potential energy
+!> Module containing the subroutine `find_force_LJ` which calculates the forces and potential energy
 !> between particles using the Lennard-Jones potential.
-!> The module provides a public interface for the `find_force_LJ` subroutine.
-!> The `find_force_LJ` subroutine takes in the positions of particles, box size, cutoff distance,
-!> and returns the forces acting on the particles and the total potential energy.
-!> The forces are calculated using periodic boundary conditions (PBC).
-!> The module also contains a private section for internal use.
 Module forces
    use pbc_module
    include 'mpif.h'
@@ -13,7 +8,7 @@ Module forces
 
 Contains
 
-   !> Calculates the forces and potential energy between particles using the Lennard-Jones potential.
+   !> Calculates the forces and potential energy between particles using the Lennard-Jones potential (parallel implementation).
     !!
     !! This subroutine calculates the forces and potential energy between particles in a system using the Lennard-Jones potential. The Lennard-Jones potential is a pairwise potential that models the interaction between neutral atoms or molecules. It is commonly used to simulate the behavior of noble gases and other non-reactive systems.
     !!
@@ -56,10 +51,6 @@ Contains
       real(8), intent(out) :: pot, Ppot
       integer :: imin, imax, k, ii
 
-      !     print*, "Starting forces rutine, rank", rank
-
-!      call MPI_BCAST(r,N*3,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,ierror)
-
       pot = 0.d0
       Ppot = 0.d0
       F = 0.d0
@@ -94,23 +85,20 @@ Contains
          end do
       end do
 
-      call MPI_BARRIER(MPI_COMM_WORLD, ierror)
-      if (ierror.ne.0) then
-         print*, "Error in MPI_BARRIER"
-         stop
-      end if
+ !     call MPI_BARRIER(MPI_COMM_WORLD, ierror)
+ !     if (ierror.ne.0) then
+ !        print*, "Error in MPI_BARRIER"
+ !        stop
+ !     end if
 
       pot_rank = pot
       pot = 0
-      !call MPI_GATHER(pot, 1, MPI_DOUBLE_PRECISION, pot_list, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
-      !call MPI_GATHER(Ppot, 1, MPI_DOUBLE_PRECISION, Ppot_list, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
+
       call MPI_REDUCE(pot_rank, pot, 1, MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierror)
       if (ierror.ne.0) then
          print*, "Error in MPI_REDUCE"
          stop
       end if
-
-!      print*, "Ending forces rutine, rank", rank
 
       pot = pot/2
 

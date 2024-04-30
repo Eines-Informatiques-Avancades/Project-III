@@ -1,0 +1,58 @@
+\doxysection{pbc\+\_\+module Module Reference}
+\hypertarget{namespacepbc__module}{}\label{namespacepbc__module}\index{pbc\_module@{pbc\_module}}
+
+
+Module containing subroutines to apply periodic boundary conditions to a N-\/dimensional system.  
+
+
+\doxysubsubsection*{Functions/\+Subroutines}
+\begin{DoxyCompactItemize}
+\item 
+subroutine \mbox{\hyperlink{namespacepbc__module_a27b122bd3c9ffde51b6d87808847d1ee}{pbc\+\_\+mic}} (vector, l, d)
+\begin{DoxyCompactList}\small\item\em Subroutine to apply periodic boundary conditions to a N-\/dimensional system, minimum image convention. \end{DoxyCompactList}\item 
+subroutine real(8), dimension(d), intent(inout) \mbox{\hyperlink{namespacepbc__module_a8b2884772b004da49bb5d85bcd65472a}{pbc}} (vector, l, d)
+\begin{DoxyCompactList}\small\item\em Subroutine to apply periodic boundary conditions to a N-\/dimensional system. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Module containing subroutines to apply periodic boundary conditions to a N-\/dimensional system. 
+
+\doxysubsection{Function/\+Subroutine Documentation}
+\Hypertarget{namespacepbc__module_a8b2884772b004da49bb5d85bcd65472a}\label{namespacepbc__module_a8b2884772b004da49bb5d85bcd65472a} 
+\index{pbc\_module@{pbc\_module}!pbc@{pbc}}
+\index{pbc@{pbc}!pbc\_module@{pbc\_module}}
+\doxysubsubsection{\texorpdfstring{pbc()}{pbc()}}
+{\footnotesize\ttfamily subroutine pbc\+\_\+module\+::pbc (\begin{DoxyParamCaption}\item[{real(8), dimension(d), intent(inout)}]{vector,  }\item[{real(8), intent(in)}]{l,  }\item[{integer, intent(in)}]{d }\end{DoxyParamCaption})}
+
+
+
+Subroutine to apply periodic boundary conditions to a N-\/dimensional system. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em vector} & Vector to apply PBC \\
+\hline
+{\em L} & Box size \\
+\hline
+{\em D} & Dimension of the system \\
+\hline
+\end{DoxyParams}
+\Hypertarget{namespacepbc__module_a27b122bd3c9ffde51b6d87808847d1ee}\label{namespacepbc__module_a27b122bd3c9ffde51b6d87808847d1ee} 
+\index{pbc\_module@{pbc\_module}!pbc\_mic@{pbc\_mic}}
+\index{pbc\_mic@{pbc\_mic}!pbc\_module@{pbc\_module}}
+\doxysubsubsection{\texorpdfstring{pbc\_mic()}{pbc\_mic()}}
+{\footnotesize\ttfamily subroutine pbc\+\_\+module\+::pbc\+\_\+mic (\begin{DoxyParamCaption}\item[{real(8), dimension(d), intent(inout)}]{vector,  }\item[{real(8), intent(in)}]{l,  }\item[{integer, intent(in)}]{d }\end{DoxyParamCaption})}
+
+
+
+Subroutine to apply periodic boundary conditions to a N-\/dimensional system, minimum image convention. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em vector} & Vector to apply PBC \\
+\hline
+{\em L} & Box size \\
+\hline
+{\em D} & Dimension of the system \\
+\hline
+\end{DoxyParams}

@@ -7,11 +7,11 @@ module integrators
    include 'mpif.h'
 
    Private
-   Public :: time_step_vVerlet, BM, kinetic_energy, inst_temp, momentum, therm_Andersen, time_step_vVerlet_serial
+   Public :: time_step_vVerlet, BM, kinetic_energy, inst_temp, momentum, therm_Andersen
 
 contains
 
-!> Perform a time step using the velocity Verlet integration method.
+!> Perform a time step using the velocity Verlet integration method. Parallel implementation.
 !! Calculates new positions and velocities for particles based on forces and previous positions/velocities.
 !! @param r Input/Output array containing particle positions.
 !! @param vel Input/Output array containing particle velocities.
@@ -29,19 +29,17 @@ contains
       real(8), intent(out) :: pot, Ppot                 !< Potential energy
       real(8), intent(in) :: dt, L, cutoff          !< Time step size, box size, cutoff distance
       real(8), dimension(N, 3) :: F                 !< Forces
-      integer :: i, nprocs, rank, ierror                                 !< Loop variable
-      integer :: counts_recv(0:nprocs-1), displs_recv(0:nprocs-1)
-      integer :: imin, imax
-      real(8), dimension(N, 3) :: r_new, v_new
+      integer :: i                                 !< Loop variable
+      integer :: nprocs, rank, ierror              !< MPI variables            
+      integer :: counts_recv(0:nprocs-1), displs_recv(0:nprocs-1) !< Arrays for MPI_ALLGATHERV
+      integer :: imin, imax !< Defines the range of particles for each MPI process
+      real(8), dimension(N, 3) :: r_new, v_new !< Arrays for storing new positions and velocities
+
       ! Calculate forces and potential energy using LJ potential
       call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
       ! Update positions and velocities using velocity Verlet integration
-      
-     
 
       do i = imin, imax
-
-      !   print*, "INITIAL r(i, :): ", i, rank, r(i, :)
 
          r(i, :) = r(i, :) + vel(i, :)*dt + 0.5*F(i, :)*dt*dt
 
@@ -73,12 +71,6 @@ contains
       end if
 
       r = r_new
-
-   !   print*, "rank", rank, "imin", imin, "imax", imax
-   !   print*, "rank", rank, "counts_recv", counts_recv
-   !   print*, "rank", rank, "displs_recv", displs_recv
-
-   !   print*, "FINAL r(i, :): ", i, rank, r(i, :)
 
       ! Recalculate forces after updating positions
       call find_force_LJ(r, N, L, cutoff, F, pot, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
@@ -172,6 +164,35 @@ contains
 
    end subroutine momentum
 
+! > Andersen thermostat. Randomly select a particle and assign it a new velocity.
+!    ! @param vel Array containing particle velocities.
+!    ! @param nu Probability of selecting a particle.
+!    ! @param sigma_gaussian Standard deviation of the normal distribution.
+!    ! @param N Number of particles.
+!    ! @param xnums Output array containing the generated random numbers.
+   
+   Subroutine therm_Andersen(vel, nu, sigma_gaussian, N)
+      Implicit none
+      integer :: i !> Loop variable,
+      integer, intent(in) :: N !> number of particles
+      real(8) :: rand !> Random number
+      real(8) :: nu, sigma_gaussian !> Parameters for the thermostat
+      real(8), dimension(N, 3), intent(inout) :: vel !> Array containing particle velocities
+      real(8), dimension(2) :: xnums !> Array containing random numbers
+
+      do i = 1, N
+         call random_number(rand)
+         if (rand .lt. nu) then
+            call BM(2, xnums, sigma_gaussian)
+            vel(i, 1) = xnums(1)
+            vel(i, 2) = xnums(2)
+            call BM(2, xnums, sigma_gaussian)
+            vel(i, 3) = xnums(1)
+         end if
+      end do
+
+   End Subroutine
+
 
 !#################################################################
 
@@ -211,26 +232,5 @@ contains
     end subroutine BM
 
 
-
-    Subroutine therm_Andersen(vel, nu, sigma_gaussian, N)
-      Implicit none
-      integer :: i, N
-      real(8) :: rand, nu, sigma_gaussian
-      real(8), dimension(N, 3) :: vel
-      real(8), dimension(2) :: xnums
-
-      do i = 1, N
-         call random_number(rand)
-         if (rand .lt. nu) then
-            call BM(2, xnums, sigma_gaussian)
-            !print*, "xnums: ", xnums
-            vel(i, 1) = xnums(1)
-            vel(i, 2) = xnums(2)
-            call BM(2, xnums, sigma_gaussian)
-            vel(i, 3) = xnums(1)
-         end if
-      end do
-      !        print*, vel
-   End Subroutine
 
 end module integrators

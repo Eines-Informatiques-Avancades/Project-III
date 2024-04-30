@@ -1,3 +1,17 @@
+!> Program to simulate a Lennard-Jones fluid using MPI
+!> @file main.f90
+!> @author A. Monclús, A. Plazas, M. Serrano, A. Gaya
+!> @date April 2024s
+!> @brief Program to simulate a Lennard-Jones fluid using MPI
+!> @details The program simulates a Lennard-Jones fluid using the velocity Verlet algorithm.
+!> The program is parallelized using MPI. The program reads the parameters from a namelist file
+!> called namMD.nml. The program writes the initial and final positions and velocities to files
+!> called pos_ini.dat, vel_ini.dat, pos_out.dat and vel_fin.dat. The program writes the energy,
+!> temperature and pressure to files called energy_verlet.dat, Temperatures_verlet.dat and
+!> pressure_verlet.dat. The program writes the distribution of positions and velocities for the
+!> last 10% of the simulation to files called pos_out.dat and vel_fin.dat. The program writes the
+!> time elapsed to the standard output.
+
 Program main
 
    use :: integrators
@@ -7,7 +21,6 @@ Program main
 
    Implicit none
    real(8) :: mass, rho, epsilon, sigma, Temp ! (LJ units, input file)
-!        real(8), parameter :: k_b = 1.380649e-23
    integer, parameter :: N = 125
    real(8), dimension(N, 3) :: r, r_ini, vel, vel_ini, r_out, v_fin, r_new, vel_new
    integer :: step, i, dt_index, Nsteps
@@ -60,8 +73,6 @@ Program main
    allocate (particle_distrib(N))
    allocate (counts_recv(0:nprocs-1))
    allocate (displs_recv(0:nprocs-1))
-!   allocate(counts_recv(nprocs))
-!   allocate(displs_recv(nprocs))
 
    ! Send info to the other processors
    call MPI_Bcast(mass, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierror)
@@ -218,7 +229,6 @@ Program main
    print *, "Loop starts"
    do step = 1, Nsteps
       ! Apply Verlet algorithm
-      print*, step
       call time_step_vVerlet(r, vel, pot, N, L, cutoff, dt, Ppot, nprocs, rank, counts_recv, displs_recv, imin, imax)
 
       if (rank .eq. 0) then
