@@ -55,6 +55,6 @@ mpirun $NP /home/cmm15/eia/Project-III/parallel/MD.exe > MD.log
 
 mkdir -p $old/HELLO
 cp -pr $TMPDIR $old/HELLO
-cd $old/HELLO
-cp *.dat ../../
+#cd $old/HELLO
+#cp *.dat ../../
 
