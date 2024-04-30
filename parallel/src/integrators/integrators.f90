@@ -171,14 +171,14 @@ contains
 !    ! @param N Number of particles.
 !    ! @param xnums Output array containing the generated random numbers.
    
-   Subroutine therm_Andersen(vel, nu, sigma_gaussian, N, xnums)
+   Subroutine therm_Andersen(vel, nu, sigma_gaussian, N)
       Implicit none
       integer :: i !> Loop variable,
       integer, intent(in) :: N !> number of particles
       real(8) :: rand !> Random number
       real(8) :: nu, sigma_gaussian !> Parameters for the thermostat
       real(8), dimension(N, 3), intent(inout) :: vel !> Array containing particle velocities
-      real(8), dimension(2), intent(out) :: xnums !> Array containing random numbers
+      real(8), dimension(2) :: xnums !> Array containing random numbers
 
       do i = 1, N
          call random_number(rand)
