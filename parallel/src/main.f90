@@ -20,16 +20,16 @@ Program main
    use :: pbc_module
 
    Implicit none
-   real(8) :: mass, rho, epsilon, sigma, Temp ! (LJ units, input file)
+   real(8) :: mass_real,mass, rho_real,rho, epsilon_real,epsilon, sigma_real, sigma, Temp_real,Temp ! (LJ units, input file)
    integer, parameter :: N = 125
    real(8), dimension(N, 3) :: r, r_ini, vel, vel_ini, r_out, v_fin, r_new, vel_new
    integer :: step, i, dt_index, Nsteps
-   real(8) :: pot, K_energy,total, L, cutoff, M, a, dt, absV, p, tini, tfin, Ppot, Pressure
+   real(8) :: pot, K_energy,total, L, cutoff, M, a, dt, absV, p, tini, tfin,tfin_real, Ppot, Pressure
    real(8), dimension(3) :: dt_list
    real(8) :: nu, sigma_gaussian
    integer, allocatable :: seed(:)
    integer :: nn, rc
-   real(8) :: t1, t2
+   real(8) :: t1, t2,
 
    ! MPI
    integer :: ierror, rank, nprocs, imin, imax, counts_recv_rank, displs_recv_rank
@@ -37,9 +37,18 @@ Program main
 
    include 'mpif.h'
 
-   namelist /md_params/ mass, rho, epsilon, sigma, Temp, tfin
+   namelist /md_params/ mass_real, rho_real, epsilon_real, sigma_real, Temp_real, tfin_real
 
    ! Read parameters from namMD.nml
+   epsilon = epsilon_real/epsilon_real
+   mass = mass_real/mass_real
+   sigma = sigma_real/sigma_real
+
+   rho = rho_real*sigma**3.0
+
+   Temp = Temp_real/epsilon_real
+
+   tfin = tfin_real*((epsilon/mass)**(1./2.))/sigma
 
    inquire (file='namMD.nml', iostat=rc)
    open (unit=99, file='namMD.nml', status='old')
@@ -49,6 +58,10 @@ Program main
    end if
    read (99, nml=md_params)
    close (99)
+
+   ! Change real units to LJ - reduced units
+
+
 
    L = (N/rho)**(1./3.)
    M = N**(1./3.)
@@ -202,12 +215,17 @@ Program main
       open (44, file="energy_verlet.dat")
       open (77, file="Temperatures_verlet.dat")
       open (96, file="pressure_verlet.dat")
+      open (55, file="traj.xyz ")
+     
+      
 
    end if
    ! Time parameters, initial and final time (input.txt)
    tini = 0
 
    if (rank == 0) then
+      write (55, *) N
+      write (55, *) " "
       write (44, *) ""
       write (44, *) ""
       write (44, *) "dt = ", dt
@@ -223,8 +241,6 @@ Program main
    ! We set initial positions and velocities
    r = r_ini
    vel = vel_ini
-
-   r_out = 0
 
    print *, "Loop starts"
    do step = 1, Nsteps
@@ -250,10 +266,18 @@ Program main
             print *, int(real(step)/Nsteps*100), "%"
          end if
 
+         if (real(step)/Nsteps .gt. 0.6 .and. mod(step, 1000) .eq. 0) then
+       
+            do i = 1, N
+               write (55, *) "A", r(i, 1), r(i, 2), r(i, 3)
+            end do
+
+         end if
+
+
          ! We save the last 10% positions and velocity components of the simulation
          if (real(step)/Nsteps .gt. 0.9) then
             v_fin = v_fin + vel
-            r_out = r_out + r
          end if
 
       end if
@@ -270,13 +294,8 @@ Program main
       close (44)
 
       open (23, file="vel_fin_verlet.dat")
-      open (55, file="pos_out.dat")
-      ! Write final positions to file to plot the distribution of positions
-      write (55, *) "#  Positions components (x, y, z) for the last 10% of the simulation"
-      write (55, *) "#  x, y, z"
-      do i = 1, N
-         write (55, *) r_out(i, :)/(Nsteps*0.1)
-      end do
+      
+      
 
       ! Write final velocities to file to plot the distribution of velocities
 
