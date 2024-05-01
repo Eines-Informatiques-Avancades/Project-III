@@ -57,11 +57,11 @@ Program main
    mass = mass_real/mass_real
    sigma = sigma_real/sigma_real
 
-   rho = rho_real*sigma**3.0
+   rho = rho_real*sigma_real**3.0
 
    Temp = Temp_real/epsilon_real
 
-   tfin = tfin_real*((epsilon/mass)**(1./2.))/sigma
+   tfin = tfin_real*((epsilon_real/mass_real)**(1./2.))/sigma_real
 
 
    L = (N/rho)**(1./3.)
