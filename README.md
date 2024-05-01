@@ -29,6 +29,26 @@ To execute the program, there are some pre-requisites:
   - Numba (https://numba.pydata.org/)
 
 
+## How to
+
+1. Clone repository to your local host
+2. Choose *serial* or *parallel* folder with `cd serial` or `cd parallel` 
+3. Use `make` or `make help` to see available commands.
+4. Before starting a simulation, change your parameters in *namMD.nml* file  
+5. To carry out the simulation, have a look to the ***quick quide***. 
+6. Data is generated in *.dat* files. If you want to generate figures, use `make plot`
+
+
+### Quick serial guide
+
+To carry out a **serial** simulation after choosing parameters in *namMD.nml* file you can use:
+```
+make run (only works in serial mode)
+make plot
+```
+And results will appear in your serial directory!
+
+
 ## Parallel run
 To perform the simulation of the LJ gas, go to parallel dir with `cd parallel` and modify these 
 ones for the ones that you desire. 
@@ -54,26 +74,7 @@ There are two options to run the program in parallel mode:
   - Do `make plot` to carry out statistics and plotting of relevant magnitudes along the simulation. 
 
 
-
-## How to
-
-1. Clone repository to your local host
-2. Choose *serial* or *parallel* folder with `cd serial` or `cd parallel` 
-3. Use `make` or `make help` to see the available commands.
-4. Before starting a simulation, change your parameters in *namMD.nml* file  
-5. To carry out the simulation, use `make run` and the program will be compiled and run. 
-6. Data is generated in *.dat* files. If you want to generate figures, use `make plot`
-
-
-### Quick guide
-
-To carry out a **serial** simulation after choosing parameters in *namMD.nml* file you can use:
-```
-make run (only works in serial mode)
-make plot
-```
-And results will appear in your main directory!
-
+In summary,
 
 To carry out a **parallel** simulation in cerqt2 cluster after choosing parameters in *namMD.nml* file you can use:
 (Make sure you choose the processors in *openmpi.sub* file)
@@ -81,7 +82,7 @@ To carry out a **parallel** simulation in cerqt2 cluster after choosing paramete
 make qsub
 make plot
 ```
-And results will appear in your main directory!
+And results will appear in your parallel/results/ directory!
 
 > [!TIP]
 > There are some ways to clean generated files, have a look at `make clean`, `make cleandata` and `make cleanplot`.
@@ -105,6 +106,7 @@ And results will appear in your main directory!
      - T vs time                                                  
      - Pressure vs time
      - Radial Distribution Function
+     - Averages and stdevs in Averages.dat
                                                 
   - `make all`: Compiles the program and creates executable MD.exe   
  
