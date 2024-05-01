@@ -1,5 +1,5 @@
 # This script plots efficiency of parallelization as a function of the Cores used.
-
+# Principal contributor: Maenl Serrano
 import numpy as np
 import matplotlib.pyplot as plt
 import os
