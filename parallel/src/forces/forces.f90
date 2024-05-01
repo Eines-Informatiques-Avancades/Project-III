@@ -100,7 +100,17 @@ Contains
          stop
       end if
 
+      Ppot_rank = Ppot
+      Ppot = 0
+
+      call MPI_REDUCE(Ppot_rank, Ppot, 1, MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierror)
+      if (ierror.ne.0) then
+         print*, "Error in MPI_REDUCE"
+         stop
+      end if
+
       pot = pot/2
+      Ppot = Ppot/2
 
    End Subroutine find_force_LJ
 
