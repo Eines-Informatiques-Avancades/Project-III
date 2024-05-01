@@ -134,7 +134,7 @@ r = np.linspace(0.5*dr, L/2-0.5*dr, len(rdf_hist))
 plt.figure()
 plt.axhline(y=1, color='black', linestyle='--', linewidth=0.5)
 plt.plot(r, rdf_hist, label='g(r)', color='#5782FB')
-plt.xlabel('r(Angstrom)')
+plt.xlabel('r (\u00c5)')  # \u00c5 is the unicode for the Angstrom symbol
 plt.ylabel('g(r)')
 plt.title('Radial Distribution Function')
 plt.savefig('rdf.png', dpi=300)
