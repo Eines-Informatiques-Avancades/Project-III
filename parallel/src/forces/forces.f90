@@ -39,7 +39,7 @@ Contains
       !include 'mpif.h'
       real(8), dimension(N, 3), intent(in) :: r
       real(8), intent(in) :: L, cutoff
-      real(8) :: d, f_ij, pot_rank
+      real(8) :: d, f_ij, pot_rank, Ppot_rank
       real(8), dimension(3) :: rij
       integer :: i, j, ierror
       integer, intent(in) :: nprocs, rank
