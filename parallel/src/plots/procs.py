@@ -16,7 +16,7 @@ efficiency = speedup / processors       # Efficiency
 
 # Plot 1: Time vs Cores
 plt.figure()
-plt.plot(processors, time, 'o-')
+plt.plot(processors, time, 'o--', color='#395261', linewidth=1)
 plt.xlabel('# of cores')
 plt.ylabel('Time (s)')
 plt.title('Time')
@@ -26,17 +26,21 @@ plt.savefig('time.png', dpi=300)
 
 # Plot 2: Speedup vs Cores
 plt.figure()
-plt.plot(processors, speedup, 'o-')
+plt.plot(processors, processors, '--', label='Ideal', color='black', linewidth=1)
+plt.plot(processors, speedup, 'o-', label='Measured', color='#543B8B')
+for i in range(len(processors)):
+    plt.text(processors[i], speedup[i]+0.5, str(round(speedup[i], 2)), fontsize=8, ha='center')
 plt.xlabel('# of cores')
 plt.ylabel('Speedup')
 plt.title('Speedup')
+plt.legend()
 plt.grid()
 plt.savefig('speedup.png', dpi=300)
 #plt.show()
 
 # Plot 3: Efficiency vs Cores
 plt.figure()
-plt.plot(processors, efficiency, 'o-')
+plt.plot(processors, efficiency, 'o--', color='#39613A', linewidth=1)
 plt.xlabel('# of cores')
 plt.ylabel('Efficiency')
 plt.title('Efficiency')
