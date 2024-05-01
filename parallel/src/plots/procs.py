@@ -1,3 +1,9 @@
+'''
+
+Author: Manel Serrano Rodríguez
+
+'''
+
 # This script plots efficiency of parallelization as a function of the Cores used.
 
 import numpy as np
