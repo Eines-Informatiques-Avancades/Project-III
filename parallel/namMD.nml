@@ -1,8 +1,8 @@
 &md_params
-mass=83.798
-rho=0.0042
-epsilon=162.58
-sigma=3.624
-Temp=300
-tfin=26.02
+mass_real=83.798
+rho_real=0.0042
+epsilon_real=162.58
+sigma_real=3.624
+Temp_real=300
+tfin_real=26.02
 /
