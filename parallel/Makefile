@@ -1,6 +1,6 @@
 
 # Fortran compiler
-FC=mpif90
+FC=mpif90.mpich
 
 # Number of processors
 N=4

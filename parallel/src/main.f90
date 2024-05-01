@@ -22,7 +22,7 @@ Program main
    Implicit none
    real(8) :: mass_real,mass, rho_real,rho, epsilon_real,epsilon, sigma_real, sigma, Temp_real,Temp ! (LJ units, input file)
    integer, parameter :: N = 125
-   real(8), dimension(N, 3) :: r, r_ini, vel, vel_ini, r_out, v_fin, r_new, vel_new
+   real(8), dimension(N, 3) :: r, r_ini, vel, vel_ini, v_fin, r_new, vel_new
    integer :: step, i, dt_index, Nsteps
    real(8) :: pot, K_energy,total, L, cutoff, M, a, dt, absV, p, tini, tfin,tfin_real, Ppot, Pressure
    real(8), dimension(3) :: dt_list
@@ -287,8 +287,6 @@ Program main
    end do
 
    if (rank .eq. 0) then
-
-      print *, "r_out", r_out
 
       close (77)
       close (96)
