@@ -53,12 +53,12 @@ And results will appear in your serial directory!
 To perform the simulation of the LJ gas, go to parallel dir with `cd parallel` and modify these 
 ones for the ones that you desire. 
 - Parameters in namMD.nml:
-  - mass_real []
-  - rho_real []
-  - epsilon_real []
-  - sigma_real []
-  - Temp_real []
-  - tfin_real []
+  - mass_real     [g/mol]
+  - rho_real      [g/A**3]
+  - epsilon_real  [kJ/mol]
+  - sigma_real    [A]
+  - Temp_real     [K]
+  - tfin_real     [ps]
 
 There are two options to run the program in parallel mode: 
 - **Run in local with OpenMPI**:
