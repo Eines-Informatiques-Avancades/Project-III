@@ -3,7 +3,7 @@
 FC=mpif90
 
 # Number of processors
-N=4
+N=12
 
 
 # Code location
