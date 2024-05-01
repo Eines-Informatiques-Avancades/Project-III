@@ -29,7 +29,7 @@ Program main
    real(8) :: nu, sigma_gaussian
    integer, allocatable :: seed(:)
    integer :: nn, rc
-   real(8) :: t1, t2,
+   real(8) :: t1, t2
 
    ! MPI
    integer :: ierror, rank, nprocs, imin, imax, counts_recv_rank, displs_recv_rank
