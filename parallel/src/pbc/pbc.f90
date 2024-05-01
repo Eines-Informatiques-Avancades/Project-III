@@ -1,4 +1,5 @@
 !> Module containing subroutines to apply periodic boundary conditions to a N-dimensional system.
+!> Principal contributor: Anna Monclús
 module pbc_module
 
    implicit none
