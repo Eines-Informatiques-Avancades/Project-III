@@ -1,4 +1,5 @@
 !> Module containing various integrators for molecular dynamics simulations.
+!> Principal contirbutor: Aina Gaya
 module integrators
 
    use forces
