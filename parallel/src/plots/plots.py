@@ -72,13 +72,7 @@ def update(frame):          # Define the update function for the animation
     line.set_3d_properties(traj[frame][:, 2])
     return line,
 
-#---------------------------------------------------------------------------------|
 
-# convert time to ps
-# WIP!!
-# energy[:, 0] = energy[:, 0]*6.022e23*np.sqrt(mass/1000*sigma**2*1e-20/eps)
-# temperature[:, 0] = temperature[:, 0]*6.022e23*np.sqrt(mass/1000*sigma**2*1e-20/eps)
-# pressure[:, 0] = pressure[:, 0]*6.022e23*np.sqrt(mass/1000*sigma**2*1e-20/eps)
 
 #--------------------------------POSICIONS INICIALS--------------------------------|
 pos_ini = np.loadtxt("../../pos_ini.dat", dtype=float)
