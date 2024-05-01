@@ -1,3 +1,5 @@
+#Principal contributor: Manel Serrano
+
 import os
 
 import numpy as np
