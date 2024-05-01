@@ -6,6 +6,8 @@ import scipy as sp
 import time
 import matplotlib.animation as animation
 
+# Principal contributor: Manel Serrano
+
 ############################################
 
 #              LJ parameters
