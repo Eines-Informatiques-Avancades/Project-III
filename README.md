@@ -54,7 +54,7 @@ To perform the simulation of the LJ gas, go to parallel dir with `cd parallel` a
 ones for the ones that you desire. 
 - Parameters in namMD.nml:
   - mass_real     [g/mol]
-  - rho_real      [g/A**3]
+  - rho_real      [A^-3]
   - epsilon_real  [kJ/mol]
   - sigma_real    [A]
   - Temp_real     [K]
