@@ -113,8 +113,8 @@ temperature = np.loadtxt('../../Temperatures_verlet.dat', skiprows=1, dtype=floa
 pressure = np.loadtxt('../../pressure_verlet.dat', skiprows=1, dtype=float)
 
 energy = energy[int(0.6*len(energy)):,:]                # Remove the first 60% of the data
-temp = temperature[int(0.6*len(temperature)):,1]        # Remove the first 60% of the data
-pres = pressure[int(0.6*len(pressure)):,1]              # Remove the first 60% of the data
+temperature = temperature[int(0.6*len(temperature)):,1]        # Remove the first 60% of the data
+pressure = pressure[int(0.6*len(pressure)):,1]              # Remove the first 60% of the data
 
 #------------------------------Convert units--------------------------------|
 
@@ -137,8 +137,8 @@ mlist, kin_exp, kin_stdev = perform_binning(kin)
 mlist, tot_exp, tot_stdev = perform_binning(tot)
 
 mlist, mom_exp, mom_stdev = perform_binning(momentum)
-mlist, temp_exp, temp_stdev = perform_binning(temp)
-mlist, pres_exp, pres_stdev = perform_binning(pres)
+mlist, temp_exp, temp_stdev = perform_binning(temperature)
+mlist, pres_exp, pres_stdev = perform_binning(pressure)
 
 end = time.time()       # End time
 

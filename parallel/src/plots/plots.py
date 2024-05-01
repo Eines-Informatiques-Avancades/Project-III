@@ -34,9 +34,12 @@ pressure = np.loadtxt("../../pressure_verlet.dat", skiprows=1, dtype=float)
 momentum = energy[:, 4]
 
 
-energy = energy * eps / 1000        # Convert energy to kJ/mol
-temperature = temperature * eps     # Convert Temperature to K
-pressure = pressure * eps / ((sigma * 1e-10) ** 3 * 6.022e23) / 1e6  # Convert pressure to MPa
+energy[:,1:] = energy[:,1:] * eps / 1000                                         # Convert energy to kJ/mol
+energy[:,0] = energy[:,0]* sigma * (mass/eps)**(0.5)                             # Convert time to ps
+temperature[:,1:] = temperature[:,1:] * eps                                      # Convert Temperature to K
+temperature[:,0] = temperature[:,0]* sigma * (mass/eps)**(0.5)                   # Convert time to ps
+pressure[:,1:] = pressure[:,1:] * eps / ((sigma * 1e-10) ** 3 * 6.022e23) / 1e6  # Convert pressure to MPa
+pressure[:,0] = pressure[:,0]* sigma * (mass/eps)**(0.5)                         # Convert time to ps
 
 #-----------------------------------FUNCTIONS-----------------------------------|
 
@@ -151,7 +154,7 @@ plt.figure(figsize=(10, 5))
 plt.plot(energy[:, 0], energy[:, 1], label="Potential Energy", color="#042940")
 plt.plot(energy[:, 0], energy[:, 2], label="Kinetic Energy", color="#005C53")
 plt.plot(energy[:, 0], energy[:, 3], label="Total Energy", color="#9FC131")
-plt.xlabel("Timestep")
+plt.xlabel("Timestep (ps)")
 plt.ylabel("Energy (kJ/mol)")
 plt.legend(loc='lower right')
 plt.title("Energy vs Step")
@@ -168,7 +171,7 @@ plt.plot(
     energy[:, 0], momentum, label="Momentum", color="mediumaquamarine", linewidth=2
 )
 #plt.ylim(np.mean(momentum) - 3, np.mean(momentum) + 3)
-plt.xlabel("Timestep")
+plt.xlabel("Timestep (ps)")
 plt.ylabel("Momentum'")
 plt.legend()
 plt.title("Momentum vs Time")
@@ -184,7 +187,7 @@ plt.figure()
 plt.plot(
     temperature[:, 0], temperature[:, 1], label="Temperature", color="mediumvioletred"
 )
-plt.xlabel("Timestep")
+plt.xlabel("Timestep (ps)")
 plt.ylabel("Temperature (K)")
 plt.legend()
 plt.title("Temperature vs Time")
@@ -198,8 +201,8 @@ plt.savefig("Temperature.png", dpi=300)
 
 plt.figure()
 plt.plot(pressure[:, 0], pressure[:, 1], label="Pressure", color="goldenrod")
-plt.ylim(np.mean(pressure[:, 1]) - 1, np.mean(pressure[:, 1]) + 1)
-plt.xlabel("Timestep")
+plt.ylim(0,5)
+plt.xlabel("Timestep (ps)")
 plt.ylabel("Pressure (MPa)")
 plt.legend()
 plt.title("Pressure vs Time")
