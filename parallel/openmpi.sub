@@ -6,6 +6,7 @@
 #$ -N AM_DM
 # (2) Requested resources
 # Parallel Environment and number of cores
+$NP = 5
 #$ -pe omp* 5
 # Queue
 #$ -q iqtc07.q
@@ -46,7 +47,7 @@ pwd
 ##########################################
 # We run parallel program
 cp /home/cmm15/eia/Project-III/parallel/namMD.nml .
-mpirun -np 5 /home/cmm15/eia/Project-III/parallel/MD.exe > MD.log
+mpirun $NP /home/cmm15/eia/Project-III/parallel/MD.exe > MD.log
 
 ##########################################
 # Copy the results to our home directory
@@ -54,4 +55,6 @@ mpirun -np 5 /home/cmm15/eia/Project-III/parallel/MD.exe > MD.log
 
 mkdir -p $old/HELLO
 cp -pr $TMPDIR $old/HELLO
+#cd $old/HELLO
+#cp *.dat ../../
 
