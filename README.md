@@ -49,7 +49,7 @@ make plot
 And results will appear in your serial directory!
 
 
-## Parallel run
+### Parallel run
 To perform the simulation of the LJ gas, go to parallel dir with `cd parallel` and modify these 
 ones for the ones that you desire. 
 - Parameters in namMD.nml:
@@ -61,11 +61,11 @@ ones for the ones that you desire.
   - tfin_real []
 
 There are two options to run the program in parallel mode: 
-- Run in local:
+- **Run in local with OpenMPI**:
   - To run the job in a local device, OpenMPI is required. You can set the number of processors by changing the value of *N=Nprocessors* in Makefile file, inside the parallel directory. 
    `make run`
 
-- Run in a cluster: 
+- **Run in a cluster**: 
   - To run the parallel code in iqtc07 of cerqt2, it is possible to set the number of processors (workers) by changing
     the variable NP=Nprocessors in openmpi.sub submit file.
   - Then, do `make qsub` and job will be sent to the queue manager. In parallel/ directory it is possible to identify
