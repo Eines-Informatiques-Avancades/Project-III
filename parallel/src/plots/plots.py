@@ -72,13 +72,7 @@ def update(frame):          # Define the update function for the animation
     line.set_3d_properties(traj[frame][:, 2])
     return line,
 
-#---------------------------------------------------------------------------------|
 
-# convert time to ps
-# WIP!!
-# energy[:, 0] = energy[:, 0]*6.022e23*np.sqrt(mass/1000*sigma**2*1e-20/eps)
-# temperature[:, 0] = temperature[:, 0]*6.022e23*np.sqrt(mass/1000*sigma**2*1e-20/eps)
-# pressure[:, 0] = pressure[:, 0]*6.022e23*np.sqrt(mass/1000*sigma**2*1e-20/eps)
 
 #--------------------------------POSICIONS INICIALS--------------------------------|
 pos_ini = np.loadtxt("../../pos_ini.dat", dtype=float)
@@ -113,7 +107,7 @@ ax.set_title('Particle Trajectory')
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Z')
-ani.save('Trajectory.gif', writer='imagemagick', dpi=300, fps=10)   # Create a .gif file
+#ani.save('Trajectory.gif', writer='imagemagick', dpi=300, fps=10)   # Create a .gif file
 #plt.show()      # Show the animation (disable if working on a cluster to avoid errors)
 
 
@@ -140,7 +134,7 @@ r = np.linspace(0.5*dr, L/2-0.5*dr, len(rdf_hist))
 plt.figure()
 plt.axhline(y=1, color='black', linestyle='--', linewidth=0.5)
 plt.plot(r, rdf_hist, label='g(r)', color='#5782FB')
-plt.xlabel('r(Angstrom)')
+plt.xlabel('r (\u00c5)')  # \u00c5 is the unicode for the Angstrom symbol
 plt.ylabel('g(r)')
 plt.title('Radial Distribution Function')
 plt.savefig('rdf.png', dpi=300)
@@ -150,13 +144,14 @@ plt.savefig('rdf.png', dpi=300)
 #       PLOT ENERGIES vs time
 #
 
-plt.figure(figsize=(10, 5))
+plt.figure()
 plt.plot(energy[:, 0], energy[:, 1], label="Potential Energy", color="#042940")
 plt.plot(energy[:, 0], energy[:, 2], label="Kinetic Energy", color="#005C53")
 plt.plot(energy[:, 0], energy[:, 3], label="Total Energy", color="#9FC131")
 plt.xlabel("Timestep (ps)")
 plt.ylabel("Energy (kJ/mol)")
-plt.legend(loc='lower right')
+plt.legend(loc='upper right')
+plt.grid()
 plt.title("Energy vs Step")
 plt.savefig("Energies.png", dpi=300)
 # plt.show()
@@ -175,6 +170,7 @@ plt.xlabel("Timestep (ps)")
 plt.ylabel("Momentum'")
 plt.legend()
 plt.title("Momentum vs Time")
+plt.grid()
 plt.savefig("Momentum.png", dpi=300)
 # plt.show()
 
@@ -191,6 +187,7 @@ plt.xlabel("Timestep (ps)")
 plt.ylabel("Temperature (K)")
 plt.legend()
 plt.title("Temperature vs Time")
+plt.grid()
 plt.savefig("Temperature.png", dpi=300)
 # plt.show()
 
@@ -206,5 +203,6 @@ plt.xlabel("Timestep (ps)")
 plt.ylabel("Pressure (MPa)")
 plt.legend()
 plt.title("Pressure vs Time")
+plt.grid()
 plt.savefig("Pressure.png", dpi=300)
 # plt.show()

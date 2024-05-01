@@ -70,7 +70,7 @@ qsub:
 plot:
 	@echo "Plotting files... (this may take a while)"
 	@python3 ./src/plots/plots.py
-	@cp ./src/plots/*.png ./src/plots/*.gif ./results/
+	@cp ./src/plots/*.png ./results/
 	@echo "Done! Check the plots in the main directory."
 	@echo "Calculating statistics..."
 	@echo " "

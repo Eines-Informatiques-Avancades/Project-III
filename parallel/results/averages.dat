@@ -1,15 +1,15 @@
 \# Statistical analysis of the Verlet simulation
 
-Data points:400000
-bin size used: 8192.0
+Data points:153741
+bin size used: 2048.0
 
 Averages:
-Potential energy: -22.48154 ± 0.10694 kJ/mol
-Kinetic energy: 56.41334 ± 0.03056 kJ/mol
-Total energy: 33.93180 ± 0.10648 kJ/mol 
+Potential energy: -25.31406 ± 0.10960 kJ/mol
+Kinetic energy: 66.50810 ± 0.11102 kJ/mol
+Total energy: 41.19404 ± 0.07214 kJ/mol 
 
-Momentum: 3.94370 ± 0.00878 kJ/mol
-Temperature: 303.29752 ± 0.16428 K
-Pressure: 2.26632 ± 0.03083 MPa
+Momentum: 5.78258 ± 0.10209 kJ/mol
+Temperature: 357.57041 ± 0.59690 K
+Pressure: 2.97624 ± 0.02734 MPa
 
-Time elapsed: 2.10796 s
+Time elapsed: 1.22262 s
