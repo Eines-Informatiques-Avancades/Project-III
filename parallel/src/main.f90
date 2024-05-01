@@ -40,15 +40,7 @@ Program main
    namelist /md_params/ mass_real, rho_real, epsilon_real, sigma_real, Temp_real, tfin_real
 
    ! Read parameters from namMD.nml
-   epsilon = epsilon_real/epsilon_real
-   mass = mass_real/mass_real
-   sigma = sigma_real/sigma_real
-
-   rho = rho_real*sigma**3.0
-
-   Temp = Temp_real/epsilon_real
-
-   tfin = tfin_real*((epsilon/mass)**(1./2.))/sigma
+  
 
    inquire (file='namMD.nml', iostat=rc)
    open (unit=99, file='namMD.nml', status='old')
@@ -60,7 +52,16 @@ Program main
    close (99)
 
    ! Change real units to LJ - reduced units
+   
+   epsilon = epsilon_real/epsilon_real
+   mass = mass_real/mass_real
+   sigma = sigma_real/sigma_real
 
+   rho = rho_real*sigma**3.0
+
+   Temp = Temp_real/epsilon_real
+
+   tfin = tfin_real*((epsilon/mass)**(1./2.))/sigma
 
 
    L = (N/rho)**(1./3.)
