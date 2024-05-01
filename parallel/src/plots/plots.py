@@ -107,7 +107,7 @@ ax.set_title('Particle Trajectory')
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Z')
-ani.save('Trajectory.gif', writer='imagemagick', dpi=300, fps=10)   # Create a .gif file
+#ani.save('Trajectory.gif', writer='imagemagick', dpi=300, fps=10)   # Create a .gif file
 #plt.show()      # Show the animation (disable if working on a cluster to avoid errors)
 
 
