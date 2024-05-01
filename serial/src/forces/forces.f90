@@ -1,5 +1,6 @@
 !> This module contains the subroutine `find_force_LJ` which calculates the forces and potential energy
 !> between particles using the Lennard-Jones potential.
+!> Principal contributor: Abert Plazas 
 Module forces
 
    use pbc_module

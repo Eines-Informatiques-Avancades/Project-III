@@ -1,3 +1,5 @@
+!> Principal contributor: Anna Monclús 
+
 module initialization
 
    implicit none

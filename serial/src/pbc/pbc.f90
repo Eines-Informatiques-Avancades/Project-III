@@ -1,3 +1,4 @@
+!> Principal contributor: Anna Monclús 
 module pbc_module
 
    implicit none
