@@ -1,4 +1,5 @@
 !> Module containing initialization rutines for molecular dynamics simulations.
+!> Principal contributor: Anna Monclús 
 module initialization
 
    implicit none
