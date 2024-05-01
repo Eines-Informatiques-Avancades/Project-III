@@ -1,4 +1,4 @@
-#!/bin/csh
+#!/bin/bash
 ##########################################
 # SGE options and parameters
 ##########################################
@@ -6,13 +6,13 @@
 #$ -N AM_DM
 # (2) Requested resources
 # Parallel Environment and number of cores
-$NP = 5
+NP=5
 #$ -pe omp* 5
 # Queue
 #$ -q iqtc07.q
 ##$ -q iqtc01.q
 # Shell
-#$ -S /bin/csh
+#$ -S /bin/bash
 # (3) Output files
 #$ -cwd
 #$ -o hello.out
@@ -26,7 +26,7 @@ $NP = 5
 ##########################################
 # Load the modules needed
 
-source /etc/profile.d/modules.csh
+source /etc/profile.d/modules.sh
 # IQTC07
 module load intel_compiler_suite/2021.3
 module load openmpi/4.1.4_ics-2021.3
@@ -37,7 +37,7 @@ module load openmpi/4.1.4_ics-2021.3
 ##########################################
 # We copy the inputs to the directory where the jobs will run
 
-setenv old `pwd`
+old=$(pwd)
 make all
 cd $TMPDIR
 pwd
@@ -46,8 +46,8 @@ pwd
 # Run the job
 ##########################################
 # We run parallel program
-cp /home/cmm15/eia/Project-III/parallel/namMD.nml .
-mpirun $NP /home/cmm15/eia/Project-III/parallel/MD.exe > MD.log
+cp $old/namMD.nml .
+mpirun -np $NP $old/MD.exe > MD.log
 
 ##########################################
 # Copy the results to our home directory
@@ -55,6 +55,5 @@ mpirun $NP /home/cmm15/eia/Project-III/parallel/MD.exe > MD.log
 
 mkdir -p $old/HELLO
 cp -pr $TMPDIR $old/HELLO
-#cd $old/HELLO
-#cp *.dat ../../
 
+cp $old/HELLO/$TMPDIR/*.dat $old/HELLO/$TMPDIR/*.xyz $old

@@ -1,3 +1,9 @@
+'''
+
+Author: Manel Serrano Rodríguez
+Co-Authors: Anna Monclús
+
+'''
 import numpy as np
 import os
 import matplotlib.pyplot as plt

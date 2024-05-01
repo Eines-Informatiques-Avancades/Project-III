@@ -26,6 +26,9 @@ COMP_P_FLAGS=-O2 #-pg -fallow-argument-mismatch
 ##    !IMPORTANT: Remember   to   choose    your                     #
 ##                parameters in namMD.nml file!!                     #
 ##                                                                   #
+##  - All the members have contributed to the creation of Makefile.  #
+##       -Documentation by Manel Serrano                             #
+##                                                                   #
 ##-------------------------------------------------------------------#
 ##                                                                   #
 ## - Commands:                                                       #
@@ -36,9 +39,13 @@ help:
 	@grep "^##" Makefile
 
 # ~ RUNNING THE PROGRAM ~
-##  · make run: Compiles needed files and also runs the program.     #
+##  · make multirun: Compiles needed files and                       # 
+##                   runs the program with MPI.                      #
 ##                                                                   #
-.PHONY.: run
+##          DON'T USE IT if you want to send it                      #
+##                                 to a cluster.                     # 
+##                                                                   #
+.PHONY.: multirun
 run: MD.exe
 	mpirun -n ${N} ./MD.exe
 
@@ -63,7 +70,7 @@ qsub:
 ##                                                                   #
 ##     Statistics                                                    #
 ##      - Mean values of Epot, Ekin, Etot, momentum, T, P            #
-##             with standard deviations                              #
+##             with standard deviations (Block-average method)       #
 ##                                                                   #
 
 .PHONY.: plot
